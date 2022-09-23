@@ -22,7 +22,7 @@ const metaConfig = {
   author: "Yangoos",
   siteUrl: "https://leeway.github.io",
   lang: "kr",
-  utterances: "yangoos57/yangoos-archive",
+  utterances: "yangoos57/leeway.github.io",
   links: {
     github: "https://github.com/yangoos57",
   },
