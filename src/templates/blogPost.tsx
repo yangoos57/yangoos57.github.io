@@ -11,6 +11,8 @@ import Category from "Styles/category"
 import DateTime from "Styles/dateTime"
 import Markdown from "Styles/markdown"
 
+import "katex/dist/katex.min.css"
+
 interface BlogPostProps {
   data: Query
 }

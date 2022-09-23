@@ -10,6 +10,7 @@ import Layout from "Layouts/layout"
 import SEO from "Components/seo"
 import PostGrid from "Components/postGrid"
 import CategoryFilter from "Components/catetgoryFilter"
+import Introduction from "Components/introduction"
 
 const Home = ({
   pageContext,
@@ -56,6 +57,7 @@ const Home = ({
       <SEO title="Home" />
       <Main>
         <Content>
+          <Introduction/>
           <CategoryFilter categoryList={data.allMarkdownRemark.group} />
           <PostTitle>{postTitle}</PostTitle>
           <PostGrid posts={posts} />

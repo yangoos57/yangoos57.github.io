@@ -132,12 +132,14 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
 
   img {
     display: block;
+    background-color :white;
   }
 
   pre,
   code {
     font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
     background-color: var(--color-code-block);
+    font-size : var(--text-sm);
   }
 
   pre {
@@ -159,6 +161,11 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
     margin: 0;
     font-size: 85%;
     border-radius: 3px;
+  }
+  li {
+    list-style: "▸ " !important;
+    line-height:30px !important;
+    margin-bottom : 20px !important;
   }
 `
 

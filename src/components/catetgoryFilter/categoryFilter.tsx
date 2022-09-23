@@ -58,12 +58,10 @@ const Nav = styled.nav`
   margin-bottom: 48px;
   padding: 12px var(--sizing-md);
   border-radius: var(--border-radius-base);
-
   a#active {
     color: var(--color-white);
     background-color: var(--color-blue);
   }
-
   @media (max-width: ${({ theme }) => theme.device.sm}) {
     padding: 12px;
   }
@@ -75,13 +73,11 @@ const CategoryTitle = styled.em`
   height: auto;
   clip: auto;
   white-space: auto;
-
   flex-shrink: 0;
   font-size: var(--text-base);
   font-weight: var(--font-weight-semi-bold);
   font-style: initial;
   margin-right: var(--sizing-lg);
-
   @media (max-width: ${({ theme }) => theme.device.sm}) {
     position: absolute;
     width: 1px;
@@ -100,16 +96,13 @@ const CategoryButton = styled(Link)`
   border-radius: var(--border-radius-base);
   font-size: 0.875rem;
   font-weight: var(--font-weight-semi-bold);
-
   :focus {
     outline: none;
   }
-
   &:hover {
     color: var(--color-white);
     background-color: var(--color-blue);
   }
-
   &:focus-visible {
     color: var(--color-white);
     background-color: var(--color-blue);
@@ -126,11 +119,9 @@ const Divider = styled.div`
 
 const CategoryUl = styled.ul`
   display: flex;
-  list-style: none;
-  overflow-x: scroll;
+  overflow-x:scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
-
   li + li {
     margin-left: 6px;
   }

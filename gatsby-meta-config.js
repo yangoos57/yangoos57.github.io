@@ -17,14 +17,14 @@
 
 /** @type {MetaConfig} */
 const metaConfig = {
-  title: "Dev Ed",
-  description: `Ed's Blog`,
-  author: "Ed",
-  siteUrl: "https://gatsby-starter-apple.netlify.app",
-  lang: "en",
-  utterances: "sungik-choi/gatsby-starter-apple-comment",
+  title: "Yangoos 공부자료 저장소",
+  description: `공부한 자료를 복습하기 편하게 블로그 형태로 정리했습니다.`,
+  author: "Yangoos",
+  siteUrl: "https://leeway.github.io",
+  lang: "kr",
+  utterances: "yangoos57/yangoos-archive",
   links: {
-    github: "https://github.com/sungik-choi/gatsby-starter-apple",
+    github: "https://github.com/yangoos57",
   },
   favicon: "src/images/icon.png",
 }
