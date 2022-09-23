@@ -1,5 +1,5 @@
 ---
-title: "M03_02 Validation and learning curves "
+title: "M03_02 Validation and learning curves"
 category: "MachineLearning"
 date: "2021-05-01"
 thumbnail: "./images/scikit-learn-logo.png"
