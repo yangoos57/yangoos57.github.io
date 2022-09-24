@@ -1,7 +1,7 @@
 ---
-title: "M05_03 Importance of decision tree hyperparameters on generalization "
+title: "5.3 Importance of decision tree hyperparameters on generalization "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-13"
 thumbnail: "./images/scikit-learn-logo.png"
 ---
 

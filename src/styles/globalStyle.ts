@@ -104,7 +104,7 @@ const GlobalStyle = createGlobalStyle`
       --color-post-background: #1c1c1c;
       --color-card: #2c2c2c;
       --color-code: #3a3a3a;
-      --color-code-block: #242424;
+      --color-code-block: none;
       --color-code-highlight: rgba(255, 255, 255, 0.05);
       --color-code-highlight-border: rgba(255, 255, 255, 0.2);
       --color-gray-1: #1c1c1c;

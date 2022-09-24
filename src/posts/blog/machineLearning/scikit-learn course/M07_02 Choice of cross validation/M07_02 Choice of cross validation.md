@@ -1,7 +1,7 @@
 ---
-title: "M07_02 Choice of cross validation"
+title: "7.2 Choice of cross validation"
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-20"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

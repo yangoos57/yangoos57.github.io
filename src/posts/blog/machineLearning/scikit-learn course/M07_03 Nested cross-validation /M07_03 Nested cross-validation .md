@@ -1,7 +1,7 @@
 ---
-title: "M07_03 Nested cross-validation "
+title: "7.3 Nested cross-validation "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-21"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

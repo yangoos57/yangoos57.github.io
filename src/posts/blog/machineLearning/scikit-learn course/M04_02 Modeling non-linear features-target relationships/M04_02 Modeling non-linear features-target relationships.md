@@ -1,7 +1,7 @@
 ---
-title: "M04_02 Modeling non-linear features-target relationships"
+title: "4.2 Modeling non-linear features-target relationships"
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-08"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

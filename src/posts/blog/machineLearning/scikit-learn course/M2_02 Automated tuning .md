@@ -1,7 +1,7 @@
 ---
-title: "M2_02 Automated tuning "
+title: "2.2 Automated tuning "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-04"
 thumbnail: "./images/scikit-learn-logo.png"
 ---
 

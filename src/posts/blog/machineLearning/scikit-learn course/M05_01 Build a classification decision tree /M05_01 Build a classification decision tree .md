@@ -1,7 +1,7 @@
 ---
-title: "M05_01 Build a classification decision tree "
+title: "5.1 Build a classification decision tree "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-11"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

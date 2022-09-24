@@ -1,7 +1,7 @@
 ---
-title: "M3_01 over fitting and underfitting "
+title: "3.1 over fitting and underfitting "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-05"
 thumbnail: "./images/scikit-learn-logo.png"
 ---
 

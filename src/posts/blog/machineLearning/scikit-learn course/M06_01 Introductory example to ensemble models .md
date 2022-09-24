@@ -1,7 +1,7 @@
 ---
-title: "M06_01 Introductory example to ensemble models "
+title: "6.1 Introductory example to ensemble models "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-14"
 thumbnail: "./images/scikit-learn-logo.png"
 ---
 

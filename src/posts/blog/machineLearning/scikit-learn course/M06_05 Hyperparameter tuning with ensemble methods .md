@@ -1,7 +1,7 @@
 ---
-title: "M06_05 Hyperparameter tuning with ensemble methods "
+title: "6.5 Hyperparameter tuning with ensemble methods "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-18"
 thumbnail: "./images/scikit-learn-logo.png"
 ---
 

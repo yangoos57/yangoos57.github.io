@@ -1,7 +1,7 @@
 ---
-title: "M07_01 Comparing a model with simple baselines "
+title: "7.1 Comparing a model with simple baselines "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-19"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

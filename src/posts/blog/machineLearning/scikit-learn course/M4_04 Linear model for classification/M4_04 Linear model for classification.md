@@ -1,7 +1,7 @@
 ---
-title: "M4_04 Linear model for classification"
+title: "4.4 Linear model for classification"
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-10"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

@@ -1,7 +1,7 @@
 ---
-title: "M06_03 Random forests "
+title: "6.3 Random forests "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-16"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

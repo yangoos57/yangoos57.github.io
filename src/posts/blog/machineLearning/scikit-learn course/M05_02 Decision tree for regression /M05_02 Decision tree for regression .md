@@ -1,7 +1,7 @@
 ---
-title: "M05_02 Decision tree for regression "
+title: "5.2 Decision tree for regression "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-12"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

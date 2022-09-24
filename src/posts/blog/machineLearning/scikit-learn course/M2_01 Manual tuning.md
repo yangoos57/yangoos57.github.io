@@ -1,7 +1,7 @@
 ---
-title: "M2_01 Manual tuning"
+title: "2.1 Manual tuning"
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-03"
 thumbnail: "./images/scikit-learn-logo.png"
 ---
 

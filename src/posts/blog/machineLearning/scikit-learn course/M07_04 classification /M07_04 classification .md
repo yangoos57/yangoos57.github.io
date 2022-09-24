@@ -1,7 +1,7 @@
 ---
-title: "M07_04 classification "
+title: "classification "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-03-01"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

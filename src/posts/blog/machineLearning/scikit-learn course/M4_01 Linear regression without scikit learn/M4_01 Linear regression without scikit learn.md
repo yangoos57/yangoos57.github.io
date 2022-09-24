@@ -1,7 +1,7 @@
 ---
-title: "M4_01 Linear regression without scikit learn"
+title: "4.1 Linear regression without scikit learn"
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-07"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

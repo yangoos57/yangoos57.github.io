@@ -20,13 +20,13 @@ const metaConfig = {
   title: "Yangoos 공부자료 저장소",
   description: `공부한 자료를 복습하기 편하게 블로그 형태로 정리했습니다.`,
   author: "Yangoos",
-  siteUrl: "https://leeway.github.io",
+  siteUrl: "https://yangoos57.github.io",
   lang: "kr",
   utterances: "yangoos57/leeway.github.io",
   links: {
     github: "https://github.com/yangoos57",
   },
-  favicon: "src/images/icon.png",
+  favicon: "src/images/icon.webp",
 }
 
 // eslint-disable-next-line no-undef

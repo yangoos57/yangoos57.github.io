@@ -1,7 +1,7 @@
 ---
-title: "M06_02 Bagging "
+title: "6.2 Bagging "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-15"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

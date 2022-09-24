@@ -1,7 +1,7 @@
 ---
-title: "M06_04 Ensemble based on boosting"
+title: "6.4 Ensemble based on boosting"
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-17"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 

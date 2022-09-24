@@ -1,7 +1,7 @@
 ---
-title: "M04_03 Regularization of linear regression model "
+title: "4.3 Regularization of linear regression model "
 category: "MachineLearning"
-date: "2021-05-01"
+date: "2022-04-09"
 thumbnail: "../images/scikit-learn-logo.png"
 ---
 
