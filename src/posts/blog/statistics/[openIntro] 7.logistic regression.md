@@ -1,7 +1,7 @@
 ---
 title: "7.logistic regression"
 category: "Statistics"
-date: "2021-05-07"
+date: "2022-05-07"
 desc: "OpenIntro 9장 요약"
 thumbnail: "./images/openIntro.jpg"
 ---

@@ -1,7 +1,7 @@
 ---
 title: "2.Summarizing data"
 category: "Statistics"
-date: "2021-05-02"
+date: "2022-05-02"
 desc: "OpenIntro 2장 요약"
 thumbnail: "./images/openIntro.jpg"
 ---

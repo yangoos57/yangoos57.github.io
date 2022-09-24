@@ -1,7 +1,7 @@
 ---
 title: "5.Inference for numerical data"
 category: "Statistics"
-date: "2021-05-05"
+date: "2022-05-05"
 desc: "OpenIntro 7장 요약"
 thumbnail: "./images/openIntro.jpg"
 ---

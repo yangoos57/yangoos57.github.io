@@ -1,7 +1,7 @@
 ---
 title: "3.Foundations for inference"
 category: "Statistics"
-date: "2021-05-03"
+date: "2022-05-03"
 desc: "OpenIntro 3장 요약"
 thumbnail: "./images/openIntro.jpg"
 ---

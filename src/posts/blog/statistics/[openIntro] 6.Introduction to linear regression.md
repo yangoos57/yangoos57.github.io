@@ -1,7 +1,7 @@
 ---
 title: "6.Introduction to linear regression"
 category: "Statistics"
-date: "2021-05-06"
+date: "2022-05-06"
 desc: "OpenIntro 8장 요약"
 thumbnail: "./images/openIntro.jpg"
 ---

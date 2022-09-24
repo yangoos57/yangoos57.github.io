@@ -1,7 +1,7 @@
 ---
 title: "4.Inference for categorical data"
 category: "Statistics"
-date: "2021-05-04"
+date: "2022-05-04"
 desc: "OpenIntro 6장 요약"
 thumbnail: "./images/openIntro.jpg"
 ---

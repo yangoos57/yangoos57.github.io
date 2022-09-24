@@ -1,7 +1,7 @@
 ---
 title: "1.Introduction to data"
 category: "Statistics"
-date: "2021-05-01"
+date: "2022-05-01"
 desc: "OpenIntro 1장 요약"
 thumbnail: "./images/openIntro.jpg"
 ---
