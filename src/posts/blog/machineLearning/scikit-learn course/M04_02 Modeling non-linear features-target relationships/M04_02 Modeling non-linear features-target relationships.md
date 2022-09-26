@@ -13,11 +13,11 @@ import seaborn as sns
 
 ### rand = Uniform distribution
 
-![](data/16.png)
+![](../data/16.png)
 
 ### randn = Normal distribution
 
-![](data/17.png)
+![](../data/17.png)
 
 ### Non linear distribution
 
