@@ -1,9 +1,13 @@
 ---
-title: "Section 2.2_Operations in PyTorch"
+title: "Section 2 Operations in PyTorch"
 category: "DeepLearning"
 date: "2022-09-19"
 thumbnail: "./img/nuromatch.png"
 ---
+
+### Tensor operations
+
+- Pointwise : 포인트별로 계산한다. 병렬계산을 의미
 
 ```python
 import time
@@ -17,13 +21,7 @@ from torch import nn
 from torchvision import datasets
 from torch.utils.data import dataloader
 from torchvision.transforms import ToTensor
-```
 
-### Tensor operations
-
-- Pointwise : 포인트별로 계산한다. 병렬계산을 의미하는듯
-
-```python
 a = torch.ones(5,3)
 b = torch.rand(5,3)
 c = torch.empty_like(a)
@@ -81,27 +79,26 @@ print('row 평균 : ',x.mean(axis=1))
 ### matrix multiplication(@)와 dot multiplication(•)
 
 (1) matrix multiplication(@)
-$\begin{equation}
+
+$
 \textbf{A} =
 \begin{bmatrix}2 &4 \\5 & 7
 \end{bmatrix}
 \begin{bmatrix} 1 &1 \\2 & 3
+\end{bmatrix} + \begin{bmatrix}10 & 10 \\ 12 & 1
 \end{bmatrix}
-
-- \begin{bmatrix}10 & 10 \\ 12 & 1
-  \end{bmatrix}
-  \end{equation}$
+$
 
 <br/><br/>
 
 (2) dot multiplication(•)
-$\begin{equation}
+
+$
 b = 
 \begin{bmatrix} 3 \\ 5 \\ 7
 \end{bmatrix} \cdot 
 \begin{bmatrix} 2 \\ 4 \\ 8
-\end{bmatrix}
-\end{equation}$
+\end{bmatrix}$
 
 ```python
 ### 1번 연산

@@ -134,7 +134,7 @@ thumbnail: "./img/transformer.png"
 - 8명의 독자가 같은 책을 읽는다는 비유로 생각
 
 - attention($z_n$) 결과 값을 모두 concat($z_1 + z_2 + ... + z_8 $) = $z_{all}$
-- $ z\_{all} \* W^0 = Z $
+- $z_{all}$ \* $ W^0 = Z $
 - $W^0$ 은 처음에는 임의로 부여되고 학습과정에서 조정된다.
 - Z는 feed forward에 투입되는 값
 

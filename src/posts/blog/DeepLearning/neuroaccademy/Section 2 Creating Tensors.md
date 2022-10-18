@@ -1,9 +1,13 @@
 ---
-title: "Section 2.1_ Creating Tensors"
+title: "Section 2 Creating Tensors"
 category: "DeepLearning"
 date: "2022-09-19"
 thumbnail: "./img/nuromatch.png"
 ---
+
+## Pytorch ≑ numpy
+
+numpy를 GPU로 사용한다고 생각하면 된다.
 
 ```python
 import time
@@ -33,10 +37,6 @@ c = torch.tensor(c)
 
     tensor([[1., 1., 1.],
             [1., 1., 1.]], dtype=torch.float64)
-
-## Pytorch ≑ numpy
-
-numpy를 GPU로 사용한다고 생각하면 된다.
 
 ```python
 c = np.ones([5,3]) # 1이 들어있는 array 생성

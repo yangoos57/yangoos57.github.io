@@ -1,7 +1,7 @@
 ---
 title: "DeepLearning 기본정리"
 category: "DeepLearning"
-date: "2022-09-21"
+date: "2022-10-10"
 thumbnail: "./img/deeplearning.png"
 ---
 

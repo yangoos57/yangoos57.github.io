@@ -1,9 +1,33 @@
 ---
-title: "Section 2_ Depth, Learning rate, and initialization"
+title: "Section 2 Depth, Learning rate, and initialization"
 category: "DeepLearning"
 date: "2022-09-19"
 thumbnail: "./img/nuromatch.png"
 ---
+
+## Section 2: Depth, Learning rate, and initialization
+
+### Section 2.1: The effect of depth
+
+### Why might depth be useful?
+
+결론 : 필요한건 강조하고 필요 없는건 없애기 위해서
+
+depth seems like magic. Depth can change the functions a network can represent, the way a network learns, and how a network generalizes to unseen data.
+
+Imagine a single input, single output linear network with 50 hidden layers and only one neuron per layer
+
+$ prediction = x \cdot w*1 \cdot w_2 \cdot \cdot \cdot w*{50} $
+
+Ex)
+
+- $w_i = 2 => y_p = 2^{50} \approx 1.1256 \times 10^{15} $
+
+- $w_i = 0.5 => y_p = 0.5^{50} \approx 8.88 \times 10^{-16} $
+
+### Section 2.2: Choosing a learning rate
+
+- Learning Rate = $\eta$
 
 ```python
 # Imports
@@ -71,35 +95,3 @@ DEVICE = 'mps'
 ```
 
     Random seed 2021 has been set.
-
-## Section 2: Depth, Learning rate, and initialization
-
-### Section 2.1: The effect of depth
-
-### Why might depth be useful?
-
-결론 : 필요한건 강조하고 필요 없는건 없애기 위해서
-
-depth seems like magic. Depth can change the functions a network can represent, the way a network learns, and how a network generalizes to unseen data.
-
-Imagine a single input, single output linear network with 50 hidden layers and only one neuron per layer
-
-$ prediction = x \cdot w*1 \cdot w_2 \cdot \cdot \cdot w*{50} $
-
-Ex)
-
-- $w_i = 2 => y_p = 2^{50} \approx 1.1256 \times 10^{15} $
-
-- $w_i = 0.5 => y_p = 0.5^{50} \approx 8.88 \times 10^{-16} $
-
-### Section 2.2: Choosing a learning rate
-
-- Learning Rate = $\eta$
-
-### Section 2.3: Depth vs Learning Rate
-
-hyperparameters interact.
-
-### Section 2.4: Why initialization is important
-
-gradients are multiplied by the current weight at each layer, so the product can vanish or explode. Therefore, weight initialization is a fundamentally important hyperparameter.

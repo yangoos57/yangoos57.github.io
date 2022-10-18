@@ -1,9 +1,19 @@
 ---
-title: "Section 3: PyTorch’s Neural Net module (nn.Module)"
+title: "Section 3 PyTorch’s Neural Net module (nn.Module)"
 category: "DeepLearning"
 date: "2022-09-20"
 thumbnail: "../img/nuromatch.png"
 ---
+
+### Section 3.1: Training loop in PyTorch
+
+- torch.nn 레이어를 사용하면 w,b는 이미 `requires_grad`에 들어가고 model parameter로 자동으로 등록된다.
+
+- Model Parameter : .parameters() 매서드를 사용하면 파악할 수 있다.
+
+- Optimizer : Optimization function을 의미, .step() 매서드를 사용하면 연산된 gradient를 업데이트 한다.
+
+**You can run the cell multiple times and see how the parameters are being updated and the loss is reducing**
 
 ```python
 # Imports
@@ -71,16 +81,6 @@ DEVICE = 'mps'
 ```
 
     Random seed 2021 has been set.
-
-- torch.nn 레이어를 사용하면 w,b는 이미 `requires_grad`에 들어가고 model parameter로 자동으로 등록된다.
-
-- Model Parameter : .parameters() 매서드를 사용하면 파악할 수 있다.
-
-- Optimizer : Optimization function을 의미, .step() 매서드를 사용하면 연산된 gradient를 업데이트 한다.
-
-### Section 3.1: Training loop in PyTorch
-
-**You can run the cell multiple times and see how the parameters are being updated and the loss is reducing**
 
 ```python
 set_seed(seed=SEED)
@@ -214,7 +214,3 @@ plt.plot(losses)
     [<matplotlib.lines.Line2D at 0x123ccb0d0>]
 
 ![png](output_9_2.png)
-
-```python
-
-```

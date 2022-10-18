@@ -1,5 +1,5 @@
 ---
-title: "Section 2_ PyTorch AutoGrad"
+title: "Section 2 PyTorch AutoGrad"
 category: "DeepLearning"
 date: "2022-09-19"
 thumbnail: "./img/nuromatch.png"

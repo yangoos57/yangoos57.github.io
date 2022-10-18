@@ -1,45 +1,9 @@
 ---
-title: "Section 3.1, 3.2,3.3 nueral network"
+title: "Section 3 nueral network"
 category: "DeepLearning"
 date: "2022-09-20"
 thumbnail: "../img/nuromatch.png"
 ---
-
-```python
-import time
-import random
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
-import torch
-from torch import nn
-from torchvision import datasets
-from torch.utils.data import dataloader
-from torchvision.transforms import ToTensor
-
-def set_device():
-  """
-  Set the device. CUDA if available, CPU otherwise
-
-  Args:
-    None
-
-  Returns:
-    Nothing
-  """
-  device = "cuda" if torch.cuda.is_available() else "mps"
-  if device != "cuda":
-    print("GPU is not enabled in this notebook. \n"
-          "If you want to enable it, in the menu under `Runtime` -> \n"
-          "`Hardware accelerator.` and select `GPU` from the dropdown menu")
-  else:
-    print("GPU is enabled in this notebook. \n"
-          "If you want to disable it, in the menu under `Runtime` -> \n"
-          "`Hardware accelerator.` and select `None` from the dropdown menu")
-
-  return device
-```
 
 ### Dataset 생성
 

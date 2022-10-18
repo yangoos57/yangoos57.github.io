@@ -1,9 +1,18 @@
 ---
-title: "Section 1_ A Shallow Narrow Linear Neural Network"
+title: "Section 1 A Shallow Narrow Linear Net"
 category: "DeepLearning"
 date: "2022-09-18"
 thumbnail: "./img/nuromatch.png"
 ---
+
+### A Shallow Narrow Linear Net
+
+- 딥러닝 모델의 구조를 이해하기 위해서 linear 모델을 활용해 딥네트워크 구조를 만들었음.
+
+- 해당 딥러닝 모델의 함수는 $y = xw_1w_2$ 임.
+
+- Gradient Descent를 가지고 Loss function을 최소화하는 $w_1$과 $w_2$를 찾아야함
+  ![a](./img/layerNarrowLinearNetwork.png)
 
 ```python
 # Imports
@@ -71,17 +80,6 @@ DEVICE = 'mps'
 ```
 
     Random seed 2021 has been set.
-
-### non linear로 이해하면 어려우니 linear로 이해해보자
-
-### Section 1.1: A Shallow Narrow Linear Net
-
-- 딥러닝 모델의 구조를 이해하기 위해서 linear 모델을 활용해 딥네트워크 구조를 만들었음.
-
-- 해당 딥러닝 모델의 함수는 $y = xw_1w_2$ 임.
-
-- Gradient Descent를 가지고 Loss function을 최소화하는 $w_1$과 $w_2$를 찾아야함
-  ![a](./img/layerNarrowLinearNetwork.png)
 
 ### Gradient Descent를 수행하기 위해 Computational Graph 그리기
 

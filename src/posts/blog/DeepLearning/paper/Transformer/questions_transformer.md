@@ -1,7 +1,7 @@
 ---
 title: "questions about transformer"
 category: "DeepLearning"
-date: "2022-10-13"
+date: "2022-10-02"
 thumbnail: "./img/questions.png"
 ---
 

@@ -1,9 +1,11 @@
 ---
-title: "Section 2.3 Manipulating Tensors in Pytorch"
+title: "Section 2 Manipulating Tensors in Pytorch"
 category: "DeepLearning"
 date: "2022-09-19"
 thumbnail: "./img/nuromatch.png"
 ---
+
+### Manipulating tensors : indexing
 
 ```python
 import time
@@ -17,11 +19,7 @@ from torch import nn
 from torchvision import datasets
 from torch.utils.data import dataloader
 from torchvision.transforms import ToTensor
-```
 
-### Manipulating tensors : indexing
-
-```python
 # 5d tensor
 x = torch.rand(2,2,3,4,5)
 
@@ -40,8 +38,6 @@ torch.flatten(x).shape
 x.reshape(2,120)
 
 ```
-
-    ''
 
 ### squeezing tensor and unsqueezing
 
@@ -63,10 +59,6 @@ x.unsqueeze(2).shape
 ```
 
     torch.Size([1, 10, 10])
-
-
-
-
 
     torch.Size([1, 10, 1, 1, 10])
 
@@ -127,7 +119,7 @@ float(x)
     1.0
 
 **function 1**
-$\begin{equation}
+$
   \text{If }
   A = \begin{bmatrix}
   1 & 1 \\
@@ -143,11 +135,10 @@ $\begin{equation}
   2 & 2
   \end{bmatrix} \cdot 12 = \begin{bmatrix}
   24 & 24
-  \end{bmatrix}
-\end{equation}$
+  \end{bmatrix}$
 
 **function 2**
-$\begin{equation}
+$
   \text{If }
   C = \begin{bmatrix}
   2 & 3 \\
@@ -159,11 +150,10 @@ $\begin{equation}
   1 & 3 \\
   2 & -1 \\
   3 & 10
-  \end{bmatrix}
-\end{equation}$
+  \end{bmatrix}$
 
 **function3**
-$\begin{equation}
+$
   \text{If }
   D = \begin{bmatrix}
   1 & -1 \\
@@ -177,12 +167,11 @@ $\begin{equation}
   Out = \begin{bmatrix}
   3 & 2 \\
   -1 & 5
-  \end{bmatrix}
-\end{equation}$
+  \end{bmatrix}$
 
 **function 4**
 
-$\begin{equation}
+$
   \text{If }
   D = \begin{bmatrix}
   1 & -1 \\
@@ -195,8 +184,7 @@ $\begin{equation}
   \text{ then }
   Out = \begin{bmatrix}
   1 & -1 & -1 & 3  & 2 & 3 & 0  
-  \end{bmatrix}
-\end{equation}$
+  \end{bmatrix}$
 
 ```python
 # function 1

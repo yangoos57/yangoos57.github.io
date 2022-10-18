@@ -1,9 +1,29 @@
 ---
-title: "Section 1.1_ Gradient Descent Algorithm"
+title: "Section 1 Gradient Descent Algorithm"
 category: "DeepLearning"
 date: "2022-09-18"
 thumbnail: "./img/nuromatch.png"
 ---
+
+## Gradient Descent Algorithm
+
+the goal of learning algorithms = minimizing the risk function
+
+> risk = cost = loss
+
+gradient descent = powerful optimization methods
+
+Neural Network function = $y=f_w(x)$
+
+> tuning 가능한 w를 포함한 함수
+
+A loss function = $L=∂(y,data)$
+
+> nn의 출력값(y)과 결과값(data)을 비교
+
+Optimization problem : $w^* = argmin_w∂(f_w(x),data)$
+
+> 최적의 w값은 loss_function의 최솟값인 경우를 말함. 위 두 함수를 합친 것
 
 ```python
 # Imports
@@ -72,51 +92,31 @@ DEVICE = 'mps'
 
     Random seed 2021 has been set.
 
-## Section 1: Gradient Descent Algorithm
-
-the goal of learning algorithms = minimizing the risk function
-
-> risk = cost = loss
-
-gradient descent = powerful optimization methods
-
-Neural Network function = $y=f_w(x)$
-
-> tuning 가능한 w를 포함한 함수
-
-A loss function = $L=∂(y,data)$
-
-> nn의 출력값(y)과 결과값(data)을 비교
-
-Optimization problem : $w^* = argmin_w∂(f_w(x),data)$
-
-> 최적의 w값은 loss_function의 최솟값인 경우를 말함. 위 두 함수를 합친 것
-
 ### 특정 function의 Gradient는 항상 가장 가파른 상승 방향을 지목한다고 한다..
 
 **특정 function의 Gradient vector 찾기(공식 유도)**
 
 - 예시
-  $\begin{equation}
+  $
 z = h(x, y) = \sin(x^2 + y^2)
-\end{equation}$
+$
 
 - gradient vector 찾기
-  $\begin{equation}
+  $
   \begin{bmatrix}
   \dfrac{\partial z}{\partial x} \\ \\ \dfrac{\partial z}{\partial y}
   \end{bmatrix}
-\end{equation}$
+$
 
 **Chain Rule 이해하기**
 
 - 기본 룰
-  $\begin{equation}F(x) = g(h(x)) \equiv (g \circ h)(x)\end{equation}$
+  $F(x) = g(h(x)) \equiv (g \circ h)(x)$
 
 - 미분 할 경우
-  $\begin{equation}
+  $
 F'(x) = g'(h(x)) \cdot h'(x)
-\end{equation}$
+$
 
 - 결과
   ![as](./img/W1D2_Tutorial1_Solution_115a15ba_0.png)
@@ -131,7 +131,7 @@ In 1847, Augustin-Louis Cauchy used negative of gradients to develop the Gradien
 
 ### Gradient Descent 그래프 이해하기
 
-![a](./img/gradient_1.png)
+![a](gradient_1.png)
 
 - gradient를 사용하지 않으면 위 그림과 같이 $\theta_0$ 와 $\theta_1$를 격자로 생성해서 loss를 하나하나 구해야함.
 
@@ -147,9 +147,9 @@ In 1847, Augustin-Louis Cauchy used negative of gradients to develop the Gradien
 
 ## Section 1.2: Gradient Descent Algorithm
 
-$\begin{equation}
+$
 \mathbf{w}^{(t+1)} = \mathbf{w}^{(t)} - \eta \nabla f \left( \mathbf{w}^{(t)} \right)
-\end{equation}$
+$
 
 - $\eta$ = learning Rate
 
@@ -175,15 +175,15 @@ Since negative gradients always point locally in the direction of steepest desce
 
 **예시 함수**
 
-$\begin{equation}
+$
 f(x, y, z) = \tanh \left(\ln \left[1 + z \frac{2x}{sin(y)} \right] \right)
-\end{equation}$
+$
 
 **$\nabla f (\mathbf{w})$ 를 구하는 방법**
 
-$\begin{equation}
+$
 \dfrac{\partial Loss}{\partial \mathbf{w}} = \left[ \dfrac{\partial Loss}{\partial w_1}, \dfrac{\partial Loss}{\partial w_2} , \dots, \dfrac{\partial Loss}{\partial w_d} \right]^{\top}
-\end{equation}$
+$
 
 <br/>
 
@@ -211,6 +211,6 @@ $\begin{equation}
 
 ### 결론
 
-$\begin{equation}
+$
 \dfrac{\partial f}{\partial x} = \dfrac{\partial f}{\partial e}~\dfrac{\partial e}{\partial d}~\dfrac{\partial d}{\partial c}~\dfrac{\partial c}{\partial a}~\dfrac{\partial a}{\partial x} = \left( 1-\tanh^2(e) \right) \cdot \frac{1}{d+1}\cdot z \cdot \frac{1}{b} \cdot 2
-\end{equation}$
+$
