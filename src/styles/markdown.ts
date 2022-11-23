@@ -107,7 +107,7 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   p,
   li,
   blockquote {
-    font-size: 1.0625rem;
+    font-size: 1rem;
   }
 
   p {
@@ -133,6 +133,12 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   img {
     display: block;
     background-color :white;
+  }
+  
+  figcaption {
+    text-align : center;
+    color : var(--color-gray-4);
+    font-size : 0.98rem;
   }
 
   pre,

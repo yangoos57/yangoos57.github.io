@@ -63,7 +63,7 @@ squeeze와 unsqueeze는 차원이 1개인 경우를 만들거나 제거하는데
 
 ### Torch.Transpose
 
-차원 개수를 변경
+차원 위치를 변경
 
 ```python
 
