@@ -5,7 +5,7 @@ import useSiteMetadata from "Hooks/useSiteMetadata"
 import type { MarkdownRemarkFrontmatter } from "Types/GraphQL"
 import defaultOpenGraphImage from "../images/og-default.png"
 
-const DEFAULT_LANG = "en"
+const DEFAULT_LANG = "kr"
 
 type Meta = React.DetailedHTMLProps<
   React.MetaHTMLAttributes<HTMLMetaElement>,
@@ -30,6 +30,10 @@ const SEO: React.FC<SEOProps> = ({ title, desc = "", image }) => {
       titleTemplate={`%s | ${site.title}`}
       meta={
         [
+          {
+            name :'google-site-verification',
+            content: "cGIJ_4UB82a6wkT0s71AkXfCqej5-Svsic6s2N0YrLk"
+          },
           {
             name: "description",
             content: description,

@@ -16,7 +16,7 @@ const Layout: React.FC = ({ children }) => {
   const { title, author } = useSiteMetadata()
   const copyrightStr = `Copyright © ${author}. Built with `
 
-  return (
+  return ( 
     <ThemeProvider theme={styledTheme}>
       <ThemeContext.Provider value={theme}>
         <GlobalStyle />

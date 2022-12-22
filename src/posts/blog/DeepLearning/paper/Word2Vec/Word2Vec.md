@@ -5,25 +5,9 @@ date: "2022-11-21"
 thumbnail: "./img/w2v.png"
 ---
 
-### 배경
-
-word2vec을 이해하고 사용한다 생각했으나, 과거 내용을 복습하던 중 W2V의 구조를 도식화한 그림이 이해되지 않아 W2V 구조를 다시 학습하기로 결정했다.
-
-이 글을 정리하는데 다음의 자료를 활용했다.
-
-[A simple Word2vec tutorial](https://medium.com/@zafaralibagh6/a-simple-word2vec-tutorial-61e64e38a6a1)
-
-[Neural Probabilistic Language Model](https://ratsgo.github.io/from%20frequency%20to%20semantics/2017/03/29/NNLM/)
-
-[Word2Vec의 학습 방식](https://ratsgo.github.io/from%20frequency%20to%20semantics/2017/03/30/word2vec/)
-
-[Word2Vec: Out of the Black Box](https://towardsdatascience.com/word2vec-out-of-the-black-box-a404b4119681)
-
-<br>
-
 ### 개요
 
-Word2Vec의 구조에는 CBOW과 Skip-Gram이 있는데, Skip-Gram이 성능이 약간 우수하여 대부분 이 방법을 사용한다. 이 글에서도 skip-gram 방식을 보여주는 구조를 차근차근 뜯어볼 예정이다.
+Word2Vec의 구조에는 CBOW과 Skip-Gram이 있는데, Skip-Gram이 성능이 약간 우수하여 대부분 이 방법을 사용한다. 이 글에서도 skip-gram 방식을 나타내는 아래의 도식화를 차근차근 뜯어볼 예정이다.
 
 <img src='img/img0.png' alt='img0' width ='600px'>
 
@@ -31,13 +15,13 @@ Word2Vec의 구조에는 CBOW과 Skip-Gram이 있는데, Skip-Gram이 성능이 
 
 ### input data 전처리
 
+word2vec 모델을 활용하는 목적은 단어간 유사도를 파악할 수 있는 word embedding을 구하는 것이다. w2v는 우리가 수집한 문장들의 집합(=corpus)을 input 데이터로 학습해 단어간 연관성을 vector로 표현한다.
+
 <img src='img/img1.png' alt='img1' width ='600px'>
 
-<br>
+<br/><br/>
 
-word2vec 모델을 활용하는 목적은 단어간 유사도를 파악할 수 있는 word embedding을 구하는 것이다. input 데이터는 우리가 수집한 문장들의 집합(=corpus)이고 w2v는 이 문장들을 학습해 단어의 유사도를 파악한다.
-
-input 데이터가 문장이니 input layer에도 문장이 들어가는것인가 생각할 수 있다. 그렇지 않다. 도식화된 그림에는 표현 되어있지 않지만 input 데이터를 input layer에 맞는 데이터 형태로 바꾸기 위한 전처리 과정이 필요하다. 이번 단락에서는 input 데이터인 corpus를 어떻게 input layer에 맞는 데이터 형태로 전처리 하는지를 설명한다.
+아직 NLP, ML 개념이 잡히지 않은 사람이라면 input 데이터가 문장이니 그렇지 않다. 도식화된 그림에는 표현 되어있지 않지만 input 데이터를 input layer에 맞는 데이터 형태로 바꾸기 위한 전처리 과정이 필요하다. 이번 단락에서는 input 데이터인 corpus를 어떻게 input layer에 맞는 데이터 형태로 전처리 하는지에 대해 설명한다.
 
 w2v의 input 데이터는 corpus라고 했다. corpus는 ‘나는 어제 맥북을 구매했다’와 같은 문장들이 모여 하나의 set으로 구성된다. corpus를 input layer에 맞는 데이터 형태로 전처리하기 위해서는 corpus 내 개별 문장을 단어 단위로 토큰화하고 토큰화 된 단어를 다시 숫자로 encoding하는 과정이 필요하다.
 
@@ -58,7 +42,7 @@ w2v의 input 데이터는 corpus라고 했다. corpus는 ‘나는 어제 맥북
 Skip-Gram은 input layer - hidden layer - output layer로 총 3개의 layer로 구성된다. 3개의 layer를 사용하므로 2개 Weight 행렬(W와 W’)이 사용된다. 차차 알아가겠지만 2개의 weight 행렬 중 첫번째 weight 행렬은 모델 학습의 최종 결과물이다. ‘input 데이터 전처리’ 단락에 있는 첫번째 그림의 output이 첫번째 weight 행렬을 의미한다.
 
 <figure>
-    <img src='img/img0.png' alt='img0' width ='600px'/>
+    <img src='img/img4.png' alt='img4' width ='600px'/>
     <figcaption>V = 단어 개수, N = feature 개수(기본 값 300), C = 참고할 단어 개수(Window) </figcaption>
 </figure>
 
@@ -139,7 +123,7 @@ Skip-Gram은 학습을 위해 중심단어와 주변단어를 샘플링한다. �
 <br>
 
 <figure>
-    <img src='img/img0.png' alt='img0' width ='600px'/>
+    <img src='img/img5.png' alt='img5' width ='600px'/>
     <figcaption>V = 단어 개수, N = feature 개수(기본 값 300), C = 참고할 단어 개수(Window) </figcaption>
 </figure>
 
@@ -186,9 +170,20 @@ $\begin{pmatrix}
 참새 & 커피 & 잡다 & 마시다 \\
  \end{pmatrix}$ = $[0., 0.774, 0.0016, 0.224]$
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+<br/>
+<br/>
+<br/>
+
+### 참고자료
+
+1. [A simple Word2vec tutorial](https://medium.com/@zafaralibagh6/a-simple-word2vec-tutorial-61e64e38a6a1)
+
+2. [Neural Probabilistic Language Model](https://ratsgo.github.io/from%20frequency%20to%20semantics/2017/03/29/NNLM/)
+
+3. [Word2Vec의 학습 방식](https://ratsgo.github.io/from%20frequency%20to%20semantics/2017/03/30/word2vec/)
+
+4. [Word2Vec: Out of the Black Box](https://towardsdatascience.com/word2vec-out-of-the-black-box-a404b4119681)
+
+<br/>
+<br/>
+<br/>

@@ -80,14 +80,13 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
 
   ul,
   ol {
-    margin-top: ${({ rhythm }) => rhythm(1)};
+    margin-top: ${({ rhythm }) => rhythm(0.5)};
     margin-bottom: ${({ rhythm }) => rhythm(1)};
     margin-left: ${({ rhythm }) => rhythm(1.25)};
   }
 
   li > ul,
   li > ol {
-    margin-top: 0;
     margin-bottom: 0;
   }
 
@@ -113,7 +112,7 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   p {
     line-height: 1.68;
     text-align: left;
-    margin-bottom: var(--sizing-md);
+    margin-bottom: var(--sizing-lg);
   }
 
   hr {
@@ -173,6 +172,12 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
     line-height:30px !important;
     margin-bottom : 20px !important;
   }
+  li > ul > li{
+    list-style: "- " !important;
+    font-size:0.95rem !important;
+    margin-bottom : 10px !important;
+  }
+  
 `
 
 export default Markdown
