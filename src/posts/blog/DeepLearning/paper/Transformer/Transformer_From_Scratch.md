@@ -3,6 +3,7 @@ title: "도식화로 논문 이해하기 : Transformer"
 category: "DeepLearning"
 date: "2022-10-11"
 thumbnail: "./img/transformer.png"
+desc: pytorch를 활용해 Transformer 논문을 코드로 구현하며 모델의 상세 작동원리를 설명하였다. 구현한 Transformer 모델을 활용해 학습과 평가하는 과정을 경험할 수 있도록 튜토리얼을 제작했으며, 튜토리얼을 통해 모델 내부에서 어떻게 데이터가 흐르는지, 어떠한 과정을 거쳐 입력 데이터에 대한 결과물을 산출하는지를 이해할 수 있다. 논문에 포함된 Transformer의 도식화 그림을 활용해 Transformer 구조 전반에 대한 이해에 도움을 준다.
 ---
 
 <br/>

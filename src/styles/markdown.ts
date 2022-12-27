@@ -9,6 +9,7 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   h5,
   h6 {
     font-weight: var(--font-weight-bold);
+    color: var(--color-highlight) !important;
   }
 
   td,
@@ -23,6 +24,11 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   a,
   p {
     font-weight: var(--font-weight-regular);
+
+    @media (max-width: ${({ theme }) => theme.device.lg}) {
+      font-size: 0.95rem !important;
+    }
+  
   }
 
   a {
@@ -43,7 +49,6 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
 
   h1 {
     font-size: 2.5rem;
-
     @media (max-width: ${({ theme }) => theme.device.sm}) {
       font-size: 2rem;
     }
@@ -74,6 +79,7 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   h4,
   h5,
   h6 {
+    font-size : 1.1rem;
     margin-bottom: ${({ rhythm }) => rhythm(0.5)};
     margin-top: ${({ rhythm }) => rhythm(1)};
   }
@@ -83,6 +89,7 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
     margin-top: ${({ rhythm }) => rhythm(0.5)};
     margin-bottom: ${({ rhythm }) => rhythm(1)};
     margin-left: ${({ rhythm }) => rhythm(1.25)};
+    
   }
 
   li > ul,
@@ -101,6 +108,10 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
 
   li {
     margin-bottom: ${({ rhythm }) => rhythm(0.3)};
+
+    @media (max-width: ${({ theme }) => theme.device.lg}) {
+      font-size: 0.95rem !important;
+    }
   }
 
   p,
@@ -121,11 +132,12 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   }
 
   blockquote {
-    border-left: 0.25rem solid var(--color-gray-2);
+    
+    border-left: 0.25rem solid var(--color-blockquote-1);
     padding-left: var(--sizing-base);
     margin: var(--sizing-md) 0;
     * {
-      color: var(--color-gray-6);
+      color: var(--color-blockquote);
     }
   }
 
@@ -154,7 +166,7 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   pre.grvsc-container {
     margin: var(--sizing-md) 0;
   }
-
+  
   .grvsc-line-highlighted::before {
     background-color: var(--color-code-highlight) !important;
     box-shadow: inset 4px 0 0 0 var(--color-code-highlight-border) !important;

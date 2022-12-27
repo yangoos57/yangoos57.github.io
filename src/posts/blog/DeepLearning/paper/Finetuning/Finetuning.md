@@ -1,9 +1,12 @@
 ---
-title: "[NLP] Further Pre-training 및 Fine-tuning 정리"
+title: "[NLP] Domain Adaptation과 Finetuning 개념 정리"
 category: "DeepLearning"
 date: "2022-12-08"
 thumbnail: "./img/Fine-tuning.png"
+desc: "Pre-trained 모델을 특정 분야(Domain)에 적합한 모델로 개선하기 위한 과정을 Domain Adaptation이라 한다. 과정을 수행하는 방법이 Pre-trained 모델을 학습시키는 방법과 동일하므로 Further pre-training이라는 용어를 활용하기도 한다.Domain Adaptation과 finetuning의 목적과 방법에 차이가 있음에도 Domain Adaptation을 finetuning의 범주로 이해하는 경향이 있다. Domain Adaptation의 경우 같은 개념임에도 다양한 용어로 활용되고 있다. 이러한 경향은 머신러닝에 익숙하지 않은 사람에게는 이해에 혼란을 같게한다. 이 글은 Domain Adaptation과 Finetuning에 대한 설명을 담고 있으며 용어가 주는 혼란을 방지하기 위해 Domain adaptation과 finetuning에 대한 동의어와 유의어를 포함했다."
 ---
+
+Pre-trained 모델을 특정 분야(Domain)에 적합한 모델로 개선하기 위한 과정을 Domain Adaptation이라 한다. 과정을 수행하는 방법이 Pre-trained 모델을 학습시키는 방법과 동일하므로 Further pre-training이라는 용어를 활용하기도 한다.Domain Adaptation과 finetuning의 목적과 방법에 차이가 있음에도 Domain Adaptation을 finetuning의 범주로 이해하는 경향이 있다. Domain Adaptation의 경우 같은 개념임에도 다양한 용어로 활용되고 있다. 이러한 경향은 머신러닝에 익숙하지 않은 사람에게는 이해에 혼란을 같게한다. 이 글은 Domain Adaptation과 Finetuning에 대한 설명을 담고 있으며 용어가 주는 혼란을 방지하기 위해 Domain adaptation과 finetuning에 대한 동의어와 유의어를 포함했다.
 
 <br/>
 

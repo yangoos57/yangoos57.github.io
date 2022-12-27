@@ -38,7 +38,7 @@ const BlogPost: React.FC<BlogPostProps> = ({ data }) => {
                     <Time dateTime={date}>{date}</Time>
                   </Info>
                   <Title>{title}</Title>
-                  <Desc>{desc}</Desc>
+                  {/* <Desc>{desc}</Desc> */}
                 </header>
                 <Divider />
                 <Markdown
@@ -70,6 +70,11 @@ const InnerWrapper = styled.div`
   margin: 0 auto;
   padding-bottom: var(--sizing-lg);
 
+  @media (max-width: ${({ theme }) => theme.device.lg}) {
+    width: var(--device-sm-max-width);
+  }
+
+
   @media (max-width: ${({ theme }) => theme.device.sm}) {
     width: 87.5%;
   }
@@ -80,6 +85,7 @@ const CommentWrap = styled.section`
   padding: 0 var(--padding-sm);
   margin: 0 auto;
   margin-bottom: var(--sizing-xl);
+  
 
   @media (max-width: ${({ theme }) => theme.device.sm}) {
     width: auto;
@@ -123,6 +129,7 @@ const Title = styled.h1`
   font-weight: var(--font-weight-bold);
   line-height: 1.1875;
   font-size: var(--text-xl);
+  color: var(--color-nav-bar-title);
 
   @media (max-width: ${({ theme }) => theme.device.md}) {
     line-height: 1.21875;

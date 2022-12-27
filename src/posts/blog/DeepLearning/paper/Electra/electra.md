@@ -3,6 +3,8 @@ title: "Huggingface로 ELECTRA 학습하기 : Domain Adaptation"
 category: "DeepLearning"
 date: "2022-12-22"
 thumbnail: "./img/electra.png"
+desc: "pytorch를 활용해 ELECTRA 논문을 코드로 구현하며 Generator와 Descriminator 간 연결 방법 및 Replace Token Detection(RTD)에 대해 설명한다.
+Huggingface의 trainer를 활용하여 모델을 학습하는 방법을 소개하고, 이에 대한 튜토리얼을 제작해 ELECTRA 뿐만 아니라 Huggingface 사용법을 손쉽게 익힐 수 있도록 하였다. 직접 Domain Adapatation을 경험하며 ELECTRA 학습 방법 및 데이터 흐름에 대해 이해할 수 있다."
 ---
 
 ### 왜 ELECTRA인가?

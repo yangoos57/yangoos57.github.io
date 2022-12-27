@@ -106,7 +106,7 @@ const Title = styled.h1`
   color: var(--color-text);
 
   a {
-    color: inherit;
+    color: var(--color-nav-bar-text);
   }
 
   @media (max-width: ${({ theme }) => theme.device.sm}) {
@@ -119,6 +119,7 @@ const LinkUl = styled.ul<Toggleable>`
 
   a {
     font-weight: var(--font-weight-regular);
+    color: var(--color-nav-bar-text);
   }
 
   a:hover,

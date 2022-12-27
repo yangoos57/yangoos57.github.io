@@ -62,11 +62,13 @@ const GlobalStyle = createGlobalStyle`
       --color-text-2: #1d1d1d;
       --color-text-3: #696969;
       --color-white: #ffffff;
-      --color-nav-bar: rgba(255, 255, 255, 0.7);
+      --color-nav-bar: #203862;
+      --color-nav-bar-title: #203862;
+      --color-nav-bar-text : #ffffff;
       --color-nav-border: rgba(200, 200, 200, 0.7);
       --color-category-button: #f2f2f2;
       --color-background: #f2f2f2;
-      --color-post-background: #ffffff;
+      --color-post-background: #fafafa;
       --color-card: #ffffff;
       --color-code: #f2f2f2;
       --color-code-block: #fafafa;
@@ -88,24 +90,30 @@ const GlobalStyle = createGlobalStyle`
       --color-floating-button-text-hover: #f2f2f2;
       --color-floating-button-shadow: rgba(0, 0, 0, 0.2);
       --color-floating-button-shadow-hover: rgba(0, 0, 0, 0.4);
-      --color-blue: #0066cc;
+      --color-blue: #0339A6;
       --color-icon: #2c2c2c;
+      --color-highlight : #022873;
+      --color-blockquote : #4D5373;
+      --color-blockquote-1 : #021F5999;
     }
-
+    
     body.dark {
       --color-text: #e6e6e6;
       --color-text-2: #d1d1d1;
       --color-text-3: #8c8c8c;
       --color-white: #e6e6e6;
-      --color-nav-bar: rgba(29, 29, 29, 0.7);
+      --color-highlight : #F2B705;
+      --color-nav-bar: #1c1c1c;
+      --color-nav-bar-title: #BF9004;
+      --color-nav-bar-text : #e6e6e6;
       --color-nav-border: rgba(255, 255, 255, 0.2);
       --color-category-button: #484848;
       --color-background: #1c1c1c;
       --color-post-background: #1c1c1c;
       --color-card: #2c2c2c;
-      --color-code: #3a3a3a;
+      --color-code: #e6e6e633;
       --color-code-block: none;
-      --color-code-highlight: rgba(255, 255, 255, 0.05);
+      --color-code-highlight: green;
       --color-code-highlight-border: rgba(255, 255, 255, 0.2);
       --color-gray-1: #1c1c1c;
       --color-gray-2: #2c2c2c;
@@ -123,8 +131,11 @@ const GlobalStyle = createGlobalStyle`
       --color-floating-button-text-hover: #202020;
       --color-floating-button-shadow: rgba(0, 0, 0, 0.4);
       --color-floating-button-shadow-hover: rgba(0, 0, 0, 0.4);
-      --color-blue: #0a84ff;
+      --color-blue: #5297FF;
       --color-icon: #d1d1d1;
+      --color-blockquote : #CCCCCCb0;
+      --color-blockquote-1 : #A88036;
+      --grvsc-line-highlighted-background-color : red;
     }
   }
 
@@ -139,6 +150,7 @@ const GlobalStyle = createGlobalStyle`
 
     * {
       color: var(--color-text);
+      
     }
   }
 

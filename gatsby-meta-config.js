@@ -17,7 +17,7 @@
 
 /** @type {MetaConfig} */
 const metaConfig = {
-  title: "목적에 맞는 데이터를 취합해 정보를 만듭니다.",
+  title: "데이터를 취합해 정보를 만듭니다.",
   description: `공부한 자료를 복습하기 편하게 블로그 형태로 정리했습니다.`,
   author: "Yangoos",
   siteUrl: "https://yangoos57.github.io",

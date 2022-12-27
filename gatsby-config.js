@@ -94,7 +94,7 @@ const markdownPlugins = [
             theme: {
               default: "Github Light Theme",
               parentSelector: {
-                "body[data-theme=dark]": "Monokai Dimmed",
+                "body[data-theme=dark]": "Default Dark+",
               },
             },
             extensions: ["vscode-theme-github-light", "dark-theme-github"],
