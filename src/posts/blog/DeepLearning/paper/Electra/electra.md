@@ -1,5 +1,5 @@
 ---
-title: "Huggingface로 ELECTRA 학습하기 : Domain Adaptation"
+title: "ELECTRA 모델 구현 및 Domain Adaptation 방법 정리"
 category: "DeepLearning"
 date: "2022-12-22"
 thumbnail: "./img/electra.png"
