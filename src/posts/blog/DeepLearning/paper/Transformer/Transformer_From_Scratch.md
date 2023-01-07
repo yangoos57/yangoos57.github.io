@@ -6,15 +6,13 @@ thumbnail: "./img/transformer.png"
 desc: pytorch를 활용해 Transformer 논문을 코드로 구현하며 모델의 상세 작동원리를 설명하였다. 구현한 Transformer 모델을 활용해 학습과 평가하는 과정을 경험할 수 있도록 튜토리얼을 제작했으며, 튜토리얼을 통해 모델 내부에서 어떻게 데이터가 흐르는지, 어떠한 과정을 거쳐 입력 데이터에 대한 결과물을 산출하는지를 이해할 수 있다. 논문에 포함된 Transformer의 도식화 그림을 활용해 Transformer 구조 전반에 대한 이해에 도움을 준다.
 ---
 
-<br/>
-
-> #### 이 글은 Transformer 이론과 이를 pytorch로 구현하는 과정을 소개함.
+> 이 글은 Transformer 이론과 이를 pytorch로 구현하는 과정을 소개함.
 >
-> #### 모델에 대한 학습, 평가, 테스트 방법이 궁금한 경우 [Transformer from scratch](https://github.com/yangoos57/Transformer_from_scratch)을 참고
+> 모델에 대한 학습, 평가, 테스트 방법이 궁금한 경우 [Transformer from scratch](https://github.com/yangoos57/Transformer_from_scratch)을 참고
 
 <br/>
 
-### Transformer 도식화
+### Transformer 구조
 
 - 현 NLP 모델의 조상격인 Transformer를 이해하고, Pytorch를 활용해 이를 구현하였음.
 - 아래의 도식화를 하나씩 해부하면서 Transformer의 세부 작동원리에 대해 이해할 수 있었음.
@@ -29,7 +27,7 @@ desc: pytorch를 활용해 Transformer 논문을 코드로 구현하며 모델�
 - 이를 보완하고자 attention이라는 개념을 도입해 문장 내 모든 단어를 참고할 수 있는 방향으로 개선
   > 모든 단어를 참고하게 되면 과부화가 걸리니 단어별 중요도를 계산해 과부화를 최소화 하는게 Attention의 목적
 - 이에 더 나아가 RNN을 사용하지 않고 attention만을 사용해 Seq2Seq 구조 구현 시도
-- attention만으로 모델을 구현함으로써 RNN에서는 할 수 없는 병렬 연산이 가능해졌음
+- attention만으로 모델을 구현함으로써 RNN에서는 할 수 없는 병렬 연산이 가능해졌음.
 
 ## Encoder
 
@@ -48,7 +46,7 @@ desc: pytorch를 활용해 Transformer 논문을 코드로 구현하며 모델�
 
 - SeqtoSeq 구조에서 RNN을 사용할 때 문장이 길어지면 앞 단어를 기억하지 못하는 문제가 발생
 
-- 이를 보완하기 위해서는 모든 문장을 참고해야하는데 그러다 보면 연산에 과부화가 생김
+- 이를 보완하기 위해서는 모든 문장을 참고해야하는데 그러다 보면 연산에 과부화가 생김.
 - 모든 단어를 참고하되 과부화를 최소화하기 위해 Attention이라는 개념을 도입
 - Scaled Dot Product를 통해 병렬 연산이 가능해짐에 따라 효율성 증대
 - 단어와의 연관성, 중요도를 계산해서 모든 단어를 참고하되 어떤 단어를 집중적으로 봐야하는지를 알려주는 도구
@@ -85,9 +83,9 @@ desc: pytorch를 활용해 Transformer 논문을 코드로 구현하며 모델�
 
 ### Self Attention 계산(= scaled dot product attention)
 
-- Scaled dot product Attention은 Attention을 병렬 연산 가능하도록 만드는 방법임
+- Scaled dot product Attention은 Attention을 병렬 연산 가능하도록 만드는 방법임.
 
-- Attention을 구하는 식은 다음과 같음
+- Attention을 구하는 식은 다음과 같음.
 
     <br/>
 
@@ -181,7 +179,7 @@ desc: pytorch를 활용해 Transformer 논문을 코드로 구현하며 모델�
 
 - 최대 token 개수를 정하는 이유는 병렬 연산이 가능하도록 차원 통일 및 허용 token이 많아질수록 Self-Attention 연산 급증 해결 목적
 
-- 이때 , token 개수 설정에 절대적인 기준은 없기 때문에 Input data에 따라 적절한 값을 찾는 것이 필요
+- 이때, token 개수 설정에 절대적인 기준은 없기 때문에 Input data에 따라 적절한 값을 찾는 것이 필요
 
 - 최대 token 개수를 100개로 설정한다고 가정하면, token 100개 미만인 문장은 나머지 빈 공간에 Pad를 부여하고 100개 초과인 문장은 100개 까지만 token을 저장
 
@@ -512,11 +510,11 @@ class Encoder(nn.Module):
 
 - 영불 번역기를 만든다고 생각할 때 Encoder는 영어 문장 Input 내 Pad에 대해 Masking을 수행함. Decoder는 불어 문장 Input을 활용해 Teacher Forcing' 수행에 필요한 교본을 만듬.
 
-- 기본적으로 Transformer는 RNN 구조의 Seq2Seq 모델을 Attention으로 변형한 것이므로 기존의 학습 방법을 따름
+- 기본적으로 Transformer는 RNN 구조의 Seq2Seq 모델을 Attention으로 변형한 것이므로 기존의 학습 방법을 따름.
 
 - RNN의 학습은 이전에 예측한 값을 기반으로 새로운 에측을 수행하며 학습함. `I am a studient -> Je suis étudiant`을 학습한다고 할 경우, 이전 문장이 `<sos> Je` 라면 이 문장을 참고해 다음 단어를 예측하는 학습을 수행함.
 
-- 모델이 정답인 Suis를 예측하지 못하더라도 이전 문장은 정답 문장인`<sos> Je suis`을 통해 다음 단어 예측을 수행함
+- 모델이 정답인 Suis를 예측하지 못하더라도 이전 문장은 정답 문장인`<sos> Je suis`을 통해 다음 단어 예측을 수행함.
 
 - 이러한 RNN 모델 학습 방법은 예측이 틀릴지라도 다음 문장의 예측 학습에 영향을 주지 않으며 이를 통해 모든 단어를 바르게 예측할 기회를 제공함. 이를 `Teacher Forcing`이라 함.
 
@@ -550,7 +548,7 @@ class Encoder(nn.Module):
 
 - Decoder와 Encoder의 Multi-head Attention 구조는 동일함. 다만 Input Data에 차이가 있음.
 
-- 아래 그림을 보면 Encoder 끝단에서 이어진 화살표가 모든 Decoder의 Input Data로 들어감. 이때 Masked Multi-head Attention에서 학습한 결돠도 함께 Input Data로 받음
+- 아래 그림을 보면 Encoder 끝단에서 이어진 화살표가 모든 Decoder의 Input Data로 들어감. 이때 Masked Multi-head Attention에서 학습한 결돠도 함께 Input Data로 받음.
 
 <img alt='decoder' src='./img/decoder.png'>
 
@@ -558,7 +556,7 @@ class Encoder(nn.Module):
 
 - Decoder의 Multi-head Attention은 Encoder의 Context와 Decoder의 Masked Mulit-head Attention의 output을 결합하는 중요한 과정임.
 
-- Eecoder의 Multi-head Attention와 Decoder의 Masked Multi-head Attention은 지금껏 자신의 문장 간 관계를 파악하는 Self- Attention을 수행하였음.(이해가 어려울 경우 Attention 항목의 `Self-Attention이란`을 참고 )
+- Eecoder의 Multi-head Attention와 Decoder의 Masked Multi-head Attention은 지금껏 자신의 문장 간 관계를 파악하는 Self- Attention을 수행하였음.(이해가 어려울 경우 Attention 항목의 `Self-Attention이란`을 참고)
 
 - 이제는 Encoder에서 사용한 문장과 Decoder에서 사용한 문장 간 Attention 계산이 필요함. 이를 Cross-Attention이라고 부름.
 
