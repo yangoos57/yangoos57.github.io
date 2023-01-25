@@ -174,9 +174,11 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
 
   *:not(pre) > code {
     background-color: var(--color-code);
+    color: var(--color-code-font);
     padding: 0.2rem 0.4rem;
     margin: 0;
     font-size: 85%;
+    font-weight: 500;
     border-radius: 3px;
   }
   li {

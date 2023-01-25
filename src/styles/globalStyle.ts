@@ -71,6 +71,7 @@ const GlobalStyle = createGlobalStyle`
       --color-post-background: #ffffff;
       --color-card: #ffffff;
       --color-code: #f2f2f2;
+      --color-code-font: #0339A6;
       --color-code-block: #fafafa;
       --color-code-highlight: rgba(0, 0, 0, 0.05);
       --color-code-highlight-border: rgba(0, 0, 0, 0.2);
