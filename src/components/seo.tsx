@@ -35,6 +35,10 @@ const SEO: React.FC<SEOProps> = ({ title, desc = "", image }) => {
             content: "cGIJ_4UB82a6wkT0s71AkXfCqej5-Svsic6s2N0YrLk"
           },
           {
+            name :'naver-site-verification',
+            content: "c3fffb88d53634045cbfe175cb5ecc04afea1ea0"
+          },
+          {
             name: "description",
             content: description,
           },

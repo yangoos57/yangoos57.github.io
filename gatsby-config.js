@@ -199,6 +199,19 @@ const pwaPlugins = [
   "gatsby-plugin-offline",
 ]
 
+const googleAnalytics = [
+  {
+    resolve: `gatsby-plugin-google-gtag`,
+    options: {
+      trackingIds: ["G-4S0WKJ5B7B"],
+    },
+    pluginConfig: {
+      // Puts tracking script in the head instead of the body
+      head: true,
+    },
+  },
+]
+
 module.exports = {
   siteMetadata,
   plugins: [
@@ -208,5 +221,6 @@ module.exports = {
     ...markdownPlugins,
     ...searchPlugins,
     ...pwaPlugins,
+    ...googleAnalytics,
   ],
 }

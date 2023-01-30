@@ -1,6 +1,6 @@
 ---
-title: "Kserve로 pytorch 모델 서빙하기"
-category: "MlOps"
+title: "[Kubeflow] Kserve로 pytorch 모델 서빙하기"
+category: "MLOps"
 date: "2023-01-24"
 thumbnail: "./img/kubeflow.png"
 desc: "이 글은 pytorch model을 kserve로 배포하는 방법을 설명합니다.Transformers를 활용해 Torchserve 배포하기에 기반해 작성한 글이므로 링크에 연결된 글을 읽고 이 글을 읽는 것을 권장합니다. "
@@ -8,7 +8,7 @@ desc: "이 글은 pytorch model을 kserve로 배포하는 방법을 설명합니
 
 ### 들어가며
 
-이 글은 pytorch model을 kserve로 배포하는 방법을 설명합니다. 이전 글인 [🤗 Transformers를 활용해 Torchserve 배포하기](https://yangoos57.github.io/blog/mlops/torchserve/Deploying_torchserve_using_transformers/)에 기반해 작성한 글이므로 링크에 연결된 글을 읽고 이 글을 읽는 것을 권장합니다.
+이 글은 kserve를 활용해 pytorch model을 서빙하는 방법을 설명합니다. 이전 글인 [🤗 Transformers를 활용해 Torchserve 배포하기](https://yangoos57.github.io/blog/mlops/torchserve/Deploying_torchserve_using_transformers/)에 기반해 작성한 글이므로 링크에 연결된 글을 읽고 이 글을 읽는 것을 권장합니다.
 
 ### Kserve 구조
 
@@ -34,7 +34,7 @@ Torchserve 구동에 필요한 파일인 Mar file과 config.properties가 Kserve
 
 AI Apps는 Kserve가 요구하는 정해진 양식에 맞춰 데이터를 담아 요청을 보냅니다. AI apps의 요청은 Ingress-gateway와 Predictor Service를 거쳐 Predictor Pod로 전달됩니다. Predictor service는 외부 요청이 현재 가동중인 Inference 모델 중 어떠한 모델을 대상으로 요청하는지를 확인하고 데이터를 전달해주는 역할을 수행합니다.
 
-Predictor Pod 내부의 데이터 전달 과정을 보겠습니다. 위 그림에는 표현되지 않았으나 Predictor service의 전달 값은 Pod 내부에서 Istio-proxy가 받게 되며 이를 다시 Queue Proxy에 전달합니다. Queue Proxy는 다시 Kserve Container에 전달합니다. Kserve Container 내부에서는 요청 받은 데이터 중 Inference 모델에 필요한 데이터를 추출하고 Torchserve가 설정한 IP 주소와 포트에 맞춰 데이터에 전달합니다.
+Predictor Pod 내부의 데이터 전달 과정을 보겠습니다. 위 그림에는 표현되지 않았으나 Predictor service의 전달 값은 Pod 내부에서 Istio-proxy가 이어받게 되며 이를 다시 Queue Proxy에 전달합니다. Queue Proxy는 다시 Kserve Container에 전달합니다. Kserve Container 내부에서는 요청 받은 데이터 중 Inference 모델에 필요한 데이터를 추출하고 Torchserve가 설정한 IP 주소와 포트에 맞춰 데이터에 전달합니다.
 
 <!--
 Istio Proxy와 Queue Proxy는 요청 전달 기능 외에도 다양한 기능을 지원하고 있습니다.

@@ -1,6 +1,6 @@
 ---
-title: "Apple silicon 환경에서 kubeflow 설치하기"
-category: "MlOps"
+title: "Apple silicon 환경에서 Kubeflow 설치하기"
+category: "MLOps"
 date: "2023-01-12"
 thumbnail: "./img/kubeflow.png"
 desc: "Apple silicon 환경에서 minikube를 활용해 로컬로 kubeflow 구축하는 방법을 설명합니다. Apple silicon 기반에서 설치 가이드를 따라하기 힘든 이유는 주로 가상환경을 지원하는 프로그램이 Arm64를 호환하지 않거나 kubeflow 일부 컴포넌트가 Arm64를 호환하지 않기 때문입니다. 다양한 시도를 통해 알아낸 바로는 Apple slilcon 기반의 로컬에서 kubeflow를 설치하기 위해선 Docker를 통해 kubernetes를 실행하고, kubeflow 1.6 버전을 설치 해야합니다. "

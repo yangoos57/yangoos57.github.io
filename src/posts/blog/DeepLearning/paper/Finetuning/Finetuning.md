@@ -6,7 +6,7 @@ thumbnail: "./img/Fine-tuning.png"
 desc: "Pre-trained 모델을 특정 분야(Domain)에 적합한 모델로 개선하기 위한 과정을 Domain Adaptation이라 한다. Domain Adaptation의 학습이 Pre-trained 모델을 학습시키는 방법과 동일하므로 Further pre-training이라는 용어를 사용하기도 한다. Domain Adaptation과 finetuning의 목적과 방법에 차이가 있음에도 Domain Adaptation을 finetuning의 범주로 이해하는 경향이 있다. Domain Adaptation의 경우 같은 개념임에도 다양한 용어로 활용되고 있다. 이러한 경향은 머신러닝에 익숙하지 않은 사람에게는 이해에 혼란을 같게한다. 이 글은 Domain Adaptation과 Finetuning에 대한 설명을 담고 있으며 용어가 주는 혼란을 방지하기 위해 Domain adaptation과 finetuning에 대한 동의어와 유의어를 포함했다."
 ---
 
-### 이 글의 목적
+### 들어가며
 
 finetuning을 이해하기 위해 관련 블로그 글, Stackoverflow에서 관련 내용을 읽다보면서 오히려 기존에 알고있던 fine tuning에 대한 개념 조차 혼란스러웠던 경험이 있었다.
 
@@ -96,7 +96,7 @@ Further Pre-training은 학습을 이어나가는 방법이므로 PLM을 초기 
 
 <br/><br/>
 
-위의 표는 일반 모델(RoBERTa)과 DAPT, TAPT, DAPT+TAPT(DAPT 수행 후 TAPT를 수행한 모델)의 Downstream task에서의 성능 차이를 보여준다. 표를 통해 알 수 있는 사실은,
+위의 표는 일반 모델(RoBERTa)과 DAPT, TAPT, DAPT+TAPT(DAPT 수행 후 TAPT를 수행한 모델)의 Downstream task에서의 성능 차이를 보여준다. 표를 통해 알 수 있는 사실은
 
 1. 어떤 방법이든 일반 모델보다 더 나은 성능을 보장한다.
 2. 거의 모든 task에서 DAPT+TAPT 성능이 우수하다.
@@ -179,6 +179,8 @@ Pre-training이 끝난 모델은 task에 맞는 학습을 거쳐 관련 업무�
 ### Fine-tuning
 
 일반적으로 Fine-tuning이라 하면 text classficiation,sentiment analysis 등 NLP로 해결 할 수 있는 Downstream task에 적합하게 모델을 훈련하는 과정을 말한다. pretrained Language Model(PLM)을 불러온 뒤 그 윗단에 task 수행을 위한 새로운 layer를 쌓은 구조를 만든 다음 label이 있는 관련 데이터셋을 활용해 모델 전체를 학습시킨다. 이때 task layer 뿐만 아니라 하단 구조인 Language Model에서도 weight이 조정된다.
+<img src='img/img6.png' alt='img6'>
+<br/>
 
 Language Model에 task layer를 쌓아 학습하는 이유는 적은 양의 데이터 셋을 활용 하더라도 상당히 좋은 성능을 보장하기 때문이다. Labeled 된 데이터를 수집하기는 많은 비용과 시간을 필요로 하며, 축적된 데이터가 많아도 ML 모델로는 성능 향상의 한계가 있기 때문이다. 이미 대량의 Corpus를 학습해 단어 간 관계, 연관성을 학습한 모델은 Language Model은 적은량의 Labeled 데이터를 가지고도 ML 모델을 압도한다. 이러한 이유에서 기업에서도 pretrained model을 Fine-tuning하는 방법을 통해 라벨링에 드는 비용,시간 등을 절약한다.
 

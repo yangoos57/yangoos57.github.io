@@ -142,8 +142,7 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   }
 
   img {
-    display: block;
-    background-color :white;
+    display: block;    
   }
   
   figcaption {

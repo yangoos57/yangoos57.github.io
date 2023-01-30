@@ -1,6 +1,6 @@
 ---
-title: "kubeflow 인증 문제 해결하기"
-category: "MlOps"
+title: "[Kubeflow] 인증 문제 해결하기"
+category: "MLOps"
 date: "2023-01-23"
 thumbnail: "./img/kubeflow.png"
 desc: "이 글은 kubeflow 관련 대표적인 인증 에러인 (60) SSL certificate problem: unable to get local issuer certificate와 /dex/auth?client_id=의 원인과 해결 방안에 대해 다루고 있습니다. "
@@ -39,6 +39,7 @@ desc: "이 글은 kubeflow 관련 대표적인 인증 에러인 (60) SSL certifi
 인증서를 제작하고 제작한 인증서를 통신에 활용하는 과정은 이론적인 이해가 뒷받침 되지 않는다면 이해하기 어렵습니다. 아래의 Certificate 생성하기 문단에서 설명하는 수준을 이애할 수 있을만큼만 개념을 정리하겠습니다. https 통신에 대한 이론을 글 하나로 이해하기 어렵기 때문에 제가 작성한 글 외에도 아래 링크를 참고자료로 읽어보시기 바랍니다.
 
 - 생활코딩님: [**HTTPS와 SSL 인증서**](https://opentutorials.org/course/228/4894)
+- 호롤리님: [**호다닥 공부해보는 x509와 친구들**](https://gruuuuu.github.io/security/what-is-x509/)
 - 인디개발자님: [**OpenSSL 로 Root CA 생성하여 Self signed SSL 인증서 발급하기**](https://indienote.tistory.com/605)
 - seungjuitmemo님: [**k8s TLS Certificate 정리**](https://seungjuitmemo.tistory.com/245)
 
@@ -279,7 +280,7 @@ session cookie를 얻는 방법은 curl을 이용한 방법, 브라우저를 이
   import os
 
   # cert 위치 설정
-  os.environ['cert_for_kubeflow'] = '/Users/git_repo/Learning_kubeflow/manifests/deployment/cert'
+  os.environ["cert_for_kubeflow"] = "/Users/git_repo/Learning_kubeflow/manifests/deployment/cert/leeway.crt"
   ```
 
 - ingress gateway를 port-forward 합니다.
