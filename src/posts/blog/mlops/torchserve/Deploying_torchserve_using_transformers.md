@@ -11,13 +11,11 @@ desc: "이 글은 🤗 Transformers로 모델을 Fine-tuning한 뒤 Torchserve�
 
 이 글은 🤗 Transformers로 모델을 Fine-tuning한 뒤 Torchserve로 배포하는 방법에 대해 소개합니다.
 
-모델 Fine-tuning은 [Huggingfae Fine-tuning turorial](https://huggingface.co/docs/transformers/training) 예제를 활용했습니다. 이 글외에도 추가적인 이해가 필요하다면 해당 튜토리얼도 읽어보는 것을 추천합니다. 이 글은 yelp 데이터 셋을 활용해 Distil-bert를 Text Classification 모델로 Fine-tuning하는 방법을 다룹니다.
-
-TorchServe는 [Serving Huggingface Transformers using TorchServe](https://github.com/pytorch/serve/tree/master/examples/Huggingface_Transformers)의 예제를 참고했습니다. 해당 예제에는 SequenceClassification 외에도 token_classification, question_answering, text_generation에 대한 예제도 포함하고 있으니 필요한 경우 참고바랍니다.
+모델 Fine-tuning은 [Huggingface 페ㅔ이지 Fine-tuning turorial](https://huggingface.co/docs/transformers/training) 예제를 활용했습니다. 활용할 모델에 대한 이해가 필요하다면 해당 링크를 읽어보는 것을 추천합니다. TorchServe는 [Serving Huggingface Transformers using TorchServe](https://github.com/pytorch/serve/tree/master/examples/Huggingface_Transformers)의 예제를 참고했습니다. 해당 예제에는 SequenceClassification 외에도 token_classification, question_answering, text_generation에 대한 예제도 포함하고 있으니 필요한 경우 참고바랍니다.
 
 ### 학습 & 평가 데이터 만들기
 
-먼저 Fine-tuning에 필요한 학습, 평가 데이터를 생성하겠습니다. 이때 huggingface에서 제공하는 `datasets` 라이브러리를 활용하겠습니다. `datasets`의 load_datset을 활용하면 [Huggingface에 업로드 된 Datasets](https://huggingface.co/datasets)을 쉽게 불러올 수 있기 때문입니다.
+먼저 Fine-tuning에 필요한 학습, 평가 데이터를 생성하겠습니다. 이때 huggingface에서 제공하는 `datasets` 라이브러리를 활용하겠습니다. `datasets`의 load_datset을 활용하면 [Huggingface에 업로드 된 Datasets](https://huggingface.co/datasets)을 쉽게 불러올 수 있습니다.
 
 예제에서 활용할 `yelp_review` 데이터셋의 Feature는 label과 text이 있습니다. label은 레스토랑에 대한 평점을 의미하고 1~5 범위를 갖습니다. text는 평점과 함께 작성한 리뷰를 의미합니다. yelp는 한국의 다이닝코드와 유사한 서비스를 제공하는 기업입니다. 미국 내 존재하는 레스토랑의 메뉴, 운영시간, 레스토랑 평가 등 각종 정보를 확인할 수 있는 사이트를 운영하고 있습니다.
 
@@ -39,7 +37,7 @@ TorchServe는 [Serving Huggingface Transformers using TorchServe](https://github
 <br/>
 <br/>
 
-load_dataset 매서드를 활용해 `yelp_review` 데이터셋을 불러오겠습니다. 불러온 데이터는 DatasetDict 타입으로 제공됩니다. DatasetDict 내부에는 train Dataset과 test Dataset이 있고 기본 Dict와 사용법이 동일합니다.
+load_dataset 매서드를 활용해 `yelp_review` 데이터셋을 불러오겠습니다. 불러온 데이터는 DatasetDict 타입으로 제공됩니다. DatasetDict 내부에는 Dataset 타입을 담고 있습니다. DatasetDict 사용법은 일반 Dict와 동일합니다.
 
 ```python
 
@@ -85,7 +83,7 @@ dataset['train'][:3]
 <br/>
 <br/>
 
-65000개의 학습 데이터 중 1000개의 데이터를 임의로 추출하고 평가용 데이터는 100개를 추출해 활용하겠습니다.
+65,000개의 학습 데이터 중 1,000개의 데이터를 임의로 추출하고 평가용 데이터는 100개를 추출하겠습니다.
 
 ```python
 # train
@@ -98,12 +96,13 @@ validation_dataset = dataset["test"].shuffle(seed=42).select(range(100))
 <br/>
 <br/>
 
-마지막으로 데이터 추출 과정을 반복하지 않기 위해 csv 파일로 저장하겠습니다. csv로 저장하기 위해 `.to_csv`를 매서드를 활용합니다. dataset 내부는 pandas를 활용하므로 pandas의 `.to_csv` 매서드와 동일한 인자를 사용 할 수 있습니다. 예제에서 설정한 index=False는 csv에 포함된 index를 저장하지 않는 기능입니다.
+데이터 추출 과정을 반복하지 않기 위해 csv 파일로 저장하겠습니다. csv로 저장하기 위해 `.to_csv`를 매서드를 활용합니다. dataset 내부는 pandas를 활용하므로 pandas의 `.to_csv` 매서드를 사용 할 수 있습니다.
 
 ```python
-# Saving dataset
 train_dataset.to_csv('data/train.csv',index=False)
 validation_dataset.to_csv('data/validation.csv',index=False)
+
+# index=False : csv에 포함된 index를 저장하지 않는 기능
 ```
 
 <br/>
@@ -133,45 +132,39 @@ data
 <br/>
 <br/>
 
-### 🤗 Transformers의 모델 구조 이해하기
+### 🤗 Transformers의 모델 구조 이해하기(개념)
 
-저장한 데이터를 활용해 모델을 Finue-tuning 하겠습니다. 🤗 Transformers의 장점은 수행해야 하는 Task에 적합한 구조를 쉽게 불러올 수 있는 것에 있습니다. 🤗 Transformers에서 불러올 수 있는 구조는 예제에서 활용할 Distil-Bert의 경우 `MaskedLM`, `SequenceClassification`, `MultipleChoice`, `TokenClassification`, `QuestionAnswering` 구조가 있고, 이러한 구조들은 `BaseModel`을 기반으로 하되 출력 상단(output-Layer) 구조를 변경하는 방법으로 구성되어 있습니다.
+학습 & 평가에 사용 될 데이터를 저장했으니 🤗 Transformers를 활용해 모델을 Fine-tuning하는 단계로 넘어가겠습니다. 먼저 🤗 Transformers의 기본 개념에 대해서 간략하게 소개하겠습니다.
+
+🤗 Transformers의 장점은 수행해야 하는 Task에 적합한 구조를 쉽게 불러올 수 있는 것에 있습니다. 🤗 Transformers에서 불러올 수 있는 구조는 앞으로 예제에서 활용할 Distil-Bert의 경우 `MaskedLM`, `SequenceClassification`, `MultipleChoice`, `TokenClassification`, `QuestionAnswering` 이 있습니다. 이러한 구조들은 `BaseModel`을 기반으로 하되 출력 상단(output-Layer) 구조를 변경하는 방법으로 구성되어 있습니다. 기존에 만들어진 Layer를 사용하지 않고 직접 Layer를 구성해야한다면 BaseModel을 직접 불러와 사용할 수 있습니다.
 
 <img src='img/img2.png' alt='img2'>
 
 <br/>
 <br/>
 
-이렇게 구조가 다양한 이유는 Task 별로 필요한 Output 형태가 다양하기 떄문입니다. MaskedLM 구조의 경우 input data 내에 존재하는 [MASK]에 들어갈 단어의 순위를 Output으로 출력해야합니다. 반면 Sequence Classification은 문장 유형을 분류하거나 확률을 예측해야하는 구조에서 활용해야 하므로 0~1 범위의 값(Regression 모델), 또는 정수값(Classification 모델)의 Outuput이 필요합니다.
+이렇게 출력 상단 구조가 다양한 이유는 Task 별로 필요한 Output 형태가 다르기 떄문입니다. 예로들어 MaskedLM 구조의 경우 input data에 존재하는 [MASK]에 들어갈 단어들의 순위를 Output으로 출력해야합니다. 반면 Sequence Classification은 문장 유형을 분류하거나 확률을 예측해야하는 구조에서 활용해야 하므로 0~1 범위의 값(Regression 모델), 또는 정수값(Classification 모델)의 Outuput이 필요할 때 사용합니다.
 
-🤗 Transformer의 구조를 파악했으니 우리가 만들어야 하는 모델은 어떤 구조를 가져야 하는지 생각해 봅시다. 우리가 지금 만들고자 하는 모델은 리뷰 데이터를 Input 데이터로 활용해 레스토랑의 평점을 예측하는 모델입니다. 그렇기 때문에 모델이 반환해야 하는 Output은 평점을 의미하는 1~5의 값 중 하나가 되어야 합니다.
+🤗 Transformer의 기본 구조에 대해 어느정도 파악했으니 우리가 만들어야 하는 모델이 어떠한 구조를 가져야 하는지로 주제를 좁혀보겠습니다. 우리가 만들고자 하는 모델은 레스토랑 리뷰 데이터를 Input 데이터로 활용해 평점을 예측하는 모델입니다. 모델이 반환해야 하는 Output은 평점을 의미하는 1~5의 값 중 하나가 되어야 합니다. 이러한 유형의 모델을 classification 모델이라 하며 🤗 Transformers의 SequenceClassification 구조를 불러와 구현할 수 있습니다.
 
-이러한 Output을 반환하는 모델 유형을 classification 모델이라 합니다. 그리고 이러한 모델은 🤗 Transformers의 SequenceClassification 구조를 불러와 구현할 수 있습니다.
+SequenceClassification 구조는 다양한 유형의 모델을 생성할 수 있는 구조이므로 이에 대해서 간단히 설명하고 넘어가도록 하겠습니다. SequenceClassification은 우리가 구현하고자 하는 기능 (1~5 사이의 output을 반환하는 Classification 모델)외에도 다양한 task에 적용 할 수 있습니다. input data 구조와 SequenceClassification의 인자인 num_label 값을 어떻게 설정하느냐에 따라 Task에 필요한 구조를 생성할 수 있기 때문입니다.
 
-모델을 학습시키기에 앞서 앞으로 사용할 SequenceClassification 구조에 대해 간략하게 설명하겠습니다. 왜냐하면 SequenceClassification는 현재 구현하고자 하는 기능 (1~5 사이의 output을 반환하는 Classification 모델) 뿐만 아니라 다양한 task에 적용되는 구조이기 때문입니다. 이때 input data 구조와, SequenceClassification의 인자인 num_label을 변경하면 SequenceClassification 구조 하나로 다양한 Task 수행이 가능합니다.
+먼저 input data 구조는 문장을 하나만 사용하는 구조와 문장 두 개를 하나로 연결해 사용하는 구조로 나눠집니다. Text classification 유형은 문장 하나를 input data로 활용하는 경우에 해당하며 Sentence Similarity, Q&A, Inference 유형은 문장 두 개를 연결해 input data로 활용하는 경우에 해당합니다. 이때 두 개의 문장을 구분하는 방법으로는 data 구조안에 [SEP] 토큰을 통해 구분합니다. 따라서 두 개의 문장으로 구성된 데이터는 모델 내부에서 [SEP]을 기준으로 Cross-Atteion을 통해 관계를 파악하게 됩니다. 이때 문장 간 관계 정보를 담고 있는 값은 [CLS] 토큰에 저장되므로 [CLS] embedding이 SequenceClassification의 Input data로 활용됩니다.
 
-SequenceClassification 구조를 활용해 구현 가능한 Task로는 대표적으로 Text classification, SentenceSimilarity, Q&A, Inference 등이 있습니다. 이 외에도 0~1 사이 outputd이 필요하거나 레이블을 구분이 필요한 경우 사용가능합니다.
-
-앞서 SequenceClassification은 input data 구조와 num_label에 따라 다양한 유형의 Task를 수행할 수 있다고 설명했습니다. 이에 대해 간략히 설명하고 넘어가겠습니다. 먼저 input data 구조는 문장(또는 문단)을 하나만 사용하는 구조와 문장(또는 문단을) 두 개 사용해 비교하는 구조가 있습니다. Text classification의 경우 전자를 Sentence Similarity, Q&A, Inference은 후자의 구조를 필요로합니다.
-
-Sentence Similarity, Q&A, Inference 모두 문장 간 관계를 비교하는 Task에 속합니다. 두 문장은 [Sep] 토큰을 통해 내부적으로 구분되지만 외형적으로는 하나의 input data로 간주됩니다. 두 개의 문장으로 구성된 데이터는 모델 내부의 Atteion을 통해 관계를 파악하게 됩니다. 이때 문장 간 관계 정보를 담고 있는 값은 [CLS] 토큰에 저장됩니다.
-
-num_label은 output 유형을 결정합니다. num_label = 1로 설정하면 모델은 0~1사이 범위의 Output을 제공하고 num_label을 2 이상으로 설정하면 개별 Label의 output을 확률로 반환하며 Label의 확률값의 합은 1이 됩니다.
-
-yelp_review 데이터셋을 예로들면 모델은 1 : 0.2, 2: 0.01, 3 : 0.5, 4: 0.19, 5: 0.1 과 같은 결과를 제공하게 되며 이 결과값을 보고 해당 텍스트의 예측값은 3이라 판단하게 되는 것입니다.
+다음으로 num_label은 output 유형을 결정합니다. num_label = 1로 설정하면 모델은 0~1사이 범위의 Output을 제공합니다. num_label을 2 이상으로 설정하면 Softmax를 활용해 Label의 총합이 1이 되도록 Output을 제공합니다. yelp_review 데이터셋을 예로들면 label이 5개이므로 Output은 `1 : 0.2, 2: 0.01, 3 : 0.5, 4: 0.19, 5: 0.1` 과 같이 제공되며 확률값을 통해 Input Data에 대한 예측값이 3이라 판단하게 됩니다.
 
 <img src='img/img1.png' alt='img1'>
 
 <br/>
 <br/>
 
-### Sequenceclassification Model 학습하기
+### Sequenceclassification Model 학습하기(적용)
 
-SequenceClassification 구조를 이해했으니 이제 활용해 SequenceClassification 를 활용해 BaseModel을 Text classification 모델로 Fine-tuning 하겠습니다.
+SequenceClassification 구조를 이해했으니 이제 BaseModel을 Text classification 모델로 Fine-tuning 하겠습니다.
 
-모델이 예측해야하는 output은 5개(평점 1~5점)이므로 num_label을 5로 설정합니다.
+모델이 예측해야하는 output은 5개(평점 1~5점)이므로 모델을 불러올 때 필요한 num_label을 5로 설정합니다.
 
-Tokenizing, TrainingArguments, Trainer, Callback에 대한 설명은 [Bert로 Domain Adaptation 수행하기](https://github.com/yangoos57/Bert_For_Domain_Adaptation)와 [ELECTRA 모델 구현 및 Domain Adaptation 방법 정리](https://github.com/yangoos57/Electra_for_Domain_Adaptation) 에서 다루고 있으니 생략하겠습니다.
+> Tokenizing, TrainingArguments, Trainer, Callback에 대한 설명은 [Bert로 Domain Adaptation 수행하기](https://github.com/yangoos57/Bert_For_Domain_Adaptation)와 [ELECTRA 모델 구현 및 Domain Adaptation 방법 정리](https://github.com/yangoos57/Electra_for_Domain_Adaptation) 에서 다루고 있으니 생략하겠습니다.
 
 ```python
 
@@ -209,7 +202,8 @@ print('Complete Tokenizing')
 tra_args= TrainingArguments(
 num_train_epochs=1,
 output_dir="test",
-logging_steps=10, # evaluation_strategy="epoch",
+logging_steps=10,
+# evaluation_strategy="epoch",
 )
 
 class myCallback(TrainerCallback):
@@ -240,7 +234,7 @@ trainer.train()
 
 ### torchserve 생성하기
 
-🤗 Transformers로 학습한 모델은 pytorch를 기반으로 작성됐으므로 torchserve를 활용해 배포하는 것이 가능합니다. Huggingface 모델을 torchserve로 배포하는 방법은 다음과 같습니다.
+학습이 완료됐다면 학습한 모델을 서빙하는 방법을 알아보겠습니다. 🤗 Transformers 라이브러리의 내부는 pytorch를 기반으로 작성됐기 때문에 🤗 Transformers로 학습한 모델은 torchserve로 배포하는 것이 가능합니다. 모델을 torchserve로 배포하는 방법은 다음과 같습니다.
 
 > 모델, 토크나이저 저장, 핸들러(Handler) 제작 ➡︎ MAR file 생성 ➡︎ torchserve로 배포
 
@@ -265,9 +259,9 @@ Product 환경에서는 학습용 데이터와 같이 즉시 사용 가능한 �
 
 Handler는 BaseHandler Class를 상속받아 작성합니다. nn.Module을 사용해 모델을 제작할 때 forward를 재작성하는 것처럼, Handler 또한 BaseHandler를 불러온 뒤 preprocess, postprocess를 구성하는 방식으로 제작합니다.
 
-🤗 Transformers를 사용했을 경우 transformers 라이브러리를 활용해 모델과 토크나이저를 불러와야 하므로 모델을 불러오는 부분인 initialize 함수도 일부 수정해야합니다. 이때 변경할 사항은 두 가지입니다. 하나는 `self.model`, 다른 하나는 `self.tokenizer`입니다. 이 외에는 기본 BaseHandler의 구조와 동일합니다.
+🤗 Transformers를 사용했을 경우 transformers 라이브러리를 활용해 모델과 토크나이저를 불러와야 하므로 모델을 불러오는 부분인 initialize 함수도 일부 수정해야합니다. 이때 변경할 사항은 두 가지입니다. 하나는 `self.model`, 다른 하나는 `self.tokenizer`입니다. 이 외에는 BaseHandler의 구조와 동일합니다.
 
-아래 제공한 Handlers는 기본 구조이므로 preprocess와 postprocess의 내용을 입맛에 맞게 변경하시면 됩니다. Handler 다음에 나오는 Handle 함수는 Handler를 작동시키는 함수입니다. 잊지말고 포함해주세요.
+아래 제공한 Handlers는 기본 구조이므로 preprocess와 postprocess의 내용을 입맛에 맞게 변경하시면 됩니다. Handler Class 설정 다음에 나오는 Handle 함수는 Handler를 작동시키는 함수입니다. 잊지말고 포함해주세요.
 
 커스터마이징 이후 handler.py를 `torch_model` 폴더에 함께 저장해주세요.
 

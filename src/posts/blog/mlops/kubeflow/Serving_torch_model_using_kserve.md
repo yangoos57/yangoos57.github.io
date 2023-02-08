@@ -20,7 +20,7 @@ desc: "이 글은 pytorch model을 kserve로 배포하는 방법을 설명합니
 
 #### ❖ Deployment
 
-Deployment 과정을 의미하는 주황색 실선은 모델이 배포되는 과정을 나타냅니다. 사용자는 커스텀 리소스인 InferenceService와 설정을 담은 yaml 파일을 제출하여 Inference 모델을 생성을 요청합니다. yaml의 설정 값은 Kserve Controller로 전달되며, Kserve Controller는 설정값을 바탕으로 Pod를 생성합니다. 이때 생성되는 Pod를 Predictor Pod라 합니다.
+Deployment 과정을 의미하는 주황색 실선은 모델이 배포되는 과정을 나타냅니다. 사용자는 커스텀 리소스인 InferenceService에게 설정을 담은 yaml 파일을 제출하여 Inference 모델을 생성을 요청합니다. yaml의 설정 값은 Kserve Controller로 전달되며, Kserve Controller는 설정값을 바탕으로 Pod를 생성합니다. 이때 생성되는 Pod를 Predictor Pod라 합니다.
 
 Predictor Pod가 생성되면 Pod 내부에서는 Storage Initializer를 실행합니다. Storage Initializer는 Serving 모델 구동에 필요한 파일을 Storage로부터 불러오는 단계이며 정해진 경로에 있는 파일과 폴더를 Kserve Container에 저장합니다. 파일을 불러오는 경로로 S3, GCS 같은 외부 storage를 활용할 수도 있고 내부 PVC를 활용할 수도 있습니다.
 
@@ -73,7 +73,7 @@ yaml 파일을 작성해 쿠버네티스에 제출하기 전 Mar file과 config.
 
 <!-- storage initailizer는 yaml에서 명시한 경로로 이동해 mar-store 폴더와 config 폴더를 kserve container 내부의 /mnt/model 경로에 복사합니다. 따라서 Inference 모델을 배포하기 전단계에 미리 Mar file과 config를 mar-store 폴더와 config 폴더에 각각 저장해 두어야 합니다. -->
 
-이번 예제는 Storage로 PVC를 활용하겠습니다, PVC는 Volume 항목에서 쉽게 생성할 수 있고 Notebook을 활용해 PVC 내부를 쉽게 접근할 수 있습니다. kubeflow dashboard의 volume 항목을 선택해 PVC를 생성합니다.
+이번 예제는 Storage로 PVC를 활용하겠습니다, PVC는 Volume 항목에서 쉽게 생성할 수 있으며 Notebook을 활용한다면 PVC 내부에 쉽게 접근할 수 있습니다. kubeflow dashboard의 volume 항목을 선택해 PVC를 생성하겠습니다.
 
 <img src='img/Serving_torch_model_using_kserve/img3.png' alt='img3'>
 
@@ -109,7 +109,7 @@ model_store=model-store
 model_snapshot={"name":"startup.cfg","modelCount":1,"models":{"bert":{"1.0":{"defaultVersion":true,"marName":"bert-model.mar","minWorkers":1,"maxWorkers":5,"batchSize":1,"maxBatchDelay":5000,"responseTimeout":120}}}}
 ```
 
-[🤗 Transformers를 활용해 Torchserve 배포하기](https://yangoos57.github.io/blog/mlops/torchserve/Deploying_torchserve_using_transformers/)에서 생성했던 Mar file을 model-store 폴더에 업로드 합니다. ---- 4번
+[🤗 Transformers를 활용해 Torchserve 배포하기](https://yangoos57.github.io/blog/mlops/torchserve/Deploying_torchserve_using_transformers/)에서 생성했던 Mar file을 model-store 폴더에 업로드 합니다. ---- 그림 4번
 
 #### ❖ yaml 파일 생성
 

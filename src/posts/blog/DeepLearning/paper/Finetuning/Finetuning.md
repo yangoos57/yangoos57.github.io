@@ -8,11 +8,11 @@ desc: "Pre-trained 모델을 특정 분야(Domain)에 적합한 모델로 개선
 
 ### 들어가며
 
-finetuning을 이해하기 위해 관련 블로그 글, Stackoverflow에서 관련 내용을 읽다보면서 오히려 기존에 알고있던 fine tuning에 대한 개념 조차 혼란스러웠던 경험이 있었다.
+Fine-tuning을 이해하기 위해 관련 블로그 글, Stackoverflow에서 관련 내용을 읽으면서, 오히려 기존에 알고있던 Fine-tuning에 대한 개념마저 혼란스러웠던 경험이 있었다.
 
 혼란의 원인을 찾고 개념을 이해하기 위해 차근차근 관련 내용을 정리하다보니 Fine-tuning이라는 용어가 상당히 넓은 범위에서 사용되는 경향이 있음을 발견했다. 특히 Domain Adaptation 영역을 Fine-tuning이라는 용어를 사용해 설명하는 글이 많다보니 기존에 알고있던 Fine-tuning 개념을 혼란스럽게 만들었다.
 
-Fine-tuning을 이해하기 위해 Domain Adaptation을 알아야 했는데 이번에는 동의어가 난관이었다. Domain Adatptaion을 의미하는 용어로 Domain Specific Finetuning, Furthr pre-training, continual pre-training, DAPT 등으로 다양하게 사용하고 있다. 이러한 개념들이 모두 동일한 내용인지, 아니면 다른 방법론을 의미하는 것 조차 이해하기 어려웠다.
+Fine-tuning을 이해하기 위해 Domain Adaptation을 알아야 했는데 이번에는 동의어가 난관이었다. Domain Adatptation을 의미하는 용어로 Domain Specific Finetuning, Further pre-training, continual pre-training, DAPT 등으로 다양하게 사용하고 있다. 이러한 개념들이 모두 동일한 내용인지, 아니면 다른 방법론을 의미하는 것 조차 이해하기 어려웠다.
 
 우여곡절 끝에 Fine-tuning과 Domain Adaptation의 차이를 이해할 수 있었고 이에 대한 정리가 필요했다. 따라서 이 글의 1차적인 목표는 Fine-tuning과 Domain Adaptation 이해함에 있어서 다시금 혼란에 빠지지 않도록 상세하게 정리하는데 있다. 2차적인 목표는 나와 비슷한 혼란을 가진 사람들이 조금이나마 도움이 될 수 있게 최대한 이해하기 쉽게 정리하는 것이다. 글에 어색한 부분이 많은데, 자주 읽으면서 부족한 부분을 지속해서 채워나갈 예정이다.
 
@@ -20,9 +20,9 @@ Fine-tuning을 이해하기 위해 Domain Adaptation을 알아야 했는데 이�
 
 ### Domain Adaptation과 Finetuning은 다른 개념이다.
 
-Pre-trained 모델을 특정 분야(Domain)에 적합한 모델로 개선하기 위한 과정을 Domain Adaptation이라 한다. 종종 Domain Adaptation을 Further pre-training이라는 용어로 사용하기도 하는데, Domain Adaptation을 수행하는 방법이 Pretrained Model을 학습하는 방법과 동일하므로 Pre-training을 지속한다는 의미에서 이러한 용어를 사용한다.
+Pre-trained 모델을 특정 분야(Domain)에 적합한 모델로 개선하기 위한 과정을 Domain Adaptation이라 한다. 종종 Domain Adaptation을 Further pre-training이라는 용어로 사용하기도 하는데, Domain Adaptation을 수행하는 방법이 Pretrained Model을 학습하는 방법과 동일하므로 Pre-training을 지속한다는 의미에서 이러한 용어를 사용하고 있다.
 
-Domain Adaptation과 fine-tuning의 목적 및 방법에는 명확한 차이가 있다. 하지만 많은 사람들이 Domain Adaptation을 fine-tuning의 세부 범주로 이해하는 경향이 있다. Domain Adaptation은 특정 Domain에서 자주 사용하는 용어를 pretrained Model에 학습하는 방법이다. 반면 finetuning은 Text classification, NLI, Q&A 등 Downstream Task를 모델에 부여하는 방법이다.
+Domain Adaptation과 fine-tuning의 목적 및 방법에는 명확한 차이가 있다. 하지만 많은 사람들이 Domain Adaptation을 fine-tuning의 세부 범주로 이해하는 경향이 있다. Domain Adaptation은 특정 Domain에서 자주 사용하는 용어를 pretrained Model에 학습하는 방법이다. 반면 Fine-tuning은 Text classification, NLI, Q&A 등 Downstream Task를 모델에 부여하는 방법이다.
 
 <br/>
 
@@ -42,37 +42,37 @@ Domain Adaptation과 fine-tuning의 목적 및 방법에는 명확한 차이가 
 
 ### Domain Adaptation은 선택사항
 
-위 그림에서 보듯 볼 수 있듯 Further Pre-training은 필수가 아니다. 해결하려는 문제의 domain이 전문 영역인 경우 관련 용어 학습을 위해 Further Pre-training을 권하지만, 학습에 필요한 domain 관련 Corpus를 확보하지 못하거나, 일반분야의 문제 해결이라면 해당 과정을 생략하고 Downstream Task 학습으로 넘어가도 무방하다.
+위 그림에서 볼 수 있듯 Further Pre-training은 필수가 아니다. 해결하려는 문제의 domain이 전문 영역인 경우 관련 용어 학습을 위해 Further Pre-training을 권하지만, 학습에 필요한 domain 관련 Corpus를 확보하지 못하거나, 일반분야의 문제 해결이라면 해당 과정을 생략하고 Downstream Task 학습으로 넘어가도 무방하다.
 
 <br/>
 
 ### Domain Adaptation 관련 용어정리
 
-지금까지 자료 통해 이해한바로는 2020년에 발행된 [Don't Stop Pre-training. Adapt Language Models to Domains and Tasks](https://arxiv.org/abs/2004.10964)이라는 논문이 나오기 전까지는 Further Pre-training이 곧 Domain Adaptation을 의미했다. 해당 논문에서 Task Adaptive Pre-training(TAPT)이라는 개념을 새로 소개하면서 Domain Adapatation을 Domain Adaptive Pre training(DAPT)로 통일했고, 현재는 Domain Adaptation과 DAPT를 혼용해서 사용하고 있다.
+지금까지 자료 통해 이해한바로는 2020년에 발행된 [Don't Stop Pre-training. Adapt Language Models to Domains and Tasks](https://arxiv.org/abs/2004.10964)이라는 논문이 나오기 전까지는 Further Pre-training이 곧 Domain Adaptation을 의미했다. 해당 논문에서 Task Adaptive Pre-training(TAPT)이라는 개념을 새로 소개하면서 Domain Adapatation을 Domain Adaptive Pre-training(DAPT)로 통일했고, 현재는 Domain Adaptation과 DAPT를 혼용해서 사용하고 있다.
 
-일반적인 경우 Domain Adaptation, Domain Adaptive Pre-training(DAPT), Further Pre-training, MLM Fine-tuning은 모두 같은 방법을 의미한다. Further Pre-training에는 DAPT 말고도 TAPT나 Extend Vocab 방법도 있지만 흔히 활용하지 않는 방법이다. 그렇지만 TAPT는 효율성면에서 장점이 있고, Extend Vocab은 Vocab에 단어를 넣고 학습한다는 점에서 장점이 있다.
+일반적인 경우 Domain Adaptation, Domain Adaptive Pre-training(DAPT), Further Pre-training, MLM Fine-tuning은 모두 같은 방법을 의미한다. Domain Adaptation에는 TAPT나 Extend Vocab 방법도 존재하지만 흔히 활용하지 않는 방법이다. 그렇지만 TAPT는 효율성면에서 장점이 있고, Extend Vocab은 Vocab에 단어를 넣고 학습한다는 점에서 장점이 있다.
 
 <br/>
 
 ### Further Pre-training이 가능한 이유 : Subword Embedding
 
-Further Pre-training이 가능한 이유는 Bert 학습이 Subword 방식으로 이루어졌기 때문이다. Subword embedding은 Word Embedding에서 발생하는 OOV(Out of Vocabulary) 문제를 해결하기 위해 제안된 방식이다. NLP 모델을 학습하기 위해서는 학습에 쓰이는 데이터를 통해 단어집(Vocab)을 추출해야한다. 이렇게 추출된 단어집(Vocab)은 문장들을 단어로 분리하고, 이를 숫자로 encoding하는 과정에 활용된다. 따라서 단어집(Vocab)에 없는 단어의 경우 토크나이징과 encoding 절차를 수행할 수 없다.
+Further Pre-training이 가능한 이유는 Bert 학습이 Subword 방식으로 이루어졌기 때문이다. Subword embedding은 Word Embedding에서 발생하는 OOV(Out of Vocabulary) 문제를 해결하기 위해 제안된 방식이다.
 
-이러한 이유로 Word embedding으로 학습한 모델은 단어집(Vocab)에 없는 단어가 포함된 문장을 활용할 수 없다. 이를 Out of Vocabulary(OOV)라 하는데, 이를 해결하기 위해서는 단어집(Vocab)이 무수히 커져야 하는데, 단어 수가 증감함에 따라 연산 수도 증가하고, 이 방법으로도 끊임없이 변형되는 언어의 변화에 대처하는데에는 한계가 있다.
+NLP 모델을 학습하기 위해서는 학습에 사용되는 데이터에서 단어집(Vocab)을 추출해야한다.이렇게 추출된 단어집(Vocab)은 문장들을 단어로 분리하고, 이를 숫자로 encoding하는 과정에 활용된다. 이러한 특성상 Word embedding 방식은 단어집(Vocab)에 없는 단어의 경우 해당 단어를 [UNK](Unkown)으로 토크나이징 한다.
 
-반면 Subword embedding의 경우 단어를 한번 더 나누어 학습하므로 단어집(Vocab)에 없는 단어라 하위 단어의 조합을 통해 단어를 생성할 수 있으므로 OOV를 해결 할 수 있다. 예로들어 ‘왼손’, ‘왼편’은 ‘왼’과, 손’, ‘편’의 합성이므로 ‘왼’,’-손’,’-편’ 3 단어를 단어집(Vocab)에 넣으면 '왼손’, ‘왼편’을 단어집(Vocab)에 넣지 않아도 토큰화가 가능하다. 이때 ‘왼쪽’이라는 Vocab에 없는 단어가 존재하면 ‘왼’과 ‘-쪽’으로 토크나이징하여 encoding이 가능하다. ‘쪽’이 단어집(Vocab)에 없더라도 ‘ㅉ’,’ㅗ’,’ㄱ’으로 토크나이징 가능하다.
+이를 Out of Vocabulary(OOV)라 하는데, 이를 해결하기 위해서는 단어집(Vocab)이 무수히 커져야 한다. 하지만 단어 수가 증감함에 따라 필요한 연산 수도 증가하기도 하고, 이 방법으로는 끊임없이 변형되는 언어의 변화에 대처하는데에는 한계가 있다.
 
-이러한 Subword의 장점으로 인해 단어집(Vocab)에 없는 단어라도 학습 가능해졌고 학습이 마무리된 모델에 대해 재학습이 가능해졌다.
+이러한 Word embedding 방식의 문제(OOV 문제)를 해결하기 위한 방법으로 Subword Embedding을 사용한다. Subword embedding의 경우 단어를 한번 더 토크나이징하여 학습하는 특징이 있다. 단어집(Vocab)에 없는 단어라할지라도 하위 단어의 조합을 통해 단어를 생성할 수 있어 OOV를 해결 할 수 있다. 예로들어 ‘왼손’, ‘왼편’은 ‘왼’과, 손’, ‘편’의 합성이므로 ‘왼’,’-손’,’-편’ 세 단어가 단어집(Vocab)에 있으면 '왼손’, ‘왼편’을 단어집(Vocab)에 넣지 않아도 토크나이징이 가능하다. 만약 ‘쪽’이라는 단어가 단어집(Vocab)에 없더라도 ‘ㅉ’,’ㅗ’,’ㄱ’으로 토크나이징을 수행하므로 어떠한 경우라도 OOV문제를 해결할 수 있게되는 것이다.
+
+그 결과, 이러한 Subword의 장점으로 인해 단어집(Vocab)에 없는 단어라도 학습 가능해졌고 **학습이 마무리된 모델에 대해서도 재학습이 가능해졌다.**
 
 <br/>
 
-### Further Pre-training 방법
+### Domain Adaptation 방법
 
-Further Pre-training은 학습을 이어나가는 방법이므로 PLM을 초기 학습시키는 과정과 동일하다. 대신 Bert 초기학습 시 NSP와 MLM 학습을 필요로 하는데, Further Pre-training에서는 MLM만 학습할 수 있다.
+Domain Adaptation은 학습을 이어나가는 방법이므로 PLM을 초기 학습시키는 과정과 동일하다. 대신 Bert 초기학습 시 NSP와 MLM 학습을 필요로 하는데 반해, Domain Adaptation에서는 MLM만 수행하거나 또는 NSP만 수행할 수 있다.
 
-모델을 새롭게 학습할 때의 방식과 동일하다. 대신 PLM 학습에 활용된 Tokenizer를 불러와 활용해야한다. 임의로 Tokenizer를 만들거나 다른 모델 학습에 활용된 Tokenizer를 사용하면 단어별 맵핑된 정수가 다르기 때문에 전혀 다른 학습을 하게 된다.
-
-이렇게 Further Pre-training이 완료되면 Downstream task에 맞도록 Fine-tuning을 수행하면 된다.
+Domain Adaptation을 수행하는 방법은 모델을 새롭게 학습할 때의 방식과 동일하다. 그러므로 PLM 학습에 활용된 Tokenizer를 불러와 활용해야한다. 임의로 Tokenizer를 만들거나 다른 모델 학습에 활용된 Tokenizer를 사용하면 단어별 맵핑된 정수가 다르기 때문에 전혀 다른 학습을 하게 된다.
 
 <br/>
 
@@ -102,7 +102,7 @@ Further Pre-training은 학습을 이어나가는 방법이므로 PLM을 초기 
 2. 거의 모든 task에서 DAPT+TAPT 성능이 우수하다.
 3. TAPT는 매우 효율적인 방법이다.(일부 task에서는 DAPT 보다 나은 성능을 보임)
 
-특히 1번의 경우 모델의 Parameter가 커지고 학습량 또한 급증하는 추세임에도 Pre-training이 여전히 효과적인 성능향상 방법임을 나타낸다.
+특히 1번의 경우 모델의 Parameter가 커지고 학습량 또한 급증하는 추세임에도 Domain Adaptation이 여전히 효과적인 성능향상 방법임을 나타낸다.
 
 #### ❖ DAPT와 Extend Vocab
 
@@ -116,11 +116,11 @@ Extend Vocab은 전문용어를 Tokenizing하지 않고 그대로 학습하기 �
 
 ### Pre-training From Sratch과 Further Pre-training
 
-세부 domain에 특화된 모델을 만드는 방법 중 하나로 domain에 특화된 모델을 처음부터 만드는 방법도 있다. 전문용어를 subword로 나눠서 학습하고 싶지 않은 경우 domain에 맞게 새로운 모델을 제작하는 것이 일반적이다. 실제로 많은 기업에서 자신의 domain에 특화된 PLM을 만들어 사용하는데, 해당 domain을 처음부터 학습시킬 수 있는 충분한 데이터가 축적되었고 이를 만들 수 있는 충분한 역량이 있거나, 특정 용어가 subword로 토크나이징 된 후 학습되는 것을 방지하기 위해 선택한다.
+세부 domain에 특화된 모델을 만드는 방법 중 하나로 domain에 특화된 모델을 처음부터 만드는 방법이 있다. 전문용어를 subword로 나눠서 학습하고 싶지 않은 경우, domain에 맞게 새로운 모델을 제작하는 것이 일반적이다. 실제로 많은 기업에서 자신의 domain에 특화된 PLM을 만들어 사용하는데, 해당 domain을 처음부터 학습시킬 수 있는 충분한 데이터가 축적되었고 이를 만들 수 있는 충분한 역량이 있거나, 특정 용어가 subword로 토크나이징 된 후 학습되는 것을 방지하기 위해 이 방법을 선택한다.
 
 domain 특화된 PLM 제작에 관심이 있다면 화해 기술블로그에 방문해 글을 읽어보는 것을 추천한다.
 
-> ”화해”가 domain specific PLM을 제작한 이유
+> **”화해”가 domain specific PLM을 제작한 이유**
 >
 > **1.Beauty domain에 좋은 성능을 내기 위해서는 domain에 적합한 Vocab이 필요하기 때문**
 >
@@ -170,7 +170,7 @@ domain 특화된 PLM 제작에 관심이 있다면 화해 기술블로그에 방
 
 <br/><br/>
 
-Pre-training이 끝난 모델은 task에 맞는 학습을 거쳐 관련 업무를 수행한다. PLM을 사용하는 방법에는 크게 Fine-tuning과 Feature extraction이 있다. 세부 task를 학습하면서 Language Model의 Weight를 조정하는 방법을 Fine-tuning이라 하고 Language Model의 Weight 조정없이 새로 학습하는 ML 모델의 Weight를 조정하는 방법을 Feature Extraction이라 한다.
+Pre-training이 끝난 모델(또는 Domain Adaptation을 수행한 모델)은 task에 맞는 학습을 거쳐 관련 업무를 수행한다. PLM을 사용하는 방법에는 크게 Fine-tuning과 Feature extraction이 있다. 세부 task를 학습하면서 Language Model의 Weight를 조정하는 방법을 Fine-tuning이라 하고 Language Model의 Weight 조정없이 새로 학습하는 ML 모델의 Weight를 조정하는 방법을 Feature Extraction이라 한다.
 
 설명만 이해하면 Feature extraction이 pretrained model의 weight 조정을 하지 않았기 때문에 Fine-tuning보다 성능이 저조할 것으로 생각할 수 있지만, 두 방법의 성능 차이는 거의 없다고 한다. Feature extraction과 Fine-tuning의 차이를 연구한 논문인 [To Tune or Not to Tune? Adapting Pretrained Representations to Diverse Tasks](https://www.aclweb.org/anthology/W19-4302.pdf)에서는 두 방법의 성능 차이가 거의 없다고 한다.
 
@@ -178,13 +178,13 @@ Pre-training이 끝난 모델은 task에 맞는 학습을 거쳐 관련 업무�
 
 ### Fine-tuning
 
-일반적으로 Fine-tuning이라 하면 text classficiation,sentiment analysis 등 NLP로 해결 할 수 있는 Downstream task에 적합하게 모델을 훈련하는 과정을 말한다. pretrained Language Model(PLM)을 불러온 뒤 그 윗단에 task 수행을 위한 새로운 layer를 쌓은 구조를 만든 다음 label이 있는 관련 데이터셋을 활용해 모델 전체를 학습시킨다. 이때 task layer 뿐만 아니라 하단 구조인 Language Model에서도 weight이 조정된다.
+일반적으로 Fine-tuning이라 하면 text classficiation, sentiment analysis 등 NLP로 해결 할 수 있는 Downstream task에 적합하게 모델을 훈련하는 과정을 말한다. Pre-trained Language Model(PLM)을 불러온 뒤 그 윗단에 task 수행을 위한 새로운 layer를 쌓은 구조를 만든 다음 label이 있는 관련 데이터셋을 활용해 모델 전체를 학습시킨다. 이때 task layer 뿐만 아니라 하단 구조인 Language Model에서도 weight이 조정된다.
 <img src='img/img6.png' alt='img6'>
 <br/>
 
-Language Model에 task layer를 쌓아 학습하는 이유는 적은 양의 데이터 셋을 활용 하더라도 상당히 좋은 성능을 보장하기 때문이다. Labeled 된 데이터를 수집하기는 많은 비용과 시간을 필요로 하며, 축적된 데이터가 많아도 ML 모델로는 성능 향상의 한계가 있기 때문이다. 이미 대량의 Corpus를 학습해 단어 간 관계, 연관성을 학습한 모델은 Language Model은 적은량의 Labeled 데이터를 가지고도 ML 모델을 압도한다. 이러한 이유에서 기업에서도 pretrained model을 Fine-tuning하는 방법을 통해 라벨링에 드는 비용,시간 등을 절약한다.
+Language Model에 task layer를 쌓아 학습하는 이유는 적은 양의 데이터 셋을 활용 하더라도 상당히 좋은 성능을 보장하기 때문이다. Labeled 된 데이터를 수집하기는 많은 비용과 시간을 필요로 하며, 축적된 데이터가 많아도 ML 모델로는 성능 향상의 한계가 있다. 이미 대량의 Corpus를 학습해 단어 간 관계, 연관성을 학습한 모델은 Language Model은 적은량의 Labeled 데이터를 가지고도 ML 모델을 압도한다. 이러한 이유에서 기업에서도 Pre-trained model을 Fine-tuning하는 방법을 통해 라벨링에 드는 비용,시간 등을 절약하기도 한다.
 
-또한 기업에서는 pretrained Langumodel을 만들 수 있을만큼의 충분한 기술력이 있고 해당 산업에 적합한 데이터가 많기 때문에, 기업에 맞는 Pretrained Language Model을 제작한 다음 Fine-tuning을 진행한다.
+또한 기업에서는 pretrained Langumodel을 만들 수 있을만큼의 충분한 기술력이 있고 해당 산업에 적합한 데이터가 많다면, 기업에 맞는 Pretrained Language Model을 제작한 다음 Fine-tuning을 진행한다.
 
 다음은 mathpress 기술 블로그에 있는 내용 일부이다.
 
@@ -198,7 +198,7 @@ Language Model에 task layer를 쌓아 학습하는 이유는 적은 양의 데�
 
 ### Feature extraction(=Language Model Frozen)
 
-이 방법은 Language Model을 활용해 task를 수행한다는 점에서 Fine-tuning과 동일하지만 구현하는 방법에 차이가 있다. Feature extraction 방식은 Language Model을 Encoder로 사용하는 것이라 이해할 수 있다. Feature extraction은 Layer 끝단의 Embedding만을 사용한다. 간단하 설명하면 문장을 embedding으로 변환하는 용도로 Language Model을 사용한다.
+이 방법은 Language Model을 활용해 task를 수행한다는 점에서 Fine-tuning과 동일하지만 구현하는 방법에 차이가 있다. Feature extraction 방식은 Language Model을 Encoder로 사용하는 것이라 이해할 수 있다. Feature extraction은 Layer 끝단의 Embedding만을 사용한다. 간단하게 설명하면 문장을 embedding으로 변환하는 용도로만 Language Model을 사용한다.
 
 ```python
 sen = '파이썬은 재밌어'
@@ -215,7 +215,7 @@ embedding = [
 
 ```
 
-이렇게 얻은 embedding vector를 가지고 새로운 ML 모델을 학습시켜 weight를 구해서 해당 모델을 활용한다.
+이렇게 얻은 embedding vector를 활용해 새로운 ML 모델을 학습시켜 weight를 구한 뒤 태스크를 수행하게 된다.
 
 Language Model의 weight 조정 없이 output layer만을 사용하기 때문에 Feature Extraction 방법을 Language Model Frozen 방법이라고도 한다.
 

@@ -10,7 +10,7 @@ desc: "Apple silicon 환경에서 minikube를 활용해 로컬로 kubeflow 구�
 
 이 글은 Apple silicon 환경에서 minikube를 활용해 로컬로 kubeflow 구축하는 방법을 설명합니다.
 
-Apple silicon 기반에서 설치 가이드를 따라하기 힘든 이유는 주로 가상환경을 지원하는 프로그램이 Arm64를 호환하지 않거나 kubeflow 일부 컴포넌트가 Arm64를 호환하지 않기 때문입니다. 다양한 시도를 통해 알아낸 바로는 Apple slilcon 기반의 로컬에서 kubeflow를 설치하기 위해선 Docker를 통해 kubernetes를 실행하고, kubeflow 1.6 버전을 설치 해야합니다.
+Apple silicon 기반에서 설치 가이드를 따라하기 힘든 이유는 주로 가상환경을 지원하는 프로그램이 Arm64를 호환하지 않거나 kubeflow 일부 컴포넌트가 Arm64를 호환하지 않기 때문입니다. 다양한 시도를 통해 알아낸 바로는 Apple slilcon 기반의 로컬에서 kubeflow를 설치하기 위해선 Docker를 기반으로 kubernetes를 실행해야하며, kubeflow 1.6 버전을 설치 해야합니다.
 
 > kubeflow를 설치하고 운영하는 것이 목적이 아닌, kubeflow 사용이 주 목적이라면 클라우드 환경에서 kubeflow를 지원하는 [Arrikto](https://www.arrikto.com/kubeflow-as-a-service/)를 활용하는 것을 권장합니다.
 
@@ -99,11 +99,11 @@ brew install minikube
 
 ### kubeflow 1.6 로컬에 저장하기
 
-Apple silicon은 kubeflow 1.6 이하 버전을 설치할 수 없습니다. kubeflow의 컴포넌트 중 Arm64를 지원하지 컴포넌트가 있기 때문입니다. kubeflow 1.6 보다 낮은 버전 설치를 시도해봤다면 Istio의 상태가 pending으로 유지되는 것을 확인하셨을 겁니다.
+Apple silicon은 kubeflow 1.6 이하 버전을 설치할 수 없습니다. kubeflow의 컴포넌트 중 Arm64를 지원하지 않는 컴포넌트가 있기 때문입니다. kubeflow 1.6 보다 낮은 버전 설치를 시도해봤다면 Istio의 상태가 pending으로 유지되는 것을 경험하셨을 겁니다.
 
 Istio는 2022년 11월 릴리즈 된 1.16 버전부터 Arm64를 호환합니다. kubeflow는 1.6 버전부터 Istio 1.16 버전을 활용하므로 Apple silicon에서 kubeflow 로컬 환경을 구성하려면 kubeflow 1.6 버전이 필요합니다.
 
-kubeflow 1.6 버전을 사용해야하는 이유를 알았으니 이제 kubeflow 1.6을 로컬에 저장해보겠습니다.
+kubeflow 1.6 버전을 사용해야하는 이유를 알았으니 이제 kubeflow 1.6을 로컬에 저장하겠습니다.
 
 ```bash
 git clone https://github.com/kubeflow/manifests.git
@@ -117,7 +117,7 @@ cd manifests
 
 본격적으로 kubeflow를 설치하겠습니다. docker 환경에서 minikube를 실행해야하므로 colima 또는 docker desktop을 실행해주세요. colima를 사용하는 경우 `colima start --cpu 4 --memory 9` 명령어로 실행합니다.
 
-아래의 명령어로 minikube 설치를 시작합니다.
+아래의 명령어로 minikube 설치를 시작합니다. kubernetes 버전은 1.21.xx 버전이면 모두 가능합니다.
 
 ```bash
 $ minikube start --driver=docker --kubernetes-version=1.21.12 --memory=8192 cpus=4
@@ -129,9 +129,9 @@ $ minikube start --driver=docker --kubernetes-version=1.21.12 --memory=8192 cpus
 
 ### kubeflow 설치하기
 
-kubeflow는 수십개의 컴포넌트로 구성되어 있습니다. kubeflow를 구성하는 컴포넌트로는 Jupyter notebook, AutoML 라이브러리인 katib, kubeflow Pipeline, Training operator 등 이 있습니다. 이러한 component 들이 kubernetes를 기반으로 개별적으로 실행되고 연결되면서 kubeflow를 구성하게 됩니다. 개별 기능이 컴포넌트로 구성된 만큼 필요에 따라 원하지 않는 컴포넌트를 불러오지 않아도 정상적으로 실행 가능합니다. 예로들어 Automl을 사용할 필요가 없다면 굳이 katib 컴포넌트를 불러오지 않아도 됩니다. 그렇게 하더라도 정상적으로 kubeflow를 실행할 수 있습니다.
+kubeflow는 수십개의 컴포넌트로 구성되어 있습니다. kubeflow를 구성하는 컴포넌트로는 Jupyter notebook, AutoML 라이브러리인 katib, kubeflow Pipeline, Training operator 등이 있습니다. 이러한 컴포넌트들이 kubernetes를 기반으로 개별적으로 실행되고 연결되면서 kubeflow를 구성하게 됩니다. 개별 기능이 컴포넌트로 구성된 만큼 필요에 따라 원하지 않는 컴포넌트를 불러오지 않아도 kubeflow를 정상적으로 실행 할 수 있습니다. 예로들어 AutoML을 사용할 필요가 없다면 굳이 katib 컴포넌트를 불러오지 않아도 됩니다. 그렇게 하더라도 정상적으로 kubeflow를 실행할 수 있습니다.
 
-이제 컴포넌트를 minikube로 불러오겠습니다. 개별 컴포넌트를 하나씩 불러올 수 있지만 오랜 시간이 걸리므로 아래의 명령어로 한 번에 모든 컴포넌트를 불러오겠습니다. 이 명령어는 모든 컴포넌트가 불러와질 때 까지 10초 간격으로 반복합니다. 평균 3회의 루프를 진행하면 모든 컴포넌트를 불러올 수 있습니다.
+이제 컴포넌트를 minikube로 불러오겠습니다. 개별 컴포넌트를 하나씩 불러올 수 있지만 오랜 시간이 걸리므로 아래의 명령어로 한 번에 모든 컴포넌트를 불러오겠습니다. 이 명령어는 모든 컴포넌트가 불러와질 때 까지 10초 간격으로 반복됩니다. 평균 3회의 루프를 진행하면 모든 컴포넌트를 불러올 수 있습니다.
 
 > 컴포넌트를 하나하나 실행시키는 방법이 궁금하다면 [kubeflow github](https://github.com/kubeflow/manifests#installation)를 참고하세요.
 
@@ -143,7 +143,7 @@ while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply
 
 **설치 과정에서 무한루프를 경험했다면 아래 문단을 참고하세요.**
 
-개인적인으로 1.6 버전을 설치할 때 무한루프를 경험했고, 1.5 버전 설치할 때는 경험하지 못했습니다. 무한루프에 빠지게 된 이유는 `Profiles + KFAM` 컴포넌트가 제대로 불러와지지 않아 발생한 것 같습니다. `Profiles + KFAM`가 설치되지 않으니 `kubeflow-user-example-com`에 필요한 조건이 형성되지 않아 아래와 같은 에러가 발생한 것으로 추정됩니다. 무한 루프 종료 후 `Profiles + KFAM`와 `kubeflow-user-example-com`를 직접 설치하면 정상 작동합니다.
+개인적인으로 1.6 버전을 설치할 때 무한루프를 경험했고, 1.5 버전 설치할 때는 경험하지 못했습니다. 1.6 버전에서 무한루프에 빠지게 된 이유는 `Profiles + KFAM` 컴포넌트가 제대로 불러와지지 않아 발생한 것 같습니다. `Profiles + KFAM`가 설치되지 않으니 `kubeflow-user-example-com`에 필요한 조건이 형성되지 않아 아래와 같은 에러가 발생한 것으로 추정됩니다. 따라서 무한 루프를 강제 종료 한 뒤 `Profiles + KFAM`와 `kubeflow-user-example-com`를 직접 설치하면 정상 작동합니다.
 
 ```
 error: resource mapping not found for name: "kubeflow-user-example-com" namespace:
@@ -176,7 +176,7 @@ kustomize build common/user-namespace/base | kubectl apply -f -
 
 ### Training operator 재설치하기
 
-> Training-operator 상태가 running인 경우 다음 단계로 넘어가세요.
+> Training-operator 상태가 running인 경우 지금 단계를 생략하고 다음 단계로 넘어가세요.
 
 개인적인 경험으로 Training operator는 kubeflow 버전을 망라하고 설치가 되지 않았습니다. training operator의 정식 배포 버전이 문제인 것 같습니다. 가장 최신 버전을 설치하니 Training operator가 정상적으로 작동 됐습니다. Training operator 상태가 Crashloopbackoff 또는 Error 인 경우 아래 명령어를 실행해 주세요.
 
@@ -223,10 +223,8 @@ kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80
 
 <br/>
 
-### kubeflow 저장 및 불러오기
+### Tip! kubeflow 저장 및 불러오기
 
-kubeflow를 실행하면 발열, 빠른 배터리 소모, 높은 메모리 사용량을 경험하게 됩니다. 맥북의 건강(?)을 위해서 kubeflow를 사용하지 않는 경우 가급적 정지해놓는 편이 좋습니다.
-
-kubeflow 설치 과정이 다소 번거롭기 때문에 `minikube stop` 명령어를 이용해 종료하는 것을 권장합니다. colima 또한 'colima stop' 명령어를 통해 종료합니다.
+kubeflow를 실행하면 발열, 빠른 배터리 소모, 높은 메모리 사용량을 경험하게 됩니다. 맥북의 건강(?)을 위해서 kubeflow를 사용하지 않는 경우 가급적 정지해놓는 편이 좋습니다. kubeflow 설치 과정이 다소 번거롭기 때문에 `minikube stop` 명령어를 이용해 종료하는 것을 권장합니다. colima 또한 'colima stop' 명령어를 통해 종료합니다. 불러올 땐 역순으로 start 명령어를 사용하면 됩니다.
 
 <br/>

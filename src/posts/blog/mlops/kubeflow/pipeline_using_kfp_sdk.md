@@ -8,7 +8,7 @@ desc: "이 글은 kuebeflow Pipeline(kfp)를 활용해 pytorch 모델 학습부�
 
 ### 들어가며
 
-이 글은 kuebeflow 파이프라인를 활용해 모델 학습부터 서빙까지 자동화하는 방법을 설명합니다. 파이프라인 구축에 아래 링크에서 설명한 예제를 활용할 예정이므로 연결된 글을 먼저 읽은 다음 이 글을 읽는 것을 권장합니다.
+이 글은 kuebeflow 파이프라인를 활용해 모델 학습부터 서빙까지 자동화하는 방법을 설명합니다. 파이프라인 구축은 아래 링크에서 설명한 예제를 활용할 예정이므로 연결된 글을 먼저 읽은 다음 이 글을 읽는 것을 권장합니다.
 
 [🤗 Transformers를 활용해 Torchserve 배포하기](https://yangoos57.github.io/blog/mlops/torchserve/Deploying_torchserve_using_transformers/)
 
@@ -45,11 +45,11 @@ KFP SDK는 kubeflow 파이프라인을 python에서 활용할 수 있는 라이�
 
 KFP SDK를 접하면 가장 먼저 배우는 매서드는 `func_to_container_op`, `create_component_from_func` 일 것입니다. `func_to_container_op`와 `create_component_from_func`은 앞서 설명에서 파이썬 코드를 도커 컨테이너로 빌드하는 단계에 대응되는 과정입니다. 이 매서드를 사용하면 py 파일을 만든 다음 일일이 이미지로 만들었던 작업을 생략할 수 있습니다. KFP SDK로 파이프라인을 compile한 yaml 파일을 보신분들은 아시겠지만, 컴포넌트로 감싸여진 파이썬 코드는 컨테이너 내부에서 python 명령어에 arguments를 붙여넣는 방식으로 구동됩니다.
 
-이 방식은 컨테이너 이미지를 생성하는 단계를 생략한다는 장점이 있지만 약간의 단점(?)도 존재합니다. resource requests,resource limits, volume mount와 같이 컨테이너 실행 시 설정하는 값을 `create_component_from_func`와 `func_to_container_op`로는 설정할 수 없습니다. 예로들어 `create_component_from_func` 매서드는 packages_to_install, base_image, annotations 만을 지원하고 있습니다. 따라서 이러한 매서드를 사용할 때 resource requests,resource limits, volume mount는 같은 세부적인 옵션은 설정할 수 없습니다.
+이 방식은 컨테이너 이미지를 생성하는 단계를 생략한다는 장점이 있지만 약간의 단점(?)도 존재합니다. resource requests,resource limits, volume mount와 같이 컨테이너 실행 시 설정하는 값을 `create_component_from_func`와 `func_to_container_op`로는 설정할 수 없다는 점입니다. 예로들어 `create_component_from_func` 매서드는 packages_to_install, base_image, annotations 만을 지원하고 있기 때문에 이러한 매서드를 사용할 때 resource requests,resource limits, volume mount는 같은 세부적인 옵션은 설정할 수 없습니다.
 
 그렇다면 resource requests,resource limits, volume mount 같은 쿠버네티스 설정은 어떻게 컴포넌트에 적용해야할까요?
 
-아래 코드를 실행해 봅시다.
+먼저 아래 코드를 실행해 봅시다.
 
 ```python
 from kfp.components import create_component_from_func,func_to_container_op
@@ -69,9 +69,11 @@ print(type(test_container_op()))
 
 ```
 
-함수 실행결과 두 함수의 타입이 `kfp.components._structures.TaskSpec`로 동일한 것을을 확인할 수 있습니다. `kfp.components._structures.TaskSpec` 타입은 파이프라인 내부에서 실행되면 `kfp.dsl.ContainerOp` 클래스의 객체를 반환합니다. 즉 `create_component_from_func`로 생성한 컴포넌트는 파이프라인 실행 시 `kfp.components._structures.TaskSpec`을 거쳐 `kfp.dsl.ContainerOp 클래스로 변환되는 과정을 거칩니다.
+함수 실행결과 두 함수의 타입이 `kfp.components._structures.TaskSpec`로 동일한 것을을 확인할 수 있습니다. `kfp.components._structures.TaskSpec` 타입은 파이프라인 내부에서 실행되면 `kfp.dsl.ContainerOp` 클래스의 객체를 반환합니다. 즉 `create_component_from_func`로 생성한 컴포넌트는 파이프라인 실행 시 `kfp.components._structures.TaskSpec`을 거쳐 `kfp.dsl.ContainerOp` 클래스로 변환되는 것을 알 수 있습니다.
 
-컴포넌트가 `ContainerOp` 클래스로 변환되면 resource requests,resource limits, volume mount 같은 쿠버네티스 옵션을 설정할 수 있습니다. 이는`ContainerOp` 클래스가 쿠버네티스 SDK 클래스 중 하나인 `V1container`를 기반으로 구현됐기 때문입니다. ContainerOp 내부에서 최종적으로 쿠버네티스 SDK를 활용하므로 쿠버네티스 설정 값을 적용할 수 있게되는 것입니다.
+그렇다면 `create_component_from_func`는 `kfp.dsl.ContainerOp` 클래스로 변환되는 걸까요?
+그 이유는 우리가 앞서 궁금해했던 resource requests,resource limits, volume mount 같은 쿠버네티스 옵션을 `kfp.dsl.ContainerOp` 클래스를 통해 설정할 수 있기 때문입니다.
+이게 가능한 이유는`ContainerOp` 클래스가 쿠버네티스 SDK의 클래스 중 하나인 `V1container`를 기반으로 구현됐기 때문입니다. 따라서 ContainerOp 내부에서 최종적으로 쿠버네티스 SDK를 활용하므로 쿠버네티스 설정 값을 적용할 수 있게되는 것입니다.
 
 <img src='img/pipeline_using_kfp/img3.png' alt='img3'>
 
@@ -79,7 +81,7 @@ print(type(test_container_op()))
 
 #### ❖ 컴포넌트를 파이프라인으로 구축
 
-파이프라인은 아래 그림과 같이 컴포넌트들을 감싸는 구조입니다. 이 파이프라인은 argo라는 workflow 위에서 실행됩니다. 파이프라인 내부의 모든 컴포넌트는 `kfp.dsl.ContainerOp` 클래스로 변환된 상태이며 `ContainerOp` 클래스에서는 컴포넌트에 쿠버네티스 설정 값을 적용할 수 있습니다. `ContainerOp`은 쿠버네티스 설정 외에도 argo 실행시 활용되는 설정 값을 적용할 수 있습니다. 예로들면 컴포넌트의 실행 순서를 설정하는 `after`, 파이프라인 UI에 표현된 컴포넌트에 대한 설명을 변경할 수 있는 `set_display_name` 매서드가 그러합니다.
+파이프라인은 아래 그림과 같이 컴포넌트들을 감싸는 구조입니다. 그리고 이 파이프라인은 argo라는 workflow 위에서 실행됩니다. 파이프라인 내부의 모든 컴포넌트는 `kfp.dsl.ContainerOp` 클래스로 변환된 상태이며 `ContainerOp` 클래스에서는 컴포넌트에 쿠버네티스 설정 값을 적용할 수 있습니다. `ContainerOp`은 쿠버네티스 설정 외에도 argo 실행시 활용되는 설정 값을 적용할 수 있습니다. 예로들면 컴포넌트의 실행 순서를 설정하는 `after`, 파이프라인 UI에 표현된 컴포넌트에 대한 설명을 변경할 수 있는 `set_display_name` 매서드가 그러합니다.
 
 <img src='img/pipeline_using_kfp/img4.png' alt='img4'>
 
@@ -87,11 +89,11 @@ print(type(test_container_op()))
 
 #### ❖ 파이프라인 컴파일
 
-파이프라인 구동에 필요한 모든 세팅을 완료했다면 KFP를 이용하기 위해서 파이썬 코드를 yaml 파일로 컴파일 해야합니다. 컴파일 결과물인 yaml 파일은 kubeflow dashboard 페이지 파이프라인 항목에 업로드하여 활용합니다.
+파이프라인 구동에 필요한 모든 세팅을 완료했다면 KFP를 이용하기 위해서 파이썬 코드를 yaml 파일로 컴파일 해야합니다. 컴파일 결과물인 yaml 파일은 kubeflow dashboard 페이지 파이프라인 항목에 업로드하여 할 수 있습니다.
 
-지금까지 과정만으로도 SDK 없이 파이프라인을 사용했던 방법에 비해 번거로운 작업을 상당히 생략할 수 있습니다. 사용자가 할 일은 yaml 파일을 파이프라인에 업로드하고, Experiment를 생성한 뒤 실행 버튼을 누르기는 작업만 하면됩니다.
+지금까지 과정만으로도 SDK 없이 파이프라인을 사용했던 방법에 비해 번거로운 작업을 상당히 생략할 수 있습니다. 사용자가 할 나머지 일은 yaml 파일을 파이프라인 항목에 업로드하고, Experiment 항목으로 이동해 Experiment를 생성한 뒤 실행 버튼을 누르기만 하면 됩니다.
 
-하지만 이러한 편리함도 파일 수정, 업로드 실행 과정을 수십번 반복하다보면 상당히 고통스럽고, 비효율적으로 느껴지게 됩니다. 다행이도 KFP SDK에는 파이프라인을 자동으로 실행하는 방법을 지원하고 있습니다.
+하지만 이러한 편리함도 파일 수정, 업로드 실행 과정을 수십번 반복하다보면 상당히 고통스럽고, 비효율적으로 느껴지게 됩니다. 다행이도 KFP SDK에는 파이프라인을 자동으로 실행하는 방법 또한 지원하고 있습니다. 이 방법을 통해서 나머지 해야 할 일도 자동화로 진행해 보겠습니다.
 
 <img src='img/pipeline_using_kfp/img5.png' alt='img5'>
 
@@ -99,7 +101,7 @@ print(type(test_container_op()))
 
 #### ❖ kfp client로 파이프라인 배포
 
-kfp.client를 활용하면 experiment 생성, 파이프라인에 yaml 파일 업로드, 파이프라인 실행 단계를 자동화 할 수 있습니다. client는 파이프라인 실행 뿐만아니라 모니터링, 삭제, 보관(archive) 등 파이프라인을 관리하는 기능도 지원하고 있습니다.
+kfp.client를 활용하면 experiment 생성, 파이프라인에 yaml 파일 업로드, 파이프라인 실행 단계를 자동화 할 수 있습니다. 이 외에도 client는 파이프라인 실행 뿐만아니라 모니터링, 삭제, 보관(archive) 등 파이프라인을 관리하는 기능도 지원하고 있습니다.
 
 <img src='img/pipeline_using_kfp/img6.png' alt='img6'>
 

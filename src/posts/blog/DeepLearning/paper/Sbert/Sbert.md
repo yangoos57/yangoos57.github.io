@@ -6,34 +6,36 @@ thumbnail: "./img/Sbert.png"
 desc: "Sentence Bert는 Word Embedding 모델인 Bert를 Sentence Embedding 모델로 Fine-tuning 하는 방법이다. Sentence embedding은 문장을 벡터 공간에 배치하는 방법을 의미함. 문장을 벡터 공간 내 배치함으로서 문장간 비교, 클러스터링, 문장 간 유사성 시각화 등 다양한 방법을 적용할 수 있다. Sbert 논문은 일대일 방식과의 성능 비교를 위해 Sentence embedding을 기반으로 문장 간 유사도 비교를 수행한다. 논문에서는 일대일로 문장을 비교하는 구조를 Cross encoder라는 용어로 사용하고, Sentence embedding을 기반으로 문장을 비교하는 구조를 Bi enccoder라는 용어로 사용한다."
 ---
 
-> 이 글은 `Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks`에 대한 코드를 구현하고 이를 설명함.
->
-> Pretrained Model을 Sbert로 finetuning하는 방법에 대한 튜토리얼은 [링크](https://github.com/yangoos57/IR-Ranking-project/tree/main/1.Bi_encoder_%26_Cross_encoder)에 정리하였음.
+### 들어가며
+
+이 글은 `Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks`에 대한 코드를 구현하고 이를 설명함.
+
+Pretrained Model을 Sbert로 finetuning하는 방법에 대한 튜토리얼은 [Sentence_bert_from_scratch Github](https://github.com/yangoos57/IR-Ranking-project/tree/main/1.Bi_encoder_%26_Cross_encoder)에 정리하였음.
 
 <br/>
 <br/>
 
 ### Sentence Bert가 필요한 이유
 
-- Sentence Bert는 Bert를 Sentence Embedding이 가능하게 Fine-tuning 한 모델을 말함.
+- Sentence Bert는 Bert에 Sentence Embedding을 가능하도록 Fine-tuning 한 모델을 말함.
 
 - Sentence embedding은 문장을 벡터 공간에 배치하는 방법을 의미함. 문장을 벡터 공간 내 배치함으로서 문장 비교, 클러스터링, 시각화 등 다양한 방법을 적용할 수 있음.
 
 - Sbert 이전에도 Bert 모델을 활용해 Sentence Embedding을 생성하는 방법이 존재했지만 이러한 방법은 과거 모델(Glove,Infer-Sent)의 성능에 미치지 못했음.
 
-- 따라서 문장 간 유사도를 비교하는 Task에서는 주로 문장을 일대일로 비교하는 방식을 활용했음. 일대일 방식은 두 개의 문장을 하나로 묶은 Input Data를 Bert 모델에 넣은 뒤 Output을 통해 두 문장의 유사도를 파악하는 방법을 말함.
+- 이러한 이유로 문장 간 유사도를 비교하는 Task에서는 주로 문장을 일대일로 비교하는 방식을 활용했음. 이때 일대일 방식은 두 개의 문장을 하나로 묶은 Input Data를 Bert 모델에 넣은 뒤 Output을 통해 두 문장의 유사도를 파악하는 방법을 의미함.
 
-- Sbert 논문은 일대일 방식과의 성능 비교를 위해 Sentence embedding을 기반으로 문장 간 유사도 비교를 수행함. 논문에서는 일대일로 문장을 비교하는 구조를 Cross encoder라는 용어로 사용하고, Sentence embedding을 기반으로 문장을 비교하는 구조를 Bi enccoder라는 용어로 사용함.
+- 논문에서는 일대일로 문장을 비교하는 구조를 Cross encoder라는 용어로 사용하고, Sentence embedding을 기반으로 문장을 비교하는 구조를 Bi enccoder라는 용어로 사용함
 
 <img src='img/img0.png' alt='img0'>
 
 - Cross encoder는 문장 간 관계를 파악하는 성능이 우수하지만, 파악해야하는 문장수가 많아질수록 연산이 급증한다는 치명적인 단점이 있음. 반면 Bi encoder는 Embedding 과정에서 정보손실이 발생하므로 성능에 있어서 Cross encoder에 미치지 못하지만, 실시간 문제 해결에 활용될 수 있는 수준의 빠른 속도를 보장함.
 
-- Bi encoder는 Cross encoder의 느린 연산속도를 보완할 수 있고, Cross encoder는 Bi encoder의 비교 성능을 보완할 수 있으므로 아래와 같이 빠르고 정확한 문장 검색 구조를 구현할 수도 있음. 해당 방법은 먼저 Bi encoder로 query와 유사한 문장을 추려낸 뒤 Cross encoder를 활용해 추려낸 문장의 순위를 계산하게 됨. 이와 관련한 내용은 []()에서 확인할 수 있음.
+- Bi encoder는 Cross encoder의 느린 연산속도를 보완할 수 있고, Cross encoder는 Bi encoder의 비교 성능을 보완할 수 있으므로 아래와 같이 빠르고 정확한 문장 검색 구조를 구현할 수도 있음. 해당 방법은 먼저 Bi encoder로 query와 유사한 문장을 추려낸 뒤 Cross encoder를 활용해 추려낸 문장의 순위를 계산하게 됨. 이와 관련한 내용은 수행했던 미니프로젝트인 [Sentence Bert를 활용해 연관성 높은 도서 추천하기](https://github.com/yangoos57/Sentence_bert_from_scratch/tree/main/3.%20Book_Recommendation)에서 확인할 수 있음.
 
   <img src='img/img1.png' alt='img1'>
 
-- 아래의 표는 Cross encoder, Bi encoder(Sbert), 이전의 Sentence embedding 방법의 STS Task 점수를 보여줌. Sbert의 기본 모델은 NLI데이터를 학습한 모델임. 기본 Sbert 모델의(SBERT-NLI-base)의 STS Spearman 점수는 77.03점으로, Cross-Encoder의 (Bert-STSb-base) 84.03점에 미치진 못하지만 기존 방법인 Avg. Bert embedding에 비해 80% 이상 성능 향상을 이룬 모델임을 확인할 수 있음.
+- 아래 표는 Cross encoder, Bi encoder(Sbert), 이전의 Sentence embedding 방법의 STS Task 점수를 보여줌. Sbert의 기본 모델은 NLI 데이터를 학습한 모델이며 기본 Sbert 모델의(SBERT-NLI-base)의 STS Spearman 점수는 77.03점임. 기본 Sbert 모델의 점수는 Cross-Encoder의 (Bert-STSb-base) 84.03점에 미치진 못하지만 기존 방법인 Avg. Bert embedding에 비해 80% 이상 성능 향상을 이룬 모델임을 확인할 수 있음.
 
 <img src='img/img2.png' alt='img2'>
 
@@ -41,7 +43,7 @@ desc: "Sentence Bert는 Word Embedding 모델인 Bert를 Sentence Embedding 모�
 
 ### Cross Encoder
 
-- Sbert를 이해하기에 앞서 Cross Encoder를 우선 이해해야할 필요가 있음. Cross encoder와 Bi encoder의 문장 비교 방법에는 명확한 차이가 있으므로 Cross encoder의 문장 비교 방법을 이해한다면 Bi eoncder를 명확하게 이해하는데 도움이 될 수 있음.
+- Sbert를 설명하기에 앞서 Cross Encoder를 우선 이해해야할 필요가 있음. Cross encoder와 Bi encoder의 문장 비교 방법에는 명확한 차이가 있으므로 Cross encoder의 문장 비교 방법을 이해한다면 Bi eoncder를 명확하게 이해하는데 도움이 될 수 있기 때문임.
 
 <br/>
 
@@ -53,17 +55,14 @@ desc: "Sentence Bert는 Word Embedding 모델인 Bert를 Sentence Embedding 모�
 
 - `BertModelForSequenceClassification`의 상단 레이어는 문장 전체 정보가 요약된 토큰인 [CLS] embedding을 활용함.
 
-- 예로들어 10개의 토큰으로 구성된 문장의 output shape이 [1,10,768]일 때, 10개 embedding으로 문장을 표현하는 대신 [CLS] embedding으로 문장을 표현함.
+- 예로들어 10개의 토큰으로 구성된 문장의 output shape이 [1,10,768]일 때, 10개 embedding으로 문장을 표현하는 대신 [CLS] 토큰의 embedding 만으로 문장을 표현함. 다시 말해 [CLS] 토큰 내부에 문장 정보가 들어있다 판단해서 [CLS] 외 나머지 토큰을 사용하지 않는 방식임.
 
-- 이처럼 여러 정보를 하나로 치환하는 방법을 pooling이라 함. [CLS] embedding을 활용하는 방법외에도 문장 내 모든 embedding을 평균하는 방법, embedding 내 개별 값의 max를 선택하는 방법이 있음. 이에 대한 내용은 Bi encoder 문단에서 설명하겠음.
+- 이처럼 여러 정보를 하나로 치환하는 방법을 pooling이라 함. [CLS] 토큰의 embedding을 활용하는 방법외에도 문장 내 모든 토큰의 embedding을 평균하는 방법, embedding 내 개별 값의 max를 선택하는 방법이 있음. 이에 대한 내용은 Bi encoder 문단에서 설명하겠음.
 
-- [CLS] embedding은 Fully connected layer와 ReLU를 거친 다음 Label 개수에 맞게 차원을 축소하는 Layer를 거쳐 최종 결과물로 산출됨.
-
-- 아래 그림은 [CLS] embedding의 ouput 산출 과정을 Tensor의 차원으로 설명함. 10개의 토큰으로 구성된 1개의 문장이 768차원으로 embedding된 모델을 거치면 [1,10,768] 차원의 Tensor로 표현됨. 10개의 토큰 중 [CLS] 토큰을 선택하면 [1,10,768] ⇒ [1,768] 차원의 Tensor로 pooling 한 것임. [1,768] 차원의 Tensor는 dense layer, activation function 및 label 크기로 차원을 줄이는 projection layer를 거쳐 [1,N] 차원의 Tensor로 출력됨. 이때 Regression 모델을 만들기 위해선 N = 1, classification 모델을 만들기 위해선 N>1이 되어야함.
-
+- 아래 그림은 [CLS] embedding의 ouput 산출 과정을 Tensor의 차원으로 설명함. 10개의 토큰으로 구성된 1개의 문장이 768차원으로 embedding된 모델을 거치면 [1,10,768] 차원의 Tensor로 표현됨. 10개의 토큰 중 [CLS] 토큰을 선택하면 [1,10,768] ⇒ [1,768] 차원의 Tensor로 pooling 한 것임. [1,768] 차원의 Tensor는 dense layer, activation function 및 label 크기로 차원을 줄이는 projection layer를 거쳐 [1,N] 차원의 Tensor로 출력됨.
   <img src='img/img8.png' alt='img8'>
 
-- Classification Head를 코드로 구현하면 다음과 같음.
+- 위에서 설명한 구조를 코드로 구현하면 다음과 같음. feature은 Language Model의 last-hidden-state을 의미함.
 
   ```python
   from torch import Tensor, nn
@@ -101,8 +100,8 @@ desc: "Sentence Bert는 Word Embedding 모델인 Bert를 Sentence Embedding 모�
 
 #### Cross Encoder 구조
 
-- 아래 모델은 Pretrained model에 Cross encoder Head를 적용한 모델임.
-- pretrained model의 output이 cross encoder head의 input data로 활용됨.
+- 아래 모델은 Pretrained model에 Classification Head를 적용한 모델임.
+- 구조를 보면 pretrained model의 output이 Classification Head의 input data로 활용되는 것을 알 수 있음.
 - 학습에 사용되는 Loss function은 num_labels 1일 땐 MSE를, 2 이상일 땐 Cross Entropy를 활용함.
 
   ```python
@@ -199,9 +198,10 @@ desc: "Sentence Bert는 Word Embedding 모델인 Bert를 Sentence Embedding 모�
 
 ### Bi Encoder로 Fine-tuning 하기
 
-- Sentence bert는 Bert 모델을 Bi Encoder로 활용하는 방법임. Bert 모델을 Bi Encoder로 활용하기 위해선 논문에서 제시한 구조를 활용해 Fine-tuning 해야함. 학습 구조 설명에 앞서 Sbert에 구조에 대해 먼저 설명하겠음.
+- Sentence bert는 Bert 모델을 Bi Encoder로 활용하는 방법임. Bert 모델을 Bi Encoder로 활용하기 위해선 논문에서 제시한 구조를 활용해 Fine-tuning 해야함. 따라서 학습 구조 설명에 앞서 Sbert 구조에 대해 먼저 설명하겠음.
 - Sbert의 구조는 Base 모델에 Pooling-layer를 쌓은 구조임. Pooling 방법에는 세 종류가 있음. [CLS] Selection, Mean pooling, Max pooling 방법임. 이 중 논문에서는 Mean Pooling 방법이 효과적이라 소개하므로 이를 기본값으로 세팅하여 활용함.
-- pooling을 수행하는 방법은 간단함. 예로들면 토큰 개수가 10개인 문장 1개를 768차원의 embed_size를 가진 모델에 넣으면 Output은 [1,10,768]차원의 Tensor임. Pooling은 10개의 Token을 1개의 Token으로 압축하는 방법을 말함.
+- pooling을 수행하는 방법은 간단함. 예로들면 토큰 개수가 10개인 문장 1개를 768차원의 embed_size를 가진 모델에 넣으면 Output은 [1,10,768]차원의 Tensor를 반환함. 이때 Pooling은 10개의 Token을 1개의 Token으로 압축하는 방법을 말함.
+- Sbert Pooling에는 세 종류의 방법이 있다고 설명하였음.
 - 먼저 CLS pooling은 [CLS]토큰을 Sentence Embedding으로 Sentence Embedding으로 활용함.
 - Mean Pooling은 10개의 토큰 embedding을 평균 낸 embedding을 Sentence Embedding으로 활용함.
 - Max Pooling은 개별 벡터의 max값을 취합한 embedding을 Sentence Embedding으로 활용함.
@@ -285,16 +285,16 @@ class modelWithPooling(nn.Module):
 
 > Pretrained Model을 Sbert로 finetuning하는 방법에 대한 Tutorial을 제작하였음. [Information Retrieval With Sentence Bert 깃허브 페이지](https://github.com/yangoos57/IR-Ranking-project) 참고
 
-- Pre-trained model을 Sbert로 활용하기 위해서는 Supervised Learning이 필요
-- 학습에 활용할 데이터가 Classificaion 데이터인지, Regression 데이터인지에 따라 학습 구조가 달라짐.
-- Classification Data는 문장과 문장 간 관계를 여러 유형으로 구분한 데이터를 의미함. 자연어추론(NLI) 학습에 활용된 데이터셋이 그러함.
+- Sbert는 학습에 활용될 데이터셋에 따라 학습 구조가 달라짐. 따라서 자신이 활용할 데이터셋이 regression 데이터셋인지, classification 데이터셋인지 구분을 해야함.
+- 먼저 Classification 데이터 유형에 대해서 설명하겠음. 이때 활용하는 데이터셋은 자연어추론(NLI) 데이터셋임. 데이터 구조는 아래와 같음.
 - ```python
   {'sen1': '그리고 그가 말했다, "엄마, 저 왔어요."',
    'sen2': '그는 학교 버스가 그를 내려주자마자 엄마에게 전화를 걸었다.',
    'gold_label': 'neutral'}
   ```
-- Classification 데이터로 Sbert를 학습하는 구조는 아래와 같음. Bert 모델을 통해 산출한 embedding vector를 각각 U,V라 할 때 U,V,|U-V|를 하나의 Tensor로 합한 다음 classification layer를 거쳐 entailment, nuetral, contradition을 판단함.
+- Classification 데이터로 Sbert를 학습하는 구조는 아래와 같음. 1차로 SBert 모델을 통해 산출한 embedding vector를 각각 U,V라 할 때 U,V,|U-V|를 하나의 Tensor로 concat을 수행함. 그 다음 softmax Classifier를 통해 entailment, neutral, contradition을 판단하고 Loss를 구해 학습을 진행함.
 
+<br/>
   <img src='img/img5.png' alt='img5'>
 
 - #### Classification Data 학습 구조
@@ -322,9 +322,7 @@ class modelWithPooling(nn.Module):
 
           """
           샴 네트워크는 하나의 모델로 두 개의 output을 산출하는 구조임.
-          하나의 모델을 사용하지만 각각 출력하므로 Input 데이터 상호 간 영향을 줄 수 없게 됨
-          반면 Cross encoder는 이와 반대로 두 개의 문장을 묶어 하나의 Input 데이터로 만든 뒤
-          모델 내부에서 상호간 유사성을 파악하는 구조임.
+          하나의 모델을 사용하지만 각각 출력하므로 Input 데이터 상호 간 영향을 줄 수 없게 됨.
           """
 
           # 개별 데이터 생성
