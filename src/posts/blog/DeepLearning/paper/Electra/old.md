@@ -7,28 +7,25 @@ desc: "pytorch를 활용해 ELECTRA 논문을 코드로 구현하며 Generator�
 Huggingface의 trainer를 활용하여 모델을 학습하는 방법을 소개하고, 이에 대한 튜토리얼을 제작해 ELECTRA 뿐만 아니라 Huggingface 사용법을 손쉽게 익힐 수 있도록 하였다. 직접 Domain Adapatation을 경험하며 ELECTRA 학습 방법 및 데이터 흐름에 대해 이해할 수 있다."
 ---
 
-### 들어가며
-
-이 글은 `🤗 Transformers`를 활용해 Electra Model을 학습하는 방법에 대해 설명합니다. `🤗 Transformers`의 기본 구조, Trainer, Dataset 등 기본적인 사용법 또한 포함하고 있으므로 `🤗 Transformers`에 대한 이해가 필요한 경우 또한 이 글을 참고할 수 있씁니다.
-
 ### 왜 ELECTRA인가?
 
-ELECTRA는 Masked Language Model(MLM)의 비효율적인 학습 방법에 새로운 대안을 제시하는 모델입니다. 지금껏 언어 모델은 통계 기반 모델(TF-IDF), Vector Space 내 단어나 문장을 배치하는 모델(Word2Vec), Mask를 예측하는 모델(Bert)이 등장하며 변화를 불러왔습니다. 이러한 연장선에서 ELECTRA는 모델 학습 방법에 대한 또 다른 방법을 제시하고 있습니다.
+- ELECTRA는 Masked Language Model(MLM)의 비효율적인 학습 방법에 새로운 대안을 제시하는 모델임. 지금껏 언어 모델은 통계 기반 모델, Vector Space 내 단어나 문장을 배치하는 모델, Mask를 예측하는 모델이 등장하며 변화를 불러왔음.
 
-ELECTRA가 제시하는 replaced token detection(RTD) 학습 방법은 동일 환경, 동일 시간 대비 MLM 보다 더 좋은 학습 성능을 보장합니다. 동일한 학습 성능을 내기 위해서 RTD가 Masked Language Model(MLM)에 비해 더 적은 컴퓨팅 시간을 소모한다는 의미이기 때문에 더욱 효율적인 학습 방법이라 할 수 있습니다.
+- ELECTRA가 제시하는 replaced token detection(RTD) 학습 방법은 동일 환경, 동일 시간 대비 MLM 보다 더 좋은 성능을 보장함. 동일한 성능을 내기 위해서 RTD가 MLM에 비해 더 적은 컴퓨팅 시간을 소모한다는 의미이므로 효율적인 학습 방법이라 할 수 있음.
+
+- ELECTRA는 BERT를 학습시키는 새로운 방법론을 제시하는 모델이므로 BERT 구조를 이해하고 있다면 어렵지 않게 논문을 이해할 수 있음.
 
 <br/>
 <br/>
 
 ### ELECTRA 특징
 
-ELECTRA는 BERT를 학습시키는 새로운 방법론을 제시하는 모델이므로 BERT 구조를 이해하고 있다면 어렵지 않게 논문을 이해할 수 있습니다. ELECTRA를 소개하는 논문에서는 MLM 모델이 비효율적인 이유는 문장의 15%만을 학습에 활용하기 때문이라고 지적합니다. MLM 모델은 [Mask]된 토큰을 예측하는 과정에서 학습을 진행하는데, 문장의 약 15% 토큰이 임의로 선택 된 뒤 전환되므로 [Mask] 되지 않은 나머지 문장은 학습을 하지 않게 되므로 비효율이라는 것입니다.
+- MLM 모델이 비효율적인 이유는 문장의 15%만을 학습에 활용하기 때문임. 모델은 [Mask]된 토큰을 예측하는 과정에서 학습을 진행하는데, 문장의 약 15% 토큰이 임의로 선택 된 뒤 전환되므로 [Mask] 되지 않은 나머지 문장은 학습을 하지 않게 됨.
 
-이러한 비효율을 개선하고자 모델이 ELECTRA이며, 문장 내 토큰을 전부 학습할 수 있는 방법을 RTD라 부릅니다. 그리고 RTD는 아래와 절차로 진행됩니다.
-
-- Generator 모델에서 문장 토큰 중 약 15%를 바꿔 가짜 문장을 만듭니다. 이때 Generator는 기존 MLM 학습 방법대로 학습을 수행합니다. 학습을 수행하는 이유는 더 나은 가짜 문장을 만들기 위함입니다.
-- Discriminator는 모든 문장에 대해 진짜 토큰인지, 가짜 토큰인지 구별하는 과정에서 학습을 수행합니다. 이러한 학습 방법은 모든 문장을 검증해야하므로 MLM과 비교했을 때 동일한 문장 대비 더 많은 학습이 이뤄지게 됩니다. 그렇기 때문에 같은 양의 데이터, 크기라 할지라도 더 빠르게 성능이 향상이 가능한 것입니다.
-- 학습이 완료됐다면 기존의 Generator는 사용하지 않고 Discriminator를 활용합니다.
+- 이러한 비효율을 개선하고자 모델이 문장 내 토큰을 전부 학습할 수 있는 방법이 RTD임. RTD는 아래와 절차로 진행됨.
+  - Generator 모델에서 문장 토큰 중 약 15%를 바꿔 가짜 문장을 만듬. Generator는 기존 MLM 학습 방법대로 학습을 수행함.
+  - Discriminator는 모든 문장에 대해 진짜 토큰인지, 가짜 토큰인지 구별하는 과정에서 학습을 수행함.
+- 학습이 완료되면 Generator는 사용하지 않고 RTD로 학습된 Discriminator만을 활용함.
 
 <br/>
 <br/>
@@ -284,7 +281,7 @@ class Electra(nn.Module):
         """
         num_tokens: 모델 vocab_size
         mask_prob: 토큰 중 [MASK] 토큰으로 대체되는 비율
-        replace_prop:  토큰 중 [MASK] 토큰으로 대체되는 비율
+        replace_prop:  토큰 중 [MASK] 토큰으로 대체되는 비율(?????)
         mask_token_i: [MASK] Token id
         pad_token_i: [PAD] Token id
         mask_ignore_token_id: [CLS],[SEP] Token id
@@ -358,8 +355,9 @@ class Electra(nn.Module):
         """
         - Generator를 학습하여 MLM_loss 계산(combined_loss 계산에 활용)
         - Generator에서 예측한 문장을 Discriminator 학습에 활용
-        - ex) 원본 문장 : 특히 안드로이드 플랫폼 기반의 (웹)앱과 (하이)브드리앱에 초점을 맞추고 있다
-              가짜 문장 : 특히 안드로이드 플랫폼 기반의 (마이크로)앱과 (이)브드리앱에 초점을 맞추고 있다
+        - ex) 원본 문장 : ~~~
+              마스킹 문장 :
+              가짜 문장 :
         """
 
         # get generator output and get mlm loss(수정)
@@ -551,10 +549,10 @@ training_args = TrainingArguments(
 
 #### ❖ Callback 설정(선택사항)
 
-> 아래의 내용과 공식 홈페이지의 [Callback 페이지](https://huggingface.co/docs/transformers/main/en/main_classes/callback#transformers.integrations.CometCallback)를 함께 읽으면 callback에 대해 빠르게 이해할 수 있음.
+> 아래의 내용과 공식 홈페이지의 [Callback 페이지](https://huggingface.co/docs/transformers/main/en/main_classes/callback#transformers.integrations.CometCallback)를 함께 읽으면 callback에 대해 빠르게 이해할 수 있음
 
 - callback은 훈련 과정 중 Trainer API가 추가로 수행해야하는 내용을 정의하는 함수임.
-- 예로들어 step이 시작할때 마다 몇번째 step인지 print하고 싶을때 활용할 수 있음.
+- 예로들어 step을 시작할때 마다 몇번째 step인지 print하고 싶을때 활용할 수 있음.
 - callback class를 정의 한 뒤 callback이 필요한 순서를 함수로 정의하여 사용함.
   - callback이 가능한 순서는 `on_init_end`, `on_train_begin`, `on_train_end`, `on_epoch_begin`, `on_epoch_end`, `on_step_begin`, `on_substep_end`, `on_step_end`, `on_evaluate`, `on_save`, `on_log`, `on_prediction_step` 이 있음
 - callback 내부 함수는 `arg`, `state`, `control`, `logs`, `**kwargs`로 모두 동일함.

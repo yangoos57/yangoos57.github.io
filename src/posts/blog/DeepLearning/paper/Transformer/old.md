@@ -1,40 +1,42 @@
 ---
 title: "도식화로 논문 이해하기 : Transformer"
 category: "DeepLearning"
-date: "2020-10-11"
+date: "2019-10-11"
 thumbnail: "./img/transformer.png"
 desc: pytorch를 활용해 Transformer 논문을 코드로 구현하며 모델의 상세 작동원리를 설명하였다. 구현한 Transformer 모델을 활용해 학습과 평가하는 과정을 경험할 수 있도록 튜토리얼을 제작했으며, 튜토리얼을 통해 모델 내부에서 어떻게 데이터가 흐르는지, 어떠한 과정을 거쳐 입력 데이터에 대한 결과물을 산출하는지를 이해할 수 있다. 논문에 포함된 Transformer의 도식화 그림을 활용해 Transformer 구조 전반에 대한 이해에 도움을 준다.
 ---
 
-> 내용 수정중(2022.02.05)
+> 이 글은 Transformer 이론과 이를 pytorch로 구현하는 과정을 소개함.
+>
+> 모델에 대한 학습, 평가, 테스트 방법이 궁금한 경우 [Transformer from scratch](https://github.com/yangoos57/Transformer_from_scratch)을 참고
 
-### 들어가며
-
-이 글은 Transformer 논문을 pytorch로 구현하는 방법에 대해 담고 있습니다. 구현한 모델을 학습하는 방법이 궁금하신 분들은 [Transformer from scratch](https://github.com/yangoos57/Transformer_from_scratch)를 참고바랍니다.
+<br/>
 
 ### Transformer 구조
 
-이 글은 아래의 도식화를 부분화하여 설명합니다. 부분화 된 기능을 pytorch를 사용해 하나씩 구현해 나가면서 Transformer의 세부 작동원리를 이해하고자 합니다.
+- 현 NLP 모델의 조상격인 Transformer를 이해하고, Pytorch를 활용해 이를 구현하였음.
+- 아래의 도식화를 하나씩 해부하면서 Transformer의 세부 작동원리에 대해 이해할 수 있었음.
 
 <img alt='img11' src='./img/img11.png'>
 
 ### Transformer 탄생 배경
 
-Transformer 모델은 RNN을 사용해 Seq2seq(encoder+decoder 구조)을 구현했을 때 문장이 길어질수록 정확도가 떨어지는 문제를 해결하기 위해 고안됐습니다. RNN 구조는 문장 내 단어수가 많아질수록 뒷단에서 부분에서 시작 부분에 있는 단어들을 참조할 수 없었습니다. 이를 보완하고자하는 다양한 시도가 있었고 그 중 attention이라는 개념을 도입해 RNN을 도와 문장 내 모든 단어를 참고할 수 있는 방법이 개발 되었습니다. RNN이 문장의 모든 단어를 참고하는 경우 과부화를 유발하고 있으니 단어별 중요도를 계산한다면 과부화를 최소화할 수 있다 판단해 Attention이 개발된 것입니다.
+- RNN을 사용해 Seq2seq(encoder+decoder 구조)을 구현했을 때 문장이 길어질수록 정확도가 떨어지는 문제 발생
 
-이러한 시도는 성공적이었고 이에 더 나아가 RNN을 사용하지 않고 attention만을 사용해 Seq2Seq 구조를 구현한 Transformer 모델이 탄생했습니다. Transformer 모델은 문장의 시작 단어를 참조하지 못하는 문제 외에도 RNN의 다른 단점 하나를 극복했는데, attention만으로 seq2seq 모델을 구현함으로써 RNN에서는 할 수 없는 병렬 연산이 가능해졌다는 것입니다. 이러한 장점으로 인해 Transformer는 사실상 NLP 모델의 표준으로 자리잡게 됐습니다.
-
-> 현재 활용되고 있는 Bert 모델이나 GPT 모델은 모두 Transformer에서 파생된 모델입니다. 그러므로 Transformer를 이해한다면 NLP 모델의 핵심 축인 Bert, GPT 또한 자연스럽게 이해할 수 있습니다.
+- RNN 구조 상 문장 내 단어수가 많아질수록 뒷단에서 부분에서 시작 부분에 있는 단어들을 참조하지 못하는 현상이 문제의 원인
+- 이를 보완하고자 attention이라는 개념을 도입해 문장 내 모든 단어를 참고할 수 있는 방향으로 개선
+  > 모든 단어를 참고하게 되면 과부화가 걸리니 단어별 중요도를 계산해 과부화를 최소화 하는게 Attention의 목적
+- 이에 더 나아가 RNN을 사용하지 않고 attention만을 사용해 Seq2Seq 구조 구현 시도
+- attention만으로 모델을 구현함으로써 RNN에서는 할 수 없는 병렬 연산이 가능해졌음.
 
 ## Encoder
 
-Input 구조를 설명하기 전에 Transformer의 핵심인 Encoder 구조와 Decoder 구조를 먼저 살펴보도록 하겠습니다. Encoder 내부 구조는 Multi-head Attention와 Feed Forward로 구성되어 있으며 개별 과정을 반복 수행하다보면 발생할 수 있는 기울기 소실(Gradient Vanishing)을 막기위해 Add & Norm을 구성하고 있습니다. 내부의 layer들을 수행한 Input Data는 다시 윗단의 Encoder의 Input Data로 활용되게 되며, 이러한 과정을 여러차례 반복한 Input Data는 궁극적으로 Decoder 구조의 Context로서 활용됩니다. Context에 대한 설명은 Decoder 문단에서 설명하겠습니다.
-
 <img alt='encoder_block_0' src='./img/encoder_block_0.png'>
 
-## Multi-head Attention
+- RNN 구조 상 문장 내 단어수가 많아질수록 뒷단에서 부분에서 시작 부분에 있는 단어들을 참조하지 못하는 현상이 문제의 원인
+- 이를 보완하고자 attention이라는 개념을 도입해 문장 내 모든 단어를 참고할 수 있는 방향으로 개선
 
-Encoder 구조의 첫번째 구성요소인 Multi-head-Attention은 여러 개의 Self-Attention을 합친 구조를 의미합니다. 모델에서 사용할 Attention 개수를 설정하는 인자(args)를 Head라고 하며 논문에서는 8개를 기본으로 사용합니다. Multi-head Attention은 Self-Attention 8개를 연결한 것에 불과한 개념이므로 Self-Attention을 이해하는 것이 Multi-head Attention을 이해하는 것입니다.
+## Multi-head Attention
 
 <img alt='encoder_block_1' src='./img/encoder_block_1.png'>
 
@@ -51,11 +53,11 @@ Encoder 구조의 첫번째 구성요소인 Multi-head-Attention은 여러 개�
 
 ### Self-Attention이란
 
-- Attention은 token과 token 사이 중요도를 계산하는 방법을 의미
+- Attention은 token과 token 사이 연관성을 계산하는 방법을 의미
 
-- Self-Attention은 하나의 문장안에 있는 Token 간 중요도를 계산하는 방법
+- Self-Attention은 하나의 문장안에 있는 Token 간 연관성을 계산하는 방법
 
-- 다른 문장에 있는 token 간 중요도를 비교하는 것을 Cross-Attention이라 부름(Transformer에선 사용하지 않음)
+- 다른 문장에 있는 token 간 연관성을 비교하는 것을 Cross-Attention이라 부름(Transformer에선 사용하지 않음)
 
 ### Parameter 소개
 

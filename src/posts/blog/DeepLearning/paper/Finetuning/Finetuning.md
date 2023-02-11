@@ -1,5 +1,5 @@
 ---
-title: "[NLP] Domain Adaptation과 Finetuning 개념 정리"
+title: "[NLP] Domain Adaptation과 Fine-tuning 개념 정리"
 category: "DeepLearning"
 date: "2022-12-08"
 thumbnail: "./img/Fine-tuning.png"

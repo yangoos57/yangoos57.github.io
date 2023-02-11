@@ -1,54 +1,68 @@
 ---
-title: "ELECTRA 모델 구현 및 Domain Adaptation 방법 정리"
+title: "ELECTRA 학습 구조 소개 및 Domain Adaptation 수행하기"
 category: "DeepLearning"
 date: "2022-12-22"
 thumbnail: "./img/electra.png"
-desc: "pytorch를 활용해 ELECTRA 논문을 코드로 구현하며 Generator와 Descriminator 간 연결 방법 및 Replace Token Detection(RTD)에 대해 설명한다.
-Huggingface의 trainer를 활용하여 모델을 학습하는 방법을 소개하고, 이에 대한 튜토리얼을 제작해 ELECTRA 뿐만 아니라 Huggingface 사용법을 손쉽게 익힐 수 있도록 하였다. 직접 Domain Adapatation을 경험하며 ELECTRA 학습 방법 및 데이터 흐름에 대해 이해할 수 있다."
+desc: "pytorch를 활용해 ELECTRA 논문을 코드로 구현하며 Generator와 Descriminator 간 연결 방법 및 Replace Token Detection(RTD)에 대해 설명한다. Huggingface의 trainer를 활용하여 모델을 학습하는 방법을 소개하고, 이에 대한 튜토리얼을 제작해 ELECTRA 뿐만 아니라 Huggingface 사용법을 손쉽게 익힐 수 있도록 하였다. 직접 Domain Adapatation을 경험하며 ELECTRA 학습 방법 및 데이터 흐름에 대해 이해할 수 있다."
 ---
+
+### 들어가며
+
+이 글은 ELECTRA를 🤗 Transformers를 활용해 Domain Adaptation하는 방법에 대해 설명합니다. 이외에도 🤗 Transformers 개념과 Trainer, Dataset 등 기본적인 사용법 또한 포함하고 있으므로 🤗 Transformers에 대해 궁금한 경우에도 이 글을 참고하실 수 있습니다.
+
+- Domain Adaptation 개념을 알고싶다면 [[NLP] Further Pre-training 및 Fine-tuning 정리](https://yangoos57.github.io/blog/DeepLearning/paper/Finetuning/Finetuning)를 참고바랍니다.
+
+- ELECTRA 학습 구조는 [lucidrains의 electra-pytorch](https://github.com/lucidrains/electra-pytorch) 코드를 참고했으며, 🤗 Transformers로 구현하기 위해 일부 코드를 수정하였습니다.
+
+- ELECTRA Base 모델은 monologg님의 `koelectra-v-base`모델을 활용하였습니다.
+
+- ELECTRA 모델 학습에 대한 Jupyter Notebook은 [링크](https://github.com/yangoos57/Electra_for_Domain_Adaptation/blob/main/%5Btutorial%5D%20domain%20adaptation.ipynb)를 참고해주세요.
 
 ### 왜 ELECTRA인가?
 
-- ELECTRA는 Masked Language Model(MLM)의 비효율적인 학습 방법에 새로운 대안을 제시하는 모델임. 지금껏 언어 모델은 통계 기반 모델, Vector Space 내 단어나 문장을 배치하는 모델, Mask를 예측하는 모델이 등장하며 변화를 불러왔음.
+ELECTRA는 Masked Language Model(MLM)의 비효율적인 학습 방법에 새로운 대안을 제시하는 모델입니다. ELECTRA의 학습 방법인 replaced token detection(RTD)은 동일 환경, 동일 시간 대비 MLM 보다 더 좋은 학습 성능을 보장합니다. 이는 동일한 성능을 내기위해 RTD가 Masked Language Model(MLM)에 비해 더 적은 컴퓨팅 리소스를 필요로 한다는 의미이므로 ELECTRA는 학습의 효율성 측면에서 최적화를 이뤄낸 모델이라 할 수 있습니다.
 
-- ELECTRA가 제시하는 replaced token detection(RTD) 학습 방법은 동일 환경, 동일 시간 대비 MLM 보다 더 좋은 성능을 보장함. 동일한 성능을 내기 위해서 RTD가 MLM에 비해 더 적은 컴퓨팅 시간을 소모한다는 의미이므로 효율적인 학습 방법이라 할 수 있음.
+ELECTRA를 소개하는 논문에서는 MLM 모델이 비효율적인 이유에 대해 문장의 15%만이 학습에 활용하기 때문이라 지적합니다. MLM 모델은 [Mask]된 토큰을 예측하는 과정에서 학습을 진행하는데, 문장의 약 15% 토큰이 임의로 선택 된 뒤 전환되므로 [Mask] 되지 않은 나머지 85% 문장은 학습을 하지 않게 되어 비효율이 발생한다는 것입니다.
 
-- ELECTRA는 BERT를 학습시키는 새로운 방법론을 제시하는 모델이므로 BERT 구조를 이해하고 있다면 어렵지 않게 논문을 이해할 수 있음.
+이러한 비효율을 개선하고자 등장한 방법을 적용한 모델이 ELECTRA이며, 비효율을 개선하는 방법을 replaced token detection(RTD)라 부릅니다. RTD는 아래와 절차로 진행됩니다.
 
-<br/>
-<br/>
+- Generator 모델에서 문장 토큰 중 약 15%를 바꿔 가짜 문장을 만듭니다. 이때 Generator는 기존 MLM 학습 방법대로 학습을 수행합니다. Generator가 학습을 수행하는 이유는 더 나은 가짜 문장을 만들기 위함입니다.
 
-### ELECTRA 특징
+- Discriminator는 모든 문장에 대해 진짜 토큰인지, 가짜 토큰인지 구별하는 과정에서 학습을 수행합니다. 이러한 학습 방법은 모든 문장을 검증해야하므로 MLM과 비교했을 때 동일한 문장 대비 더 많은 학습이 이뤄지게 됩니다. 그렇기 때문에 같은 양의 데이터, 크기라 할지라도 더 빠른 성능 향상이 가능한 것입니다.
 
-- MLM 모델이 비효율적인 이유는 문장의 15%만을 학습에 활용하기 때문임. 모델은 [Mask]된 토큰을 예측하는 과정에서 학습을 진행하는데, 문장의 약 15% 토큰이 임의로 선택 된 뒤 전환되므로 [Mask] 되지 않은 나머지 문장은 학습을 하지 않게 됨.
+- 학습을 완료했다면 Generator는 사용하지 않고 Discriminator를 기본 모델로 활용합니다.
 
-- 이러한 비효율을 개선하고자 모델이 문장 내 토큰을 전부 학습할 수 있는 방법이 RTD임. RTD는 아래와 절차로 진행됨.
-  - Generator 모델에서 문장 토큰 중 약 15%를 바꿔 가짜 문장을 만듬. Generator는 기존 MLM 학습 방법대로 학습을 수행함.
-  - Discriminator는 모든 문장에 대해 진짜 토큰인지, 가짜 토큰인지 구별하는 과정에서 학습을 수행함.
-- 학습이 완료되면 Generator는 사용하지 않고 RTD로 학습된 Discriminator만을 활용함.
+### Domain Adaptation 이해하기
 
-<br/>
-<br/>
+Domain Adaptation은 Pre-trained 모델을 특정 분야(Domain)에 적합한 모델로 개선하기 위한 과정을 의미합니다. Domain Adaptation은 종종 Further Pre-training이라는 용어로도 사용되곤 하는데, 이는 Domain Adaptation을 수행하는 방법이 Pre-trained Model을 학습하는 방법과 동일하므로 Pre-training을 지속한다는 의미를 나타내기 위해 사용합니다.
 
-### Domain Adaptation을 위한 ELECTRA 학습구조 설계
+Domain Adaptation의 유의어가 Further Pre-training이라는 점에서 알 수 있듯, Domain Adaptation을 구현함으로서 Pre-training이 진행되는 과정을 이해할 수 있습니다. 따라서 이 글은 ELECTRA에 대해 Domain Adaptation을 수행하는 방법을 설명하지만 사용자에 필요에 따라선 이 방법을 Pre-training을 위해 적용해 새로운 모델을 만들 수도 있습니다.
 
-> Domain Adaptation에 대한 이해가 필요한 경우 [[NLP] Further Pre-training 및 Fine-tuning 정리
-> ](https://yangoos57.github.io/blog/DeepLearning/paper/Finetuning/Finetuning)를 참고
-
-- 학습 구조는 [lucidrains의 electra-pytorch](https://github.com/lucidrains/electra-pytorch) 코드를 활용했으며, Huggingface와 함께 사용할 수 있도록 일부 코드를 수정하였음.
-- Base 모델로 monologg님의 `koelectra-v-base`모델을 활용했음.
-- 모델 학습 및 평가에 대한 `튜토리얼`은 [Electra_for_Domain_Adaptation](https://github.com/yangoos57/Electra_for_fine_tuning)를 참고
-- 모든 코드는 `🤗 Transformers`와 `pytorch` 를 기반으로 작성하였음.
+> Domain Adaptation에 대한 추가 설명이 필요한 경우 [[NLP] Domain Adaptation과 Finetuning 개념 정리](https://yangoos57.github.io/blog/DeepLearning/paper/Finetuning/Finetuning/)을 참고해주세요.
 
 <br/>
 
-### 1. Huggingface Transformers로 Pre-trained Model 불러오기
+## ELECTRA 학습 구조 제작하기
 
-- Discriminator를 불러오는 모듈은 `ElectraForPreTraining`을 사용해야하고, Generator를 불러오는 모듈은 `ElectraForMaskedLM` 을 사용해야 함.
+앞서 ELECTRA 모델은 RTD 방법을 적용한 모델을 의미하며 RTD는 Generator가 만든 가짜 문장을 Discriminator가 진위여부를 판별하는 과정에서 학습하는 방법이라 설명했습니다. 이제는 RTD 구현에 필요한 Generator와 Discriminator를 🤗 Transformers로 불러오는 방법과 RTD를 구현하는 방법에 대해서 설명하도록 하겠습니다.
 
-- `ElectraForPreTraining`는 Discriminator가 학습에 필요한 token의 진위여부를 판별할 수 있는 기능을 제공하고, `ElectraForMaskedLM`는 Generator가 가짜 문장을 생성하기 위해 필요한 토큰을 생성하는 기능을 제공하기 때문임.
+### 🤗 Transformers로 Generator, Discriminator 불러오기
 
-- 이를 이해하기 위해선 HuggingFace의 기본 구조를 이해해야함.
+🤗 Transformers로 Generator, Discriminator를 만들기 전에 🤗 Transformers이 어떻게 활용되는지에 대해 간단히 설명하도록 하겠습니다.
+
+🤗 Transformers의 장점은 수행해야 하는 Task에 적합한 구조를 쉽게 불러올 수 있는 것에 있습니다. 🤗 Transformers에서 불러올 수 있는 구조는 Bert의 경우 `MaskedLM`, `SequenceClassification`, `MultipleChoice`, `TokenClassification`, `QuestionAnswering` 이 있습니다.(언어 모델별로 불러올 수 있는 구조는 상이합니다.) 이러한 구조들은 `BaseModel`을 기반으로 하되 출력 상단(output-Layer) 구조를 변경하는 방법으로 구성되어 있습니다. 만약 기존에 만들어진 Layer를 사용하지 않고 직접 Layer를 구성해야한다면 필요한 Layer를 생성한 뒤 BaseModel을 불러와 연결하는 방법을 사용할 수 있습니다.
+
+<img src='img/img2.png' alt='img2'>
+
+<br/>
+<br/>
+<br/>
+
+이렇게 출력 상단 구조가 다양한 이유는 Task 별로 필요한 Output 형태가 다르기 때문입니다. 예로들어 MaskedLM 구조의 경우 input data에 존재하는 [MASK]에 들어갈 단어들의 순위를 Output으로 출력해야합니다. 반면 Sequence Classification은 문장 유형을 분류하거나 확률을 예측해야하는 구조에서 활용해야 하므로 0~1 범위의 값(Regression 모델), 또는 정수값(Classification 모델)의 Outuput이 필요할 때 사용합니다.
+
+🤗 Transformer의 기본 구조에 대해 어느정도 파악했으니 우리가 만들어야 하는 모델이 어떠한 구조를 가져야 하는지로 주제를 좁혀보겠습니다. ELECTRA 학습에 필요한 Generator와 Discriminator를 🤗 Transformer에서 불러오기 위해선 `ElectraForMaskedLM`와 `ElectraForPreTraining`를 사용해야 합니다.
+
+`ElectraForMaskedLM`는 Generator가 가짜 문장을 생성하기 위해 필요한 토큰을 생성하는 기능을 제공하며 `ElectraForPreTraining`는 Discriminator가 학습에 필요한 token의 진위여부를 판별할 수 있는 기능을 제공합니다.
 
 ```python
 
@@ -62,9 +76,14 @@ discriminator = ElectraForPreTraining.from_pretrained("monologg/koelectra-base-v
 
 ```
 
-- ElectraForMaskedLM 모델의 코드가 구현된 것을 보면 `__init__`에서 electra 모델을 Transformers의 ElectraModel 모듈에서 불러와 사용하는 것을 알 수 있음.
+<br/>
+<br/>
 
-- ElectraModel의 Output은 Encoder 마지막단의 output('last-hidden-state')인데, 이 값이 generator_predictions layer와 generator_lm_head layer로 이어져 들어가 `ElectraForMaskedLM` output을 산출하는 구조임을 확인 할 수 있음.
+#### ❖ ElectraForMaskedLM 구조 살펴보기(Generator)
+
+아래 코드는 🤗 Transformers의 ElectraForMaskedLM Class를 복사한 것입니다. `__init__` 매서드를 ElectraForMaskedLM는 보면 electra 모델을 🤗 Transformers의 ElectraModel 모듈에서 불러와 사용하는 것을 알 수 있습니다.
+
+ElectraModel의 Output은 Encoder 마지막단의 output을 의미하는 'last-hidden-state'을 반환합니다. ElectraModel의 'last-hidden-state'는 generator_predictions layer와 generator_lm_head layer를 거쳐 [MASK] 토큰에 알맞은 토큰을 확률로 나타냅니다.
 
 ```python
 
@@ -119,7 +138,14 @@ class ElectraForMaskedLM(ElectraPreTrainedModel):
 
 ```
 
-- `ElectraForPreTraining` 도 마찬가지로 `ElectraModel` 모듈을 베이스로 하고 문장 내 개별 token이 진짜 token인지를 구분하는 classification layer가 연결되어 있음. 개별 토큰의 진위여부를 0과 1로 판단함. output이 1인 경우 모델이 가짜 토큰으로 판별함을 의미함. 개별 token에 대한 진위여부를 판단하므로 shape는 (batch_size, src_token_len)임.
+<br/>
+<br/>
+
+#### ❖ ElectraForPreTraining 구조 살펴보기(Discriminator)
+
+Discriminator가 수행하는 토큰의 진위여부 판별을 수행하는 기능은 `ElectraForPreTraining`이 담당합니다. ElectraForPreTraining의 `__init__` 매서드도 마찬가지로 `ElectraModel` 모듈을 베이스로 하고있으며, 문장 내 개별 token의 진위 여부를 판별하는 classification layer가 연결되어 있음을 확인할 수 있습니다.
+
+이때 Classification Layer는 개별 토큰의 진위여부를 0과 1로 판단하며 output이 1인 경우 모델이 가짜 토큰으로 판별함을 의미합니다.
 
 ```python
 
@@ -171,31 +197,29 @@ class ElectraForPreTraining(ElectraPreTrainedModel):
 
 <br>
 
-> **학습을 완료한 경우에는 `ElectraForPreTraining` 내부에 있는 ElectraModel를 추출해 finetuning에 활용함. 학습 완료한 모델에서 ElectraModel을 추출하는 방법은 아래와 같음.**
->
-> ```python
-> discriminator = ElectraForPreTraining.from_pretrained('...')
->
-> # Electra Model 추출
-> trained_electra = discriminator.electra
->
-> # 추출된 electra 모델은 Encoder 출력 끝단(=last_hidden_states)를 output으로 제공함.
-> # ElectraModel을 활용해 Finetuning 수행
-> ```
+#### ❖ 모델을 학습한 다음은?
+
+ELECTRA 학습 구조에 대한 설명을 이어나가기 전에, 학습을 완료한 다음 모델을 사용하는 방법에 대해 우선적으로 설명하겠습니다. 실제 학습을 수행하기도 전에 학습 이후를 소개하는 이유는 앞서 설명한 🤗 Transformer의 구조를 복습 차원에서 다시 한번 설명하기 위함입니다.
+
+지금까지 모델 학습에 필요한 핵심인 Discriminator와 Generator를 불러오는 방법에 대해 배웠습니다. 그리고 이러한 모델들은 Electra Model에 layer가 올라간 구조임을 내부 코드를 통해 이해했습니다. 모델 학습을 완료했다면, Electa Model에 Layer를 연결했던 것과 반대로, 연결된 Layer를 제거해 Electra Model만을 활용해야합니다. 이때 Discriminator만 사용하므로 `ElectraForPreTraining` 내부에 있는 ElectraModel만을 추출해서 사용합니다. 그리고 이렇게 추출한 모델은 수행해야하는 Task에 적합한 Layer에 연결해 Fine-tuning하여 활용하게 됩니다.
+
+```python
+discriminator = ElectraForPreTraining.from_pretrained('...')
+
+# Electra Model 추출하기
+trained_electra = discriminator.electra
+```
 
 <br/>
+<br/>
 
-### 2. 학습 모델 설계하기
+### ELECTRA 학습 구조 설계하기
 
-- Transformers에서 불러온 Generator와 Discriminator를 학습하기 위해서는 학습용 모델 설계가 필수임.
-  > 해당 모델은 Domain Adaptation 또는 pre-traing from scratch를 위한 모델이며, Fine tuning을 수행할 경우 아래의 학습 모델 설계 없이 discriminator만 활용하면 됨.
-- 아래의 학습 모델은 아래 논문의 구조를 구현한 것임. electra의 학습 방식은 세 단계로 구분할 수 있음.
+본격적으로 ELECTRA 학습 구조를 설계하고 모델이 어떠한 방법으로 학습이 진행되는지 살펴보겠습니다. 아래 그림은 ELECTRA 논문에 있는 RTD의 구조를 나타냅니다. 여기서 주의할 점은 아래 도식화는 매우 간단해 보이지만 실제로 구현하는 과정은 생각보다 간단하지 않다는 것입니다. ELECTRA 학습 구조는 크게 3단계로 구분되며 1단계는 input data masking, 2단계는 Generator 학습 및 fake sentence 생성, 3단계는 Discriminator 학습이라 할 수 있습니다. 단계별 설명은 코드 주석을 참고하시기 바랍니다.
 
 <img src='img/electra_sm.png'/>
 
-- 1단계 : input data masking
-- 2단계 : Generator 학습 및 fake sentence 생성
-- 3단계 : Discriminator 학습
+<br/>
 
 ```python
 import math
@@ -281,7 +305,7 @@ class Electra(nn.Module):
         """
         num_tokens: 모델 vocab_size
         mask_prob: 토큰 중 [MASK] 토큰으로 대체되는 비율
-        replace_prop:  토큰 중 [MASK] 토큰으로 대체되는 비율(?????)
+        replace_prop:  토큰 중 [MASK] 토큰으로 대체되는 비율
         mask_token_i: [MASK] Token id
         pad_token_i: [PAD] Token id
         mask_ignore_token_id: [CLS],[SEP] Token id
@@ -290,15 +314,16 @@ class Electra(nn.Module):
         temperature: gumbel_distribution에 활용되는 arg, 값이 높을수록 모집단 분포와 유사한 sampling 수행
         """
 
+        # Generator, Discriminator, Tokenizer
         self.generator = generator
         self.discriminator = discriminator
         self.tokenizer = tokenizer
 
         # mlm related probabilities
-        self.mask_prob = mask_prob
-        self.replace_prob = replace_prob
+        self.mask_prob = mask_prob # 0.15
+        self.replace_prob = replace_prob # 0.85
 
-        self.num_tokens = num_tokens
+        self.num_tokens = num_tokens # 35000
 
         # token ids
         self.pad_token_id = pad_token_id
@@ -309,8 +334,10 @@ class Electra(nn.Module):
         self.temperature = temperature
 
         # loss weights
-        self.disc_weight = disc_weight
-        self.gen_weight = gen_weight
+        # Discriminor Weight이 50인 이유는 오차에 대한 Loss가 Generator 보다 작기 때문
+        # 따라서 적절한 학습을 수행하기 위해 Weight을 통해 Discriminator와 Generator의 차이를 줄여줌
+        self.disc_weight = disc_weight # 50.0
+        self.gen_weight = gen_weight # 1.0
 
     def forward(self, input_ids, **kwargs):
 
@@ -355,9 +382,8 @@ class Electra(nn.Module):
         """
         - Generator를 학습하여 MLM_loss 계산(combined_loss 계산에 활용)
         - Generator에서 예측한 문장을 Discriminator 학습에 활용
-        - ex) 원본 문장 : ~~~
-              마스킹 문장 :
-              가짜 문장 :
+        - ex) 원본 문장 : 특히 안드로이드 플랫폼 기반의 (웹)앱과 (하이)브드리앱에 초점을 맞추고 있다
+              가짜 문장 : 특히 안드로이드 플랫폼 기반의 (마이크로)앱과 (이)브드리앱에 초점을 맞추고 있다
         """
 
         # get generator output and get mlm loss(수정)
@@ -400,14 +426,9 @@ class Electra(nn.Module):
             disc_logits_reshape[non_padded_indices], disc_labels[non_padded_indices]
         )
 
-        # combined loss 계산
-        # disc_weight을 50으로 주는 이유는 discriminator의 task가 복잡하지 않기 떄문임.
-        # mlm loss의 경우 vocab_size(=35000) 만큼의 loos 계산을 수행하지만
-        # disc_loss의 경우 src_token_len 만큼의 loss 계산을 수행한만큼
-        # loss 값에 큰 차이가 발생함. disc_weight은 이를 보완하는 weight임.
         combined_loss = (self.gen_weight * mlm_loss + self.disc_weight * disc_loss,)
 
-        # ------ 모델 성능 및 학습 과정을 추적하기 위한 지표(Metrics) 설계 --------#
+        # ------ 모델 성능 및 학습 과정을 추적하기 위한 지표(Metrics) 설계(선택사항) --------#
 
         with torch.no_grad():
             # gen mask 예측
@@ -439,15 +460,16 @@ class Electra(nn.Module):
 
 <br/>
 
-### 3. Huggingface Datasets으로 학습 데이터 불러오기
+### 🤗 Datasets으로 학습 데이터 불러오기
 
-- 이 글에서는 Hugging face의 Trainer API를 활용해 모델을 학습할 예정임. Trainer API를 사용한다면 데이터를 Huggingface의 Datasets으로 불러오는 것을 강력하게 권함.
-- pytorch의 Dataset을 활용할 수 있긴 하지만 Trainer와 함께 사용하기에는 원인을 찾기 힘든 에러가 많아 디버깅에 어려움이 있음.
+ELECTRA 학습 구조를 설계했으니 이제 Domain Adaptation에 필요한 데이터셋을 불러오겠습니다. 이 글에서는 🤗 Transformers의 Trainer API를 활용해 모델을 학습할 예정이므로 🤗 Datasets을 활용합니다. Trainer에 pytorch의 Dataset을 사용하는데 문제는 없지만, 개인적인 경험을 비추어 봤을 때 원인을 찾기 어려운 에러로 인해 디버깅하기 어려워 추천하는 조합은 아닙니다.
+
+학습에 활용하는 데이터는 [링크](https://github.com/yangoos57/Electra_for_Domain_Adaptation)에서 다운받을 수 있습니다.
 
 ```python
 from datasets import load_dataset
 
-# local file을 불러오고 싶을땐 '확장자명', '경로'를 적으면 됨
+# local file을 불러오고 싶을땐 '확장자명', '경로' 적기
 train = load_dataset('csv',data_files='data/book_train_128.csv')
 validation = load_dataset('csv',data_files='data/book_validation_128.csv')
 
@@ -460,12 +482,16 @@ train_data_set = train['train'].map(tokenize_function,batch_size=True)
 validation_data_set = validation['train'].map(tokenize_function,batch_size=True)
 ```
 
-- datasets 기본 매서드 소개
+<br/>
+<br/>
+<br/>
+
+**datasets 기본 매서드 소개**
 
 ```python
 train = load_dataset('csv',data_files='data/book_train_128.csv')
 
-train
+print(train)
 
 >>> DatasetDict({
     train: Dataset({
@@ -479,6 +505,8 @@ train
 # column 제거
 train = train.remove_columns('Unnamed: 0')
 
+print(train)
+
 >>> DatasetDict({
     train: Dataset({
         features: ['sen'],
@@ -491,6 +519,8 @@ train = train.remove_columns('Unnamed: 0')
 # train 데이터셋으로 이동
 train_data_set = train['train']
 
+print(train_data_set)
+
 >>> Dataset({
     features: ['Unnamed: 0', 'sen'],
     num_rows: 175900
@@ -499,38 +529,51 @@ train_data_set = train['train']
 #----------
 
 # 데이터 불러오기
-train_data_set[0]
+print(train_data_set[0])
 
 >> {'sen': '이 책의 특징ㆍ코딩의 기초 기초수학 논리의 ... 기초수학'}
 
 #----------
 
 # 데이터 추출
-train_data_set[0]['sen']
+print(train_data_set[0]['sen'])
 
 >>> '이 책의 특징ㆍ코딩의 기초 기초수학 논리의 ... 기초수학'
 
 #----------
 
 # type 확인
-train_data_set.feature
+print(train_data_set.feature)
 
 >>> {'sen': Value(dtype='string', id=None)}
 
 #----------
 
 # 저장
-train_data_set.to_csv('')
+print(train_data_set.to_csv(''))
 
 ```
 
 <br/>
+<br/>
 
-### 4. Transformers Trainer API로 모델 학습하기
+### 🤗 Transformers Trainer로 모델 학습하기
 
-#### ❖ 훈련 옵션 설정(선택사항)
+학습에는 🤗 Transformers Trainer를 활용합니다. 실제 학습을 설명하기 전 🤗 Transformers Trainer 사용법에 익숙하지 않은 사용자들을 위해 Trainer에 대한 기본 사용법과 기능에 대해 간략하게 소개하고자 합니다. 지금부터 설명할 내용은 Trainer를 사용하는데에 필수로 설정해야하는 값은 아니지만 Trainer를 보다 효과적으로 사용할 수 있는 방법들이므로 처음은 이러한 기능들이 있다 정도로 이해한 뒤 실제 필요할 때 참고해서 활용하시면 되겠습니다.
 
-훈련에 사용되는 모든 Argument를 수정할 수 있음. 이중 `logging_steps` 에 대해서만 설명하겠음. step은 1회 batch 진행을 의미함. logging_steps = 2는 2회의 step이 끝나면 log를 print 하라는 명령어임. log에 대한 내용은 callback 함수를 설명하며 다루겠음.
+#### ❖ TrainingArguments(선택사항)
+
+TrainingArguments를 활용하면 Trainer에 적용되는 모든 Arguments를 수정할 수 있습니다. 이중 자주 쓰이는 몇가지 Arguments에 대해서 소개하겠습니다.
+
+- `output_dir` 모델을 저장하는 공간입니다. Trainer는 따로 설정하지 않으면 기본 값으로 500회 step을 수행하면 모델을 자동 저장합니다.
+
+- `per_device_eval_batch_size` 평가(evaluation) 시 batch 1회에 학습하는 문장 개수를 의미합니다.
+- `per_device_train_batch_size` 학습(train) 시 batch 1회에 학습하는 문장 개수를 의미합니다.
+- `logging_steps` Trainer에서 step은 batch 1회를 의미합니다. logging_steps = 2라는 의미는 2회의 step이 끝나면 log를 print 하라는 명령어입니다. log에 대한 내용은 callback 함수를 설명하며 다루겠습니다.
+- `num_train_epochs` 데이터 학습 횟수를 의미합니다.
+- `evaluation_strategy` evaluation을 수행하는 시기를 결정합니다. 'step'과 'epoch'가 있으며 step은 eval_steps에서 설정한 단계에서 실행되며 'epoch'는 매 epoch가 종료되면 실행됩니다.
+
+> 이외의 arguments는 [TrainingArguments 페이지](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)를 참고 바랍니다.
 
 ```python
 from transformers import TrainingArguments
@@ -541,56 +584,18 @@ training_args = TrainingArguments(
     per_device_train_batch_size=8,
     logging_steps=2,
     num_train_epochs=2,
+    eval_steps = 100
     evaluation_strategy='steps'
 )
 ```
 
 <br/>
 
-#### ❖ Callback 설정(선택사항)
+#### ❖ Callback(선택사항)
 
-> 아래의 내용과 공식 홈페이지의 [Callback 페이지](https://huggingface.co/docs/transformers/main/en/main_classes/callback#transformers.integrations.CometCallback)를 함께 읽으면 callback에 대해 빠르게 이해할 수 있음
+callback은 훈련 과정 중 Trainer API가 추가로 수행해야하는 내용을 정의하는 함수입니다. 간단한 예시를 들자면 step이 시작할때 마다 현재가 몇번째 step인지 print하는 기능을 구현할 수 있습니다. Callback은 필수로 설정해야하는 항목은 아니므로 학습 내부에 어떤 기능 구현이 필요한 경우에만 활용하면 됩니다.
 
-- callback은 훈련 과정 중 Trainer API가 추가로 수행해야하는 내용을 정의하는 함수임.
-- 예로들어 step을 시작할때 마다 몇번째 step인지 print하고 싶을때 활용할 수 있음.
-- callback class를 정의 한 뒤 callback이 필요한 순서를 함수로 정의하여 사용함.
-  - callback이 가능한 순서는 `on_init_end`, `on_train_begin`, `on_train_end`, `on_epoch_begin`, `on_epoch_end`, `on_step_begin`, `on_substep_end`, `on_step_end`, `on_evaluate`, `on_save`, `on_log`, `on_prediction_step` 이 있음
-- callback 내부 함수는 `arg`, `state`, `control`, `logs`, `**kwargs`로 모두 동일함.
-
-  - arg는 훈련 옵션으로 설정한 값을 불러옴.
-  - state는 현재 step, epoch 등 진행 상태에 대한 값을 불러옴
-  - control은 훈련 과정을 통제하는 변수를 불러옴
-  - logs는 loss, lr, epoch 등 기본적인 정보를 불러옴
-    ```python
-    # logs output
-    {'loss': 1.5284, 'learning_rate': 4.995452064762598e-05, 'epoch': 0.0}
-    ```
-  - `**kwargs` 는 model, tokenizer, optimizer, dataloader 등을 불러 올 수 있음.
-
-    ```python
-    ### trainer_callback.py 참고
-
-    class CallbackHandler(TrainerCallback):
-        """Internal class that just calls the list of callbacks in order."""
-
-        def __init__(self, callbacks, model, tokenizer, optimizer, lr_scheduler):
-            self.callbacks = []
-            for cb in callbacks:
-                self.add_callback(cb)
-            # kwargs로 불러올 수 있는 함수들
-            self.model = model
-            self.tokenizer = tokenizer
-            self.optimizer = optimizer
-            self.lr_scheduler = lr_scheduler
-            self.train_dataloader = None
-            self.eval_dataloader = None
-    ```
-
-- 미리 정의 된 Callback을 사용할 수도 있음.
-  - Transformers 라이브러리에서 해당 callback명을 불러와 사용
-  - `ProgressCallback` 은 on_train_begin 단계에서 진행 상태바를 callback하도록 설정
-  - `PrinterCallback` 은 on_log 순서에서 logs 내용을 callback하도록 설정
-  - `EarlyStoppingCallback` 은 on_evaluate 순서에서 EarlyStop을 callback하도록 설정
+사용 방법은 아래 코드처럼 callback class를 정의하고 TrainerCallback을 상속받은 뒤 callback이 필요한 단계를 함수명으로 정의해 사용하면 됩니다. callback 수행이 가능한 단계는 `on_init_end`, `on_train_begin`, `on_train_end`, `on_epoch_begin`, `on_epoch_end`, `on_step_begin`, `on_substep_end`, `on_step_end`, `on_evaluate`, `on_save`, `on_log`, `on_prediction_step` 이 있습니다.
 
 ```python
 from transformers import TrainerCallback
@@ -598,8 +603,8 @@ from transformers import TrainerCallback
 # custom callback 만들기, 이때 TrainerCallback을 상속 받아야함.
 class myCallback(TrainerCallback):
 
+  # step이 시작할때 아래 코드 실행
   def on_step_begin(self, args, state, control, logs=None, **kwargs):
-    # step은 1회 batch 진행을 의미함. step의 시작일 때 아래의 내용을 실행
 
       if state.global_step % args.logging_steps == 0:
         # state는 현재 step, epoch 등 진행 상태에 대한 값을 불러옴
@@ -612,22 +617,53 @@ class myCallback(TrainerCallback):
 
 <br/>
 
-#### ❖ Custom Trainer(선택사항)
+이때 callback 함수를 정의할 때의 arguments는 `args`, `state`, `control`, `logs`, `**kwargs`를 사용 할 수 있습니다. 개별 arguments를 통해 불러올 수 있는 옵션은 다음과 같습니다.
 
-- Trainer를 필요에 맞게 수정할 수 있음. optimizer 설정, loss 계산 등 훈련 진행 방법에 대한 방법을 수정하는데도 사용하지만, 모델이 정확한 예측을 수행하는지 아래와 같은 방법으로 출력이 필요한 경우에도 사용할 수 있음.
+- `args`는 앞서 TrainerArguments에서 설정한 값을 불러올 때 사용할 수 있습니다. 코드 예시에 나온 방법처럼 args.logging_steps처럼 사용하면 됩니다.
 
-  ```js
-  0번째 epoch 진행 중 ------- 0번째 step 결과
-  input 문장 : 장 수학 기호 수식에 많이 쓰이는 그리스 알 [MASK] [MASK] [MASK] 읽고 쓰는 법을 배웁니다
-  output 문장 : 장 수학 기호 수식에 많이 쓰이는 그리스 알 [##파] [##벳] [##을]을 쓰는 법을 배웁니다
+- `state`는 현재 step, epoch 등 진행 상태에 대한 값을 불러옵니다. 세부 parameter는 [TrainerState 페이지](https://huggingface.co/docs/transformers/v4.26.1/en/main_classes/callback#transformers.TrainerState)를 참고하세요
 
-  0번째 epoch 진행 중 ------- 20번째 step 결과
-  input 문장 : [MASK]이 출간된지 꽤 됬다고 생각하는데 실습하는데 전혀 [MASK]없습니다
-  output 문장 : [책]이 출간된지 꽤 됬다고 생각하는데 실습하는데 전혀 [문제]없습니다
+- `control`은 훈련 과정을 통제하는 변수를 불러옵니다. 세부 parameter는 [TrainerControl 페이지](https://huggingface.co/docs/transformers/v4.26.1/en/main_classes/callback#transformers.TrainerControl)를 참고하세요
 
+- `logs`는 loss, learning_rate, epoch를 불러올 수 있습니다.
+
+  ```python
+  # logs output
+  {'loss': 1.5284, 'learning_rate': 4.995452064762598e-05, 'epoch': 0.0}
   ```
 
-- Train 단계에서 모델에 input data를 넣고 output data를 추출하는 과정은 compute_loss 매서드에서 이뤄짐. 따라서 compute_loss 매서드를 덮어쓰기하여 필요한 데이터를 활용할 수 있음.
+- 이 외에도 `model`, `tokenizer`, `optimizer`, `dataloader` 등을 함수 내부로 불러와 사용할 수도 있습니다.
+
+Callback을 커스터마이징 하는 것 외에도 기본적으로 구현된 Callback을 사용할 수도 있습니다.
+
+- `ProgressCallback` 은 on_train_begin 단계에서 진행 상태바를 callback하도록 설정합니다.
+- `PrinterCallback` 은 on_log 순서에서 logs 내용을 callback하도록 설정합니다.
+- `EarlyStoppingCallback` 은 on_evaluate 순서에서 EarlyStop을 callback하도록 설정합니다.
+- `MLFlowCallback`은 logs를 mlflow로 보내는 기능을 수행합니다.
+  > 추가적인 Callback은 [Callbacks 페이지](https://huggingface.co/docs/transformers/main/en/main_classes/callback#callbacks)를 참고하세요.
+
+<br/>
+
+#### ❖ Custom Trainer(선택사항)
+
+Callback을 커스터마이징해서 사용한 것처럼 Trainer 또한 사용자의 필요에 맞게 커스터마이징이 가능합니다. 이때 optimizer 설정, loss 계산 등 학습 방법을 수정하는데도 사용할 수 있지만, 아래와 같이 모델이 예측을 수행하는 과정 하나하나를 출력해보고 싶은 경우와 같이 어떠한 방법으로도 활용할 수 있습니다.
+
+아래 예시는 Generator가 실제 학습하는 과정을 이해하기 쉽도록 출력한 결과물입니다. Trainer의 내부 매서드를 커스터마이징 하면 모델이 학습하는 과정에 접근할 수 있으므로 이와 같은 기능도 구현해 활용할 수 있습니다.
+
+```js
+0번째 epoch 진행 중 ------- 0번째 step 결과
+input 문장 : 장 수학 기호 수식에 많이 쓰이는 그리스 알 [MASK] [MASK] [MASK] 읽고 쓰는 법을 배웁니다
+output 문장 : 장 수학 기호 수식에 많이 쓰이는 그리스 알 [##파] [##벳] [##을]을 쓰는 법을 배웁니다
+
+0번째 epoch 진행 중 ------- 20번째 step 결과
+input 문장 : [MASK]이 출간된지 꽤 됬다고 생각하는데 실습하는데 전혀 [MASK]없습니다
+output 문장 : [책]이 출간된지 꽤 됬다고 생각하는데 실습하는데 전혀 [문제]없습니다
+
+```
+
+위와 같이 모델이 실제 학습하는 과정을 시각적으로 추적하고 싶은 경우 compute_loss 매서드 내부를 수정해야합니다. 이는 Trainer 내부에서 model이 실제 작동하는 단계가 compute_loss 매서드에서 진행되기 때문입니다. 아래 코드를 보면 알 수 있듯 compute_loss는 모델과 input data를 args로 받고 내부 로직에 의해서 loss를 계산한 다음 이를 return하는 함수입니다. compute_loss 내부는 input data와 model의 output data를 동시에 접근할 수 있는 유일한 매서드 이므로 모델과 관련된 기능을 추가하고 싶은 경우 compute_loss를 활용해야합니다.
+
+아래 코드는 기존 compute_loss에 위의 모델 출력 결과를 생성하는 코드를 추가한 것입니다. 이때 `############## 모델 학습 과정 확인을 위한 코드 추가` 다음에 추가된 로직이 모델 출력 결과를 생성합니다.
 
 ```python
 class customtrainer(Trainer):
@@ -659,7 +695,7 @@ class customtrainer(Trainer):
             # We don't use .loss here since the model may return tuples instead of ModelOutput.
             loss = outputs["loss"] if isinstance(outputs, dict) else outputs[0]
 
-        # ############# 모델 학습 과정 확인을 위한 코드 추가
+        ############## 모델 학습 과정 확인을 위한 코드 추가
 
         if self.state.global_step % self.args.logging_steps == 0:
             # self.state.global_step = 현 step 파악
@@ -710,27 +746,23 @@ class customtrainer(Trainer):
 
 <br/>
 
-#### ❖ Trainer 설정
+### 모델 학습하기
 
-- 앞서 설정했던 옵션, 데이터셋, callback 함수 등을 trainer로 통합하는 과정임.
-- customtrainer를 Trainer로 사용했고, 모델 학습 과정 확인 단계에서 tokenizer가 필요하므로 tokenizer를 포함했음.
-- callback 함수는 1개를 불러오더라도 list 타입으로 불러와야함.
-- trainer를 정의한 뒤 .train() 매서드를 실행하면 학습 시작
+이제 모델을 학습하기 위해 필요한 데이터셋, ELECTRA 학습 구조, Trainer 사용에 필요한 설정값들을 모두 설명했으니 이를 활용해 학습을 진행하겠습니다. 앞서 생성했던 customtrainer에 Electra 학습 구조(model)과 불러왔던 train_dataset, eval_dataset 그리고 args, callbacks, tokenizer 등을 arguments로 넣습니다. 이때 주의할 점은 callback 함수는 하나를 사용하더라도 list에 넣어 불러와야 합니다.
+
+아래와 같이 custom trainer를 정의한 뒤 .train() 매서드를 실행하면 학습을 시작합니다. 학습을 완료했다면 `모델을 학습한 다음은?` 문단에서 설명한 바와 마찬가지로 Discriminator에서 ElectraModel을 추출하여 활용합니다.
 
 ```python
 trainer = customtrainer(
     model=model.to(device),
     train_dataset=train_data_set,
     eval_dataset=validation_data_set,
-    data_collator=data_collator_BERT,
     args=training_args,
     tokenizer=tokenizer,
-    callbacks=[myCallback,PrinterCallback],
+    callbacks=[myCallback],
 )
 
 trainer.train()
 ```
-
-- Trainer는 학습 과정과 Training loss를 한눈에 볼 수 있도록 interface를 지원함.
 
 <img src='img/interface.png'/>
