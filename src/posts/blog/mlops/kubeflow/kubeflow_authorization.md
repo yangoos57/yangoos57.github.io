@@ -133,7 +133,7 @@ desc: "이 글은 kubeflow 관련 대표적인 인증 에러인 (60) SSL certifi
    mkdir cert
    ```
 
-2. 도메인명과 서버명을 변수로 저장합니다. 변수들은 인증서와 개인키의 파일명으로 사용됩니다. 이때 변수명은 예시와 같이 소문자로 작성하셔야 하며 SERVER_NAME의 경우 kubeflow 접속에 활용하는 DNS 주소를 적어야 합니다. [localhost](http://localhost)로 접속하는 경우 localhost를 사용해주세요. localhost 대신 ip로 kubeflow를 접속한다면 [ip로 self-sign Certificate 생성하기](https://www.notion.so/Kubeflow-HTTPS-d572f8db68bb453fad6ad9e6f58e767a)를 보고 따라해주세요.
+2. 도메인명과 서버명을 변수로 저장합니다. 변수들은 인증서와 개인키의 파일명으로 사용됩니다. 이때 변수명은 예시와 같이 소문자로 작성하셔야 하며 SERVER_NAME의 경우 kubeflow 접속에 활용하는 DNS 주소를 적어야 합니다. localhost로 접속하는 경우 localhost를 사용해주세요. localhost 대신 ip로 kubeflow를 접속한다면 [ip로 self-sign Certificate 생성하기](https://nodeployfriday.com/posts/self-signed-cert/)를 보고 따라해주세요.
 
    ```bash
    export DOMAIN_NAME=leeway

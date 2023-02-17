@@ -11,7 +11,7 @@ desc: "이 글은 🤗 Transformers로 모델을 Fine-tuning한 뒤 Torchserve�
 
 이 글은 🤗 Transformers로 모델을 Fine-tuning한 뒤 Torchserve로 배포하는 방법에 대해 소개합니다.
 
-모델 Fine-tuning은 [Huggingface 페ㅔ이지 Fine-tuning turorial](https://huggingface.co/docs/transformers/training) 예제를 활용했습니다. 활용할 모델에 대한 이해가 필요하다면 해당 링크를 읽어보는 것을 추천합니다. TorchServe는 [Serving Huggingface Transformers using TorchServe](https://github.com/pytorch/serve/tree/master/examples/Huggingface_Transformers)의 예제를 참고했습니다. 해당 예제에는 SequenceClassification 외에도 token_classification, question_answering, text_generation에 대한 예제도 포함하고 있으니 필요한 경우 참고바랍니다.
+모델 Fine-tuning은 [Huggingface 페이지 Fine-tuning turorial](https://huggingface.co/docs/transformers/training) 예제를 활용했습니다. 이 글에서 활용할 모델에 대한 이해가 필요하다면 해당 링크를 읽어보는 것을 추천합니다. TorchServe에 대한 예제는 [Serving Huggingface Transformers using TorchServe](https://github.com/pytorch/serve/tree/master/examples/Huggingface_Transformers)를 참고했습니다. 해당 예제에는 SequenceClassification 외에도 token_classification, question_answering, text_generation에 대한 예제도 포함하고 있으니 필요시 참고 바랍니다.
 
 ### 학습 & 평가 데이터 만들기
 
@@ -164,7 +164,7 @@ SequenceClassification 구조를 이해했으니 이제 BaseModel을 Text classi
 
 모델이 예측해야하는 output은 5개(평점 1~5점)이므로 모델을 불러올 때 필요한 num_label을 5로 설정합니다.
 
-> Tokenizing, TrainingArguments, Trainer, Callback에 대한 설명은 [Bert로 Domain Adaptation 수행하기](https://github.com/yangoos57/Bert_For_Domain_Adaptation)와 [ELECTRA 모델 구현 및 Domain Adaptation 방법 정리](https://github.com/yangoos57/Electra_for_Domain_Adaptation) 에서 다루고 있으니 생략하겠습니다.
+> Tokenizing, TrainingArguments, Trainer, Callback에 대한 설명은 [ELECTRA 학습 구조 소개 및 Domain Adaptation 수행하기](https://yangoos57.github.io/blog/DeepLearning/paper/Electra/electra/)에서 다루고 있으니 생략하겠습니다.
 
 ```python
 
@@ -251,9 +251,7 @@ tokenizer.save_pretrained('torch_model')
 
 ### Handler가 필요한 이유
 
-Product 환경에서는 학습용 데이터와 같이 즉시 사용 가능한 데이터를 제공 받을 수 없기 때문에 예측(Predict)에 앞서 데이터 전처리가 필히 수행되어야 합니다. 예측을 통해 얻은 결과에 대한 후처리도 필요합니다. 모델 output을 반환할 때 특정 양식에 맞춰서 반환하거나 Metric을 생성해야하기 때문입니다.
-
-이러한 데이터 전처리 - 추론 - 후처리의 파이프라인을 구성하는데 필요한 기능을 torchserve에서는 Handler라 부릅니다.
+Product 환경에서는 학습용 데이터와 같이 즉시 사용 가능한 데이터를 제공 받을 수 없기 때문에 예측(Predict)에 앞서 데이터 전처리가 필히 수행되어야 합니다. 예측을 통해 얻은 결과에 대한 후처리도 필요합니다. 모델 output을 반환할 때 특정 양식에 맞춰서 반환하거나 Metric을 생성해야하기 때문입니다. 이러한 데이터 전처리 - 추론 - 후처리의 파이프라인을 구성하는데 필요한 기능을 torchserve에서는 Handler라 부릅니다.
 
 ### 🤗 Transformers를 위한 Handler
 

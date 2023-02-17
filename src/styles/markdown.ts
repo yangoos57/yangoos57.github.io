@@ -32,7 +32,7 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   }
 
   a {
-    text-decoration: none;
+    text-decoration: underline;
     color: var(--color-blue) !important;
     * {
       color: var(--color-blue) !important;

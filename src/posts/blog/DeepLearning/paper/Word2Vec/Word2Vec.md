@@ -1,7 +1,7 @@
 ---
 title: "Word2Vec로 word embedding 이해하기"
 category: "DeepLearning"
-date: "2022-11-21"
+date: "2022-11-01"
 thumbnail: "./img/w2v.png"
 desc: "Word2Vec은 Word embedding에 대한 개념을 이해하기 적합한 논문이다. Word2Vec의 단순한 구조 덕분에 단어가 어떻게 vector space에 표현될 수 있는지에 대해 직관적으로 이해할 수 있다. 이러한 이해는 Word embedding에 기반한 여러 모델을 이해하는데 도움이 된다. 현재 널리쓰고 있는 Transformer 기반의 Bert, Electra, GPT 같은 모델은 결국 단어들을 vector 공간에 효과적으로 배치하는 방법에 대한 기술 축적의 결과물이기 때문이다. 고도화 된 기술을 걷어내면 본질에는 Word2Vec이 있다. "
 ---
