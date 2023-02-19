@@ -8,7 +8,22 @@ desc: pytorch를 활용해 Transformer 논문을 코드로 구현하며 모델�
 
 ### 들어가며
 
-이 글은 Transformer 논문을 pytorch로 구현하는 방법에 대해 담고 있습니다. 구현한 모델을 학습하는 방법이 궁금하신 분들은 [Transformer from scratch](https://github.com/yangoos57/Transformer_from_scratch)를 참고바랍니다.
+이 글은 Transformer 논문의 구조를 pytorch로 구현해보며 세부적인 모델 작동 방식을 설명합니다.
+
+> Transformer 모델을 실제 학습하는 방법에 대해 궁금하신 분들은 [학습 튜토리얼](https://github.com/yangoos57/Transformer_from_scratch)을 참고바랍니다. 링크에 연결된 튜토리얼은 아래와 같이 모델 학습 과정을 시각화하여 Transformer 모델이 실제로 어떻게 학습을 수행하는지를 확인할 수 있습니다.
+
+    1번째 epoch 실행
+    ------------------------------
+
+    Dataset is "training"
+
+    200번째 batch에 있는 0번째 문장 예측 결과 확인
+
+    src(프랑스어) :  Un homme en uniforme orange pose au milieu d' une rue .
+    prd(영어 예측) :  A man in a suit shirt is in front air of the building . <eos> . . . . . . . <eos> . . <eos> . . . <eos>
+    trg(실제 정답) :  A man in an orange uniform poses in the middle of a street .
+
+<br/>
 
 ### Transformer 구조
 

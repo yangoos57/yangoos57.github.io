@@ -192,6 +192,42 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
     margin-bottom : 10px !important;
   }
   
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+  }
+  
+  td,
+  th {
+    text-align : center;
+    padding: 0;
+  }
+  table th {
+    font-weight: 600;
+  }
+  
+  table th,
+  table td {
+    padding: 6px 13px;
+    border: 1px solid #d0d7de;
+  }
+  
+  table tr {
+    background-color: #ffffff;
+    border-top: 1px solid hsla(210,18%,87%,1);
+  }
+  
+  table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+  }
+  
+  table img {
+    background-color: transparent;
+  }
 `
 
 export default Markdown

@@ -16,7 +16,58 @@ desc: "pytorch를 활용해 ELECTRA 논문을 코드로 구현하며 Generator�
 
 - ELECTRA Base 모델은 monologg님의 `koelectra-v-base`모델을 활용하였습니다.
 
-- ELECTRA 모델 학습에 대한 Jupyter Notebook은 [링크](https://github.com/yangoos57/Electra_for_Domain_Adaptation/blob/main/%5Btutorial%5D%20domain%20adaptation.ipynb)를 참고해주세요.
+- ELECTRA 모델 학습에 대한 Jupyter Notebook은 [링크](https://github.com/yangoos57/Electra_for_Domain_Adaptation/blob/main/%5Btutorial%5D%20domain%20adaptation.ipynb)를 참고해주세요. 해당 튜토리얼은 아래와 같이 모델 학습 과정을 시각화하여 Electra 모델이 실제로 어떻게 학습을 수행하는지를 확인할 수 있습니다.
+
+  ```python
+  0번째 epoch 진행 중 ------- 12번째 step 결과
+
+  원본 문장 :  특히 안드로이드 플랫폼 기반의 (웹)앱과 (하이)브드리앱에 초점을 맞추고 있다
+  가짜 문장 :  특히 안드로이드 플랫폼 기반의 (마이크로)앱과 (이)브드리앱에 초점을 맞추고 있다
+  ```
+
+  ```python
+  21개 토큰 중 0개 예측 실패 -------- 2개 가짜 토큰 중 2개 판별
+  ```
+
+    <table border="1" class="dataframe">
+    <thead>
+        <tr style="text-align: right;">
+        <th></th>
+        <th>문장 위치</th>
+        <th>실제 토큰</th>
+        <th>(가짜)토큰</th>
+        <th>실제</th>
+        <th>예측</th>
+        <th>정답</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <th>0</th>
+        <td>6</td>
+        <td>웹</td>
+        <td>(마이크로)</td>
+        <td>fake</td>
+        <td>fake</td>
+        <td>O</td>
+        </tr>
+        <tr>
+        <th>1</th>
+        <td>9</td>
+        <td>하이</td>
+        <td>(이)</td>
+        <td>fake</td>
+        <td>fake</td>
+        <td>O</td>
+        </tr>
+    </tbody>
+    </table>
+
+  ```python
+  Combined Loss 2.225 -- Generator Loss : 0.576 -- Discriminator Loss : 0.033
+  ```
+
+<br/>
 
 ### 왜 ELECTRA인가?
 
