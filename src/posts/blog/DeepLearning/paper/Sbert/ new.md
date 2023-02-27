@@ -8,19 +8,25 @@ desc: "Sentence Bert는 Word Embedding 모델인 Bert를 Sentence Embedding 모�
 
 ### 들어가며
 
-이 글은 `Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks`를 소개하고 Sbert를 코드로 구현하는 방법에 대해 설명합니다.
+이 글은 `Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks`를 소개하고 논문의 핵심 구조인 Sbert를 코드로 구현하는 방법에 대해 설명합니다.
 
 <!-- > 이 글에서 설명하는 코드는 [Sentence_bert_from_scratch](https://github.com/yangoos57/Sentence_bert_from_scratch)에 정리하였으니 필요시 참고바랍니다. -->
 
 ### Sentence Bert가 필요한 이유
 
-Sentence Bert는 Bert에 Sentence Embedding을 가능하도록 Fine-tuning 한 모델을 말합니다. Sentence embedding은 문장을 벡터 공간에 배치하는 방법을 의미하며 문장을 벡터 공간 내 배치함으로서 문장 비교, 클러스터링, 시각화 등 다양한 방법을 적용할 수 있습니다.
+Sentence Bert는 Bert을 문장 임베딩(Sentence Embedding)을 생성하는 모델로 활용할 수 있도록 Fine-tuning하는 방법(또는 모델명) 을 의미합니다. 이때 Sentence embedding라 함은 문장 정보를 벡터 공간의 위치로 표현한 값을 말하며, 문장을 벡터 공간에 배치함으로서 문장 간 비교, 클러스터링, 시각화 등 다양한 분석 기법을 이용할 수 있는 장점이 있습니다.
 
-사실 Sbert 이전에도 Bert 모델을 활용해 Sentence Embedding을 생성하는 방법이 존재했지만, 이러한 방법은 과거 모델(Glove,Infer-Sent)의 성능에 미치지 못했습니다. 이러한 이유 때문에 문장 간 유사도를 비교하는 Task에서는 주로 두 개의 문장을 Language Model에 넣어 일대일로 비교하는 방식을 활용했습니다. 이때 일대일 방식이라 하면 두 개의 문장을 하나로 묶은 Input Data를 Bert 모델에 넣은 뒤 모델의 Output을 통해 두 문장의 유사도를 파악하는 방법을 의미합니다.
+사실 Sbert 이전에도 Bert 모델을 활용해 Sentence Embedding을 생성하는 방법이 존재했지만, 이러한 방법은 과거 모델(Glove,Infer-Sent)의 성능에 미치지 못했습니다. 이러한 이유 때문에 Transformer 기반 모델을 활용해 문장 간 유사도를 비교하는 Task에서는 sentence embedding 방법을 사용하지 않고 주로 두 개의 문장을 모델에 넣어 Cross-Attention을 활용해 비교하는 방식을 활용했습니다. 여기서 일대일로 방식이라 하면 두 개의 문장을 하나로 묶은 Input Data를 Bert 모델에 넣은 뒤 모델 내부에서 두 문장 간 관계를 파악하고 모델의 Output 중 [CLS] 토큰을 활용해 두 문장의 유사도를 파악하는 방법을 의미합니다.
+
+Sentence Bert 논문에서는 문장과 문장을 비교하는 Task인 Named Entity Recognition(NER), Semantic Textual Similarity(STS)를 수행하는데 Senetnece Embedding을 활용하고 있지만, Senetence Embedding은 이러한 Task 뿐만아니라 문장과 단어 간 연관성 비교를 통한 키워드 추출, 특정 문서의 카테고리 선정 등 다양한 Task에서 응용이 가능하므로 이를 기반으로한 논문이나 라이브러리가 존재합니다. 다음의 링크들은 Setnece Bert를 활용한 라이브러리 및 논문들입니다.
+
+- [Sbert 공식 페이지 응용 예시](https://www.sbert.net/examples/applications/)
+- [Bertopic : 토픽 추출 라이브러리 ](https://github.com/MaartenGr/BERTopic)
+- [keyBert : 문서 키워드 추출 라이브러리 ](https://github.com/MaartenGr/BERTopic)
 
 ### Cross-Encoder와 Bi-Encoder
 
-Sentence Bert를 소개하는 논문에서는 기존 방식인 일대일로 문장을 비교하는 구조를 Cross-Encoder라는 용어로 사용하며 논문에서 새롭게 소개하는 구조를 Bi-Encoder라는 용어로 사용하고 있습니다. Cross-Encoder와 Bi-Encoder의 구조 차이는 아래 그림과 같습니다.
+해당 논문에서는 Bert 모델 내부의 Cross-Ateention을 활용해 문장 간 관계를 비교했던 기존 방식을 Cross-Encoder라는 용어로 사용하고 있으며, 논문에서 새롭게 소개하는 구조를 Bi-Encoder라는 용어로 사용하고 있습니다. Cross-Encoder와 Bi-Encoder의 구조 차이는 아래 그림과 같습니다.
 
 <img src='img/img0.png' alt='img0'>
 
