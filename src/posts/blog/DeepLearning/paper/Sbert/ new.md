@@ -66,8 +66,6 @@ Cross-Encoder의 구조는 Language Model과 Classification Head로 구성된 �
 
 Cross-Encoder Class에서 num_labels가 활용되는 목적은 모델의 Loss Function을 적용하는데 있습니다. 코드 마지막 부분에서 num_labels가 활용되는 코드를 볼 수 있는데, num_labels이 1인 경우 MSE를 Loss function을 활용하고 그외인 경우 Cross Entropy를 Loss function으로 활용하고 있는 것을 확인할 수 있습니다. num_labels 값에 따라 Loss function이 달라지는 이유는 input Data로 사용되는 타입이 Numerical Data인지 Categorical Data인지 여부에 따라 사용해야하는 Loss function이 다르기 때문입니다.
 
-< cross entropy vs mse 차이 >
-
 ```python
 from torch.nn import CrossEntropyLoss, MSELoss
 
@@ -174,7 +172,7 @@ Cross-Encoder를 실제 학습하는 과정은 [Cross-Encoder 학습 튜토리�
 
 ### Bi-Encoder
 
-이제 Sentence Bert 논문의 핵심 구조인 Bi-Encoder에 대해 설명하도록 하겠습니다. Bi-Encoder는 문장 간 비교가 필요한 Task에 대해 훨신 빠른 퍼포먼스를 보여주는 장점이 있다고 설명한 바 있습니다. 이러한 속도를 보장할 수 있는 이유는 Sentence Embedding을 활용해 문장을 벡터 공간에 위치시켜 CosineSimilarity를 활용해 계산하기 때문이었습니다.
+이제 Sentence Bert 논문의 핵심 구조인 Bi-Encoder에 대해 설명하도록 하겠습니다. Bi-Encoder는 문장 간 비교가 필요한 Task에 대해 훨신 높은 퍼포먼스를 보여주는 장점이 있다고 설명한 바 있습니다. 이러한 속도를 보장할 수 있는 이유는 Sentence Embedding을 활용해 문장을 벡터 공간에 위치시켜 CosineSimilarity를 활용해 계산하기 때문이었습니다.
 
 아래 표 주황색으로 쳐져있는 실선 중 Avg. Bert Embeddings는 이전에 시도했던 Sentence Embedding 방식의 성능을 보여주며, 이러한 성능은 과거 모델인 Glove, InferSent 성능에도 미치지 못하고 있음을 확인할 수 있습니다.
 
@@ -182,20 +180,13 @@ Cross-Encoder를 실제 학습하는 과정은 [Cross-Encoder 학습 튜토리�
 
 <img src='img/img2.png' alt='img2'>
 
-- Sentence bert는 Bert 모델을 Bi-Encoder로 활용하는 방법임. Bert 모델을 Bi-Encoder로 활용하기 위해선 논문에서 제시한 구조를 활용해 Fine-tuning 해야함. 따라서 학습 구조 설명에 앞서 Sbert 구조에 대해 먼저 설명하겠음.
-- Sbert의 구조는 Base 모델에 Pooling-layer를 쌓은 구조임. Pooling 방법에는 세 종류가 있음. [CLS] Selection, Mean pooling, Max pooling 방법임. 이 중 논문에서는 Mean Pooling 방법이 효과적이라 소개하므로 이를 기본값으로 세팅하여 활용함.
-- pooling을 수행하는 방법은 간단함. 예로들면 토큰 개수가 10개인 문장 1개를 768차원의 embed_size를 가진 모델에 넣으면 Output은 [1,10,768]차원의 Tensor를 반환함. 이때 Pooling은 10개의 Token을 1개의 Token으로 압축하는 방법을 말함.
-- Sbert Pooling에는 세 종류의 방법이 있다고 설명하였음.
-- 먼저 CLS pooling은 [CLS]토큰을 Sentence Embedding으로 Sentence Embedding으로 활용함.
-- Mean Pooling은 10개의 토큰 embedding을 평균 낸 embedding을 Sentence Embedding으로 활용함.
-- Max Pooling은 개별 벡터의 max값을 취합한 embedding을 Sentence Embedding으로 활용함.
-- 이렇게 풀링된 Tensor의 차원은 [1,768]이 됨.
-
-- Sentence Bert의 flow는 다음과 같음. 1. 문장을 Bert에 입력으로 넣고 2.Output을 Pooling하면 3.Sentence Embedding을 얻을 수 있음.
-
-<img src='img/img4.png' alt='img4'>
+<br/>
+<br/>
+<br/>
 
 #### ❖ Sentence Bert 구조
+
+<img src='img/img4.png' alt='img4'>
 
 > Huggingface에 대해 익숙하지 않은 경우 [ELECTRA 모델 구현 및 Domain Adaptation 방법 정리](https://yangoos57.github.io/blog/DeepLearning/paper/Electra/electra/)를 참고
 
@@ -267,21 +258,20 @@ class modelWithPooling(nn.Module):
 
 #### ❖ Sbert 학습 구조 : Categorical Data를 학습하는 경우
 
-> Pretrained Model을 Sbert로 finetuning하는 방법에 대한 Tutorial을 제작하였음. [Information Retrieval With Sentence Bert 깃허브 페이지](https://github.com/yangoos57/IR-Ranking-project) 참고
+Sbert는 학습에 활용될 데이터셋에 따라 학습 구조가 달라집니다. 따라서 자신이 활용할 데이터셋이 numerical 데이터셋인지, categorical 데이터셋인지 구분을 해야합니다. 먼저 categorical 데이터 유형에 대해서 설명하겠t습니다. 예제에서 활용하는 데이터셋은 자연어추론(NLI) 데이터셋이며 구조는 아래와 같습니다.
 
-- Sbert는 학습에 활용될 데이터셋에 따라 학습 구조가 달라짐. 따라서 자신이 활용할 데이터셋이 regression 데이터셋인지, classification 데이터셋인지 구분을 해야함.
-- 먼저 Classification 데이터 유형에 대해서 설명하겠음. 이때 활용하는 데이터셋은 자연어추론(NLI) 데이터셋임. 데이터 구조는 아래와 같음.
-- ```python
+```python
   {'sen1': '그리고 그가 말했다, "엄마, 저 왔어요."',
    'sen2': '그는 학교 버스가 그를 내려주자마자 엄마에게 전화를 걸었다.',
    'gold_label': 'neutral'}
-  ```
-- Classification 데이터로 Sbert를 학습하는 구조는 아래와 같음. 1차로 SBert 모델을 통해 산출한 embedding vector를 각각 U,V라 할 때 U,V,|U-V|를 하나의 Tensor로 concat을 수행함. 그 다음 softmax Classifier를 통해 entailment, neutral, contradition을 판단하고 Loss를 구해 학습을 진행함.
+```
+
+categorical 데이터로 Sbert를 학습하는 구조는 아래와 같습니다. 1차로 SBert 모델을 통해 산출한 embedding vector를 각각 U,V라 할 때 U,V,|U-V|를 하나의 Tensor로 concat을 수행합니다. 그 다음 softmax Classifier를 통해 entailment, neutral, contradition을 판단하고 Loss를 구해 학습을 진행합니다.
 
 <br/>
   <img src='img/img5.png' alt='img5'>
 
-#### ❖ Classification Data 학습 구조
+#### ❖ categorical Data 학습 구조
 
 ```python
 from torch import nn
@@ -334,9 +324,9 @@ class modelForClassificationTraining(nn.Module):
 
 <br/>
 
-#### ❖ Sbert 구조 : Regression Data를 학습하는 경우
+#### ❖ Sbert 구조 : Numerical Data를 학습하는 경우
 
-- Regression Data는 문장과 문장 간 비교를 수치료 표현한 데이터를 말함.
+- Numerical Data는 문장과 문장 간 비교를 수치료 표현한 데이터를 말합니다.
 
 ```python
 
@@ -348,11 +338,11 @@ class modelForClassificationTraining(nn.Module):
 
 ```
 
-- Regression 학습 구조는 코사인 유사도를 활용해 Embedding Vector를 비교함.
+- Numerical 학습 구조는 코사인 유사도를 활용해 Embedding Vector를 비교합니다.
 
   <img src='img/img6.png' alt='img6'>
 
-#### ❖ Regression Data 학습 구조
+#### ❖ Numerical Data 학습 구조
 
 ```python
 from torch import nn
@@ -386,8 +376,4 @@ class modelForRegressionTraining(nn.Module):
 
 ### Bi-Encoder 활용
 
-- 학습이 완료되면 학습에 활용된 구조는 버리고 Sentence Bert만 추출하여 활용함.
-
-- Bi-Encoder는 STS, NLI Task 외에도 Semantic Search, paraphrase-mining, parallel-sentence-mining 등 다양한 Task에 활용할 수 있음.
-
-- 이와 관련한 예제는 [Sbert 깃허브 페이지](https://github.com/UKPLab/sentence-transformers/tree/master/examples/applications)에 코드로 자세히 설명하고 있으니 응용 방법에 대해 궁금한 경우 해당 링크를 참고
+학습이 완료되면 학습에 활용된 구조는 버리고 Sentence Bert만 추출하여 활용합니다. 이와 관련한 예제는 [Sbert 깃허브 페이지](https://github.com/UKPLab/sentence-transformers/tree/master/examples/applications)에 코드로 자세히 설명하고 있으니 응용 방법에 대해 궁금한 경우 해당 링크를 참고 바랍니다.

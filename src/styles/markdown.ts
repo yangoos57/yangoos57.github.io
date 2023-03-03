@@ -26,7 +26,7 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
     font-weight: var(--font-weight-regular);
 
     @media (max-width: ${({ theme }) => theme.device.lg}) {
-      font-size: 0.95rem !important;
+      font-size: 0.92rem !important;
     }
   
   }
@@ -111,14 +111,14 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
     margin-bottom: ${({ rhythm }) => rhythm(0.3)};
 
     @media (max-width: ${({ theme }) => theme.device.lg}) {
-      font-size: 0.95rem !important;
+      font-size: 0.92rem !important;
     }
   }
 
   p,
   li,
   blockquote {
-    font-size: 1rem;
+    font-size: 0.92rem;
   }
 
   p {
@@ -188,7 +188,7 @@ const Markdown = styled.article<{ rhythm: typeof typography["rhythm"] }>`
   }
   li > ul > li{
     list-style: "- " !important;
-    font-size:0.95rem !important;
+    font-size: 0.92rem !important;
     margin-bottom : 10px !important;
   }
   
