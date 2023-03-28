@@ -41,29 +41,29 @@ Transformer 모델은 RNN을 사용해 Seq2seq(encoder+decoder 구조)을 구현
 
 ## Encoder
 
-Input 구조를 설명하기 전에 Transformer의 핵심인 Encoder 구조와 Decoder 구조를 먼저 살펴보도록 하겠습니다. Encoder 내부 구조는 Multi-head Attention와 Feed Forward로 구성되어 있으며 개별 과정을 반복 수행하다보면 발생할 수 있는 기울기 소실(Gradient Vanishing)을 막기위해 Add & Norm을 구성하고 있습니다. 내부의 layer들을 수행한 Input Data는 다시 윗단의 Encoder의 Input Data로 활용되게 되며, 이러한 과정을 여러차례 반복한 Input Data는 궁극적으로 Decoder 구조의 Context로서 활용됩니다. Context에 대한 설명은 Decoder 문단에서 설명하겠습니다.
+Input 구조를 설명하기 전에 Transformer의 핵심인 Encoder 구조와 Decoder 구조를 먼저 살펴보도록 하겠습니다. Encoder 내부 구조는 Multi-head Attention와 Feed Forward로 구성되어 있으며 개별 과정을 반복 수행하다보면 발생할 수 있는 기울기 소실(Gradient Vanishing)을 막기위해 Add & Norm을 구성하고 있습니다. Layer의 결과물은 다시 윗단의 Encoder의 Input Data로 활용되게 되며, 이러한 과정을 여러차례 반복해 만들어낸 Input Data는 궁극적으로 Decoder 구조의 Context로서 활용됩니다. Context에 대한 설명은 Decoder 문단에서 설명하겠습니다.
 
 <img alt='encoder_block_0' src='./img/encoder_block_0.png'>
 
 ## Multi-head Attention
 
-Encoder 구조의 첫번째 구성요소인 Multi-head-Attention은 여러 개의 Self-Attention을 합친 구조를 의미합니다. 이때 모델에서 사용할 Attention 개수를 설정하는 인자(args)를 Head라고 하며 논문에서는 8개를 기본으로 사용합니다. Multi-head Attention은 Self-Attention 8개를 연결한 것에 불과한 개념이므로 Self-Attention을 이해하는 것이 Multi-head Attention을 이해하는 것이라 할 수 있습니다.
+Encoder 구조의 첫번째 구성요소인 Multi-head-Attention은 여러 개의 Self-Attention을 합친 구조를 의미합니다. 이때 모델에서 사용할 Attention 개수를 설정하는 인자(args)를 Head라 하며 논문에서는 8개를 기본으로 사용합니다. Multi-head Attention은 Self-Attention 8개를 연결한 것에 불과한 개념이므로 Self-Attention을 이해하는 것이 Multi-head Attention을 이해하는 것이라 할 수 있습니다.
 
 <img alt='encoder_block_1' src='./img/encoder_block_1.png'>
 
 ### Self-Attention과 Cross-Attention
 
-Attention은 Self-Attention, Cross-Attention으로 나눌 수 있습니다. Self-Attention은 하나의 문장 내부에 있는 Token 간 중요도를 파악하는 방법이라면 Cross-Attention은 문장과 문장 간의 Token을 비교하는 방법입니다. Transformer는 두 종류의 Attetion을 각각 Encoder, Decoder 단에서 사용하는데, Self-Attetnion은 Encoder 내부의 Multi-head attention에서, Cross-Attention은 Decoder 내부의 Multi-head Attention에서 활용됩니다.
+Attention은 Self-Attention, Cross-Attention으로 나눌 수 있습니다. Self-Attention은 self라는 이름에서 볼 수 있듯 자신의 문장을 참고해 Token 간 중요도를 파악합니다. 반면 Cross-Attention은 서로 다른 문장과 문장 간의 Token을 비교하는 방법입니다. Transformer 모델은 Self-Attetion과 Cross-Attiention을 각각 Encoder, Decoder 단에서 사용하는데, Self-Attetnion은 Encoder 내부의 Multi-head attention에서, Cross-Attention은 Decoder 내부의 Multi-head Attention에서 활용합니다.
 
 ### Multi-head Attention의 Parameter 소개
 
-앞선 설명에서 Multi-head Attention은 여러 개의 Self-Attention을 합친 것을 의미한다고 설명했습니다. 병렬 연산으로 한번에 n개의 Self-Attention을 계산하고 이를 합치면(concatenation) Mulit-head Atention이 되는 것입니다. Multi-head Attention에서 사용되는 Parameter는 Self-Attention의 개수를 의미하는 Attention Head와 개별 Self-Attention의 embedding_size입니다.
+앞선 설명에서 Multi-head Attention은 여러 개의 Self-Attention을 합친 것을 의미한다고 설명했습니다. 병렬 연산으로 한번에 n개의 Self-Attention을 계산하고 이를 합치면(concatenation) Mulit-head Atention이 되는 것입니다.
 
-논문에서 사용한 Attention Head의 기본값은 8이며 Self-Attention의 embedding_size는 64입니다. Self-Attention의 embedding_size를 구하는 방법은 모델의 embedding_size를 Attention Head로 나눈 값으로, 논문에서 설정한 모델의 기본 embedding_size 인 512와 Attention head의 수인 8을 나누어 64라른 결과를 얻게 됩니다.
+Multi-head Attention에서 사용되는 Parameter로는 Self-Attention의 개수를 의미하는 Attention Head와 개별 Self-Attention의 embedding_size가 있습니다. 논문에서 사용한 Attention Head의 기본값은 8이며 Self-Attention의 embedding_size는 64입니다. Self-Attention의 embedding_size를 구하는 방법은 모델의 embedding_size를 Attention Head로 나눈 값으로, 논문에서 설정한 모델의 기본 embedding_size 인 512와 Attention head의 수인 8을 나누어 나온 결과인 64가 됩니다.
 
 ### Multi-head Attention 구하기
 
-Multi-head Attention에 대한 기본적인 설명을 마쳤으니 Attention을 구하는 방법에 대한 설명으로 넘어가겠습니다. 이번 문단에서 설명하는 Attention 구하는 방법은 다음 문단에서 그대로 코드로 구현되니 참고하여 읽으면 Attention에 대해 더욱 쉽게 이해할 수 있습니다.
+Multi-head Attention에 대한 기본적인 설명을 마쳤으니 Attention을 구하는 방법에 대한 설명으로 넘어가겠습니다. 이번 문단에서 설명하는 Attention 구하는 방법은 다음 문단에서 그대로 코드로 구현되니 함께 참고하여 읽는다면 Attention에 대해 더욱 쉽게 이해할 수 있습니다.
 
 ### scaled dot product Attention을 구하는 6단계
 
