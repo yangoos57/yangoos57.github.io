@@ -28,17 +28,13 @@ Domain Adaptation과 fine-tuning의 목적 및 방법에는 명확한 차이가 
 
 ### Fine-tuning의 범위는 어디까지일까?
 
-일반적으로 Fine-tuning을 하는 행위는 Pretrained Language Model(PLM)을 Text classification, Sentiment Analysis와 같은 Downstream task를 수행할 수 있도록 훈련시키는 과정을 의미한다. 하지만 Fine-tuning에 대해 찾다보면 알고있는 방법과 다른 Fine-tuning 방법이 있는 것 같다는 느낌을 지우기 어렵다. 일반적으로 PLM을 활용해 데이터를 학습시키는 방법 전부를 Fine-tuning한다고 간주하는 경향이 있는 것 같다. 그러다보니 Domain Adaptation 또한 Fine-tuning 방법으로 간주 되곤 한다.
+일반적으로 Fine-tuning을 하는 행위는 Pretrained Language Model(PLM)을 Text classification, Sentiment Analysis와 같은 Downstream task를 수행할 수 있도록 훈련시키는 과정을 의미한다. 하지만 Fine-tuning에 대해 찾다보면 알고있는 방법과 다른 Fine-tuning 방법이 있는 것 같다는 느낌을 지우기 어렵다. 일반적으로 PLM을 활용해 데이터를 학습시키는 방법 전부를 Fine-tuning한다고 간주하는 경향이 있는 것 같다. 그러다보니 Domain Adaptation 또한 Fine-tuning 방법이라고 설명하는 몇몇 글들을 봤는데, Domain Adpatation은 Pre-training의 연장선으로 이해해야하고 Fine-tuning은 새로운 Task를 부여하는 방법으로 이해해야한다.
 
 <br/>
 
 <img src='img/img1.png' alt='img1' width ='600px'>
 
 <br/><br/>
-
-많은 경우 검은색 네모 박스 쳐져있는 영역을 Fine-tuning의 영역으로 판단하는 것 같다. 원래의 Fine-tuning은 Downstream task를 부여하는 방법이지만, Fine-tuning에 앞서 진행하는 Domain Adaptation(=Further pretraining) 또한 Fine-tuning의 범주로 이해되고 있다.
-
-<br/>
 
 ### Domain Adaptation은 선택사항
 

@@ -3,11 +3,11 @@ title: "Transformer Positional Encoding 이해하기"
 category: "DeepLearning"
 date: "2023-03-30"
 thumbnail: "./img/transformer.png"
-desc: 이 글은 Transformer의 구조 중 Positional Encoding에 대한 설명과 이에 대한 참고자료를 정리하였습니다. 
+desc: "이 글은 Transformer의 구조 중 Positional Encoding에 대한 설명과 이에 대한 참고자료를 정리하였습니다. 
 
-Poisional Encoding은 문장 내 단어의 "위치 정보"를 벡터로 표현한 한 것입니다. 이러한 벡터 값이 왜 필요로 하는지, 어째서 Transformer 모델에 중요한지는 Transformer가 탄생한 배경을 이해한다면 충분히 유추할 수 있습니다.
+Poisional Encoding은 문장 내 단어의 위치 정보를 벡터로 표현한 한 것입니다. 이러한 벡터 값이 왜 필요로 하는지, 어째서 Transformer 모델에 중요한지는 Transformer가 탄생한 배경을 이해한다면 충분히 유추할 수 있습니다.
 
-기본적으로 Transfoermer의 기본 골격인 Encoder와 Decoder는 Transformer 모델에서 새롭게 소개된 구조가 아닙니다. 단지 Transformer는 RNN 기반의 seq2seq모델을 Attention을 활용해 구현한 모델일 뿐입니다.
+기본적으로 Transfoermer의 기본 골격인 Encoder와 Decoder는 Transformer 모델에서 새롭게 소개된 구조가 아닙니다. 단지 Transformer는 RNN 기반의 seq2seq모델을 Attention을 활용해 구현한 모델일 뿐입니다."
 ---
 
 ### 들어가며
