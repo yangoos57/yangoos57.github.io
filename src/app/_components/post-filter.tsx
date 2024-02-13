@@ -7,7 +7,7 @@ const catPillSelected = " bg-nav text-white ";
 const PostFilter = ({ params, categories }: { params: string; categories: string[] }) => {
     const CatButton = ({ name }: { name: string }) => {
         return (
-            <Link href={`/filter/${name}`}>
+            <Link href={`/filter/${name.replace(" ", "-")}`}>
                 <button className={`${params === name ? catPillSelected : catPillNotSelected} ${defaultPill}`}>
                     {name}
                 </button>

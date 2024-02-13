@@ -1,6 +1,6 @@
 ---
 title: "Transformer Positional Encoding 이해하기"
-category: ["Deep Learning","NLP"]
+category: ["deep learning","NLP"]
 date: "2023-03-30"
 thumbnail: "/assets/blog/deeplearning/paper/Transformer/thumbnail.png"
 ogImage:

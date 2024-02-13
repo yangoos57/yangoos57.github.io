@@ -1,6 +1,6 @@
 ---
 title: "Word2Vec로 word embedding 이해하기"
-category: ["Deep Learning","NLP"]
+category: ["deep learning","NLP"]
 date: "2022-11-01"
 thumbnail: "/assets/blog/deeplearning/paper/Word2Vec/thumbnail.png"
 ogImage:

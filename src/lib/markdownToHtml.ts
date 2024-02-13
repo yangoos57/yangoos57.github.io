@@ -16,7 +16,7 @@ export default async function markdownToHtml(markdown: string) {
     .use(remarkRehype, {allowDangerousHtml: true})
     .use(rehypeRaw)
     .use(rehypeSanitize)
-    .use(rehypeKatex)
+    .use(rehypeKatex,{ strict: false })
     .use(rehypePrettyCode, {
       theme:"github-dark-dimmed"
     })

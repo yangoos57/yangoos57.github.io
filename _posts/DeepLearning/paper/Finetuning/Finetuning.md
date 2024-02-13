@@ -1,6 +1,6 @@
 ---
 title: "Domain Adaptation과 Fine-tuning 개념 정리"
-category: ["Deep Learning","NLP"]
+category: ["deep learning","NLP"]
 date: "2022-12-08"
 thumbnail: "/assets/blog/deeplearning/paper/FineTuning/thumbnail.png"
 ogImage:

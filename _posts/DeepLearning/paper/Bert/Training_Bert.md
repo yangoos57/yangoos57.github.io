@@ -1,7 +1,7 @@
 ---
 title: "Bert From Scratch"
 desc: "Bert From Scratch"
-category: ["Deep Learning"]
+category: ["deep learning"]
 date: "2022-10-13"
 thumbnail: "/assets/blog/deeplearning/paper/Bert/thumbnail.png"
 ogImage:

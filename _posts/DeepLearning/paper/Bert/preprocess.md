@@ -1,7 +1,7 @@
 ---
 title: "Bert 전처리 수행 절차 소개"
 desc: "참고자료 입니다."
-category: ["Deep Learning"]
+category: ["deep learning"]
 date: "2022-10-13"
 thumbnail: "/assets/blog/deeplearning/paper/Bert/thumbnail.png"
 ogImage:

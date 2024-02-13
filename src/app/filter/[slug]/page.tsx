@@ -6,7 +6,7 @@ import PostFilter from "../../_components/post-filter";
 export default async function Index({ params }: { params: { slug: string } }) {
     const allPosts = getAllPosts();
     const { slug } = params;
-    const param = decodeURIComponent(slug);
+    const param = slug.replace("-", " ");
     const categories = allPosts.reduce((acc, post) => {
         post.category.forEach((category) => acc.add(category));
         return acc;
@@ -40,6 +40,6 @@ export async function generateStaticParams() {
     const categoryArray = ["all", ...cat];
 
     return categoryArray.map((s) => ({
-        slug: encodeURIComponent(s),
+        slug: s.replace(" ", "-"),
     }));
 }

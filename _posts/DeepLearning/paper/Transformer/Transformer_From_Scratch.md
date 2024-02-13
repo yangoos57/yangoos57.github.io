@@ -1,6 +1,6 @@
 ---
 title: "도식화로 논문 이해하기 : Transformer"
-category: ["Deep Learning","NLP"]
+category: ["deep learning","NLP"]
 date: "2022-11-11"
 thumbnail: "/assets/blog/deeplearning/paper/Transformer/thumbnail.png"
 ogImage:

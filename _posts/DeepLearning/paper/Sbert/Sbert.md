@@ -1,6 +1,6 @@
 ---
 title: "Sentence Bert 구조 소개 및 코드 구현"
-category: ["Deep Learning","NLP"]
+category: ["deep learning","NLP"]
 date: "2022-12-27"
 thumbnail: "/assets/blog/deeplearning/paper/Sbert/thumbnail.png"
 ogImage:
