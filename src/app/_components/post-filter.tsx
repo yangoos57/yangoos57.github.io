@@ -1,24 +1,17 @@
-"use client";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const defaultPill = "whitespace-nowrap capitalize rounded-xl px-5 py-2 mx-2 ";
 const catPillNotSelected = "bg-main hover:bg-nav hover:text-white";
 const catPillSelected = " bg-nav text-white ";
 
 const PostFilter = ({ params, categories }: { params: string; categories: string[] }) => {
-    const router = useRouter();
-
-    const changeHandler = (catName: string) => {
-        categories.includes(catName) ? router.push(`/filter/${catName}`) : router.push("/");
-    };
     const CatButton = ({ name }: { name: string }) => {
         return (
-            <button
-                onClick={() => changeHandler(name)}
-                className={`${params === name ? catPillSelected : catPillNotSelected} ${defaultPill}`}>
-                {name}
-            </button>
+            <Link href={`/filter/${name}`}>
+                <button className={`${params === name ? catPillSelected : catPillNotSelected} ${defaultPill}`}>
+                    {name}
+                </button>
+            </Link>
         );
     };
 

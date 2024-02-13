@@ -2,7 +2,6 @@ import Container from "@/app/_components/container";
 import { MoreStories } from "@/app/_components/more-stories";
 import { getAllPosts } from "../../../lib/api";
 import PostFilter from "../../_components/post-filter";
-import { join } from "path";
 
 export default async function Index({ params }: { params: { slug: string } }) {
     const allPosts = getAllPosts();
@@ -36,7 +35,9 @@ export async function generateStaticParams() {
         return acc;
     }, new Set<string>());
 
-    const categoryArray = Array.from(categories);
+    const cat = Array.from(categories);
+
+    const categoryArray = ["all", ...cat];
 
     return categoryArray.map((s) => ({
         slug: encodeURIComponent(s),
