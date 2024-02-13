@@ -8,8 +8,6 @@ import { PostBody } from "../../_components/post-body";
 import { PostHeader } from "../../_components/post-header";
 import { join } from "path";
 
-export const dynamic = "force-static"; // 'auto' | 'force-dynamic' | 'error' | 'force-static';
-
 export default async function Post({ params }: { params: { slug: string[] } }) {
     const post = getPostBySlug(join(...params.slug));
 

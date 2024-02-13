@@ -1,18 +1,19 @@
 import Container from "@/app/_components/container";
 import { MoreStories } from "@/app/_components/more-stories";
-import { getAllPosts } from "../lib/api";
-import PostFilter from "./_components/post-filter";
+import { getAllPosts } from "../../../lib/api";
+import PostFilter from "../../_components/post-filter";
+import { join } from "path";
 
 export default async function Index({ params }: { params: { slug: string } }) {
     const allPosts = getAllPosts();
     const { slug } = params;
-
+    const param = decodeURIComponent(slug);
     const categories = allPosts.reduce((acc, post) => {
         post.category.forEach((category) => acc.add(category));
         return acc;
     }, new Set<string>());
 
-    const filterName = categories.has(slug as string) ? slug : "all";
+    const filterName = categories.has(param as string) ? param : "all";
     const categoryArray = Array.from(categories);
 
     const filteredPosts =
@@ -26,4 +27,18 @@ export default async function Index({ params }: { params: { slug: string } }) {
             </Container>
         </main>
     );
+}
+
+export async function generateStaticParams() {
+    const allPosts = getAllPosts();
+    const categories = allPosts.reduce((acc, post) => {
+        post.category.forEach((category) => acc.add(category));
+        return acc;
+    }, new Set<string>());
+
+    const categoryArray = Array.from(categories);
+
+    return categoryArray.map((s) => ({
+        slug: encodeURIComponent(s),
+    }));
 }

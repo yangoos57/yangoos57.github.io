@@ -10,7 +10,7 @@ const PostFilter = ({ params, categories }: { params: string; categories: string
     const router = useRouter();
 
     const changeHandler = (catName: string) => {
-        router.push(`?q=${catName}`);
+        categories.includes(catName) ? router.push(`/filter/${catName}`) : router.push("/");
     };
     const CatButton = ({ name }: { name: string }) => {
         return (
