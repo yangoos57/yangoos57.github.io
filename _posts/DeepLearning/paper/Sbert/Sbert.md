@@ -1,6 +1,7 @@
 ---
+publish: true
 title: "Sentence Bert 구조 소개 및 코드 구현"
-category: ["deep learning","NLP"]
+category: ["deep learning", "NLP"]
 date: "2022-12-27"
 thumbnail: "/assets/blog/deeplearning/paper/Sbert/thumbnail.png"
 ogImage:
@@ -55,8 +56,6 @@ Cross-Encoder와 Bi-Encoder에 대해 개별적으로 알아보기 전 Cross-Enc
 Cross-Encoder 구조는 Language Model에 classification layer를 쌓은 구조입니다. 아래 그림에서 파란색 네모 박스를 Language Model이라 하며 그 위의 노란색 테두리를 Classification Layer라 합니다. Language Model은 Bert 뿐만아니라 Electra, Roberta 등 Encoder 기반 모델이면 모두 활용할 수 있습니다.
 
 <img src='/assets/blog/deeplearning/paper/Sbert/img7.png' alt='img7'>
-
-
 
 Cross-Encoder 내부의 데이터 흐름을 보면 Language Model의 Output을 산출한 뒤 CLS Pooling을 거쳐 다시 Classification Layer의 Input Data로 활용되고 있음을 알 수 있습니다. 이때 CLS pooling이라 하면 문장의 여러 token embedding 중 [CLS] token embedding을 문장 embedding으로 사용하는 방식을 의미합니다. CLS Pooling을 다르게 표현하자면 문장과 문장의 관계를 나타내고 있는 정보들은 [CLS] token에 모두 녹아들어있으니 [CLS] token외 나머지는 문장 embedding으로 사용하지 않는다라는 의미로 이해하시면 되겠습니다.
 
@@ -177,7 +176,6 @@ Cross-Encoder를 실제 학습하는 과정은 [Cross-Encoder 학습 튜토리�
 반면 NLI 데이터셋으로 학습한 SentenceBert 모델의 성능은 Glove, InferSent 성능을 압도할 뿐만아니라 기존 방식의 성능 대비 약 1.8배 이상의 성능을 보여줌을 확인할 수 있습니다.
 
 <img src='/assets/blog/deeplearning/paper/Sbert/img2.png' alt='img2'>
-
 
 <br/>
 

@@ -20,7 +20,7 @@ export default async function Post({ params }: { params: { slug: string[] } }) {
     return (
         <main className="mx-auto w-full whitespace-wrap">
             <Container>
-                <article className=" mb-32">
+                <article className="mb-32">
                     <PostHeader title={post.title} date={post.date} category={post.category} />
                     <PostBody content={content} />
                 </article>

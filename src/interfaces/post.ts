@@ -10,4 +10,5 @@ export type Post = {
   content: string;
   preview?: boolean;
   category: string[];
+  publish: boolean;
 };

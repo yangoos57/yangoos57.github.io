@@ -1,9 +1,9 @@
 type Props = {
-    children?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const Container = ({ children }: Props) => {
-    return <div className="w-full max-w-4xl mx-auto px-4">{children}</div>;
+  return <div className="w-full max-w-2xl mx-auto">{children}</div>;
 };
 
 export default Container;

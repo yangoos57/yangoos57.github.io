@@ -1,6 +1,7 @@
 ---
+publish: true
 title: "Word2Vec로 word embedding 이해하기"
-category: ["deep learning","NLP"]
+category: ["deep learning", "NLP"]
 date: "2022-11-01"
 thumbnail: "/assets/blog/deeplearning/paper/Word2Vec/thumbnail.png"
 ogImage:
@@ -91,8 +92,6 @@ Weight 행렬은 위와 같이 4개의 단어에 대한 3차원의 행렬이다.
 
 $[0,1,0,0] \times \begin{pmatrix}1.2 & 2.1 & 3.6 \\3.5 & 2.8 & 4 \\1.2 & 0.8 & 3.0 \\4.1 & 1.7 & 2.8 \\\end{pmatrix} = [3.5,2.8,4]$
 
-
-
 ### hidden layer에서 output layer까지
 
 다음으로 output layer를 구하는 단계이다. output layer은 hidden layer와 두번째 Weight 행렬을 곱해서 구한다. 도식화된 output layer를 이해하기 위해서는 skip-gram에 대해 알아야 하므로 skip gram을 설명한 뒤output layer에 대해 설명하겠다.
@@ -137,7 +136,6 @@ brown을 학습한다면 (brown, the), (brown, quick), (brown, fox), (brown, jum
 
 두번째 weight 행렬도 첫번째 weight 행렬과 마찬가지로 개별 단어의 word embedding을 나타낸다. 기능은 동일하지만 첫번째 weight 행렬의 값과는 다르다. 첫번째 weight 행렬에서는 행 vector가 개별 단어의 embedding 값을 의미했다면 두번째 weight 행렬에서는 열 vector가 개별 단어의 embedding 값을 의미한다. 단순하게 생각해서 VxN 행렬을 NxV 행렬로 Transpose 했기 때문에 행과 열의 위치만 바뀐 것이다.
 
-
 > 두번째 Weight 행렬의 구조를 보고 첫번째 Weight 행렬을 Transpose하면 두번째 Weight 행렬이 되는 것 아닌가 생각할 수 있다. 첫번째 weight 행렬을 Transpose 한다고 두 번째 weight 행렬이 되는건 아니라고한다. 학습이 잘됐을 땐 두 weight 행렬 중 아무 행렬이나 embedding 행렬로 사용 가능하지만 일반적으로 첫번째 W를 사용한다고 한다.
 >
 > [Word2Vec의 학습 방식](https://ratsgo.github.io/from%20frequency%20to%20semantics/2017/03/30/word2vec/)
@@ -166,7 +164,6 @@ $\begin{pmatrix}
 참새 & 커피 & 잡다 & 마시다 \\
  \end{pmatrix}$ = $[0., 0.774, 0.0016, 0.224]$
 
-
 ### 참고자료
 
 1. [A simple Word2vec tutorial](https://medium.com/@zafaralibagh6/a-simple-word2vec-tutorial-61e64e38a6a1)
@@ -176,4 +173,3 @@ $\begin{pmatrix}
 3. [Word2Vec의 학습 방식](https://ratsgo.github.io/from%20frequency%20to%20semantics/2017/03/30/word2vec/)
 
 4. [Word2Vec: Out of the Black Box](https://towardsdatascience.com/word2vec-out-of-the-black-box-a404b4119681)
-

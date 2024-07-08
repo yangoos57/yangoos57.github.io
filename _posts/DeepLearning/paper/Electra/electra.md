@@ -1,6 +1,7 @@
 ---
+publish: true
 title: "ELECTRA 학습 구조 소개 및 Domain Adaptation 수행하기"
-category: ["deep learning","NLP"]
+category: ["deep learning", "NLP"]
 date: "2022-12-22"
 thumbnail: "/assets/blog/deeplearning/paper/Electra/thumbnail.png"
 ogImage:

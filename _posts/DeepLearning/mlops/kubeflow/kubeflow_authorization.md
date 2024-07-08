@@ -1,7 +1,8 @@
 ---
+publish: true
 title: "[Kubeflow] 인증 문제 해결하기"
 date: "2023-01-23"
-category: ["ML ops","kubeflow"]
+category: ["ML ops", "kubeflow"]
 thumbnail: "/assets/blog/mlops/kubeflow/thumbnail.png"
 ogImage:
   url: "/assets/blog/mlops/kubeflow/thumbnail.png"

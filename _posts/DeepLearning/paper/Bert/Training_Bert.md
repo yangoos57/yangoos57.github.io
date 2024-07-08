@@ -1,4 +1,5 @@
 ---
+publish: false
 title: "Bert From Scratch"
 desc: "Bert From Scratch"
 category: ["deep learning"]
@@ -8,12 +9,12 @@ ogImage:
   url: "/assets/blog/deeplearning/paper/Bert/thumbnail.png"
 ---
 
-
 ### Bert 소개
 
 - Transformer의 encoder 부분만 활용
 
 - NLP 분야에 Fine-Tuning 개념 도입
+
 - Masked Language Model[MLM] 뿐만아니라 Next Sentence Prediction[NSP]를 통해 학습
 
 ## JointEmbedding

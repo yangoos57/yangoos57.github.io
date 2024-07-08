@@ -1,7 +1,8 @@
 ---
+publish: true
 title: "[Kubeflow] 모델 학습부터 서빙까지 파이프라인 구축하기"
 date: "2023-01-26"
-category: ["ML ops","kubeflow"]
+category: ["ML ops", "kubeflow"]
 thumbnail: "/assets/blog/mlops/kubeflow/thumbnail.png"
 ogImage:
   url: "/assets/blog/mlops/kubeflow/thumbnail.png"

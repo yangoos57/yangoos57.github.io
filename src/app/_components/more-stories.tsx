@@ -2,30 +2,35 @@ import { Post } from "@/interfaces/post";
 import { PostPreview } from "./post-preview";
 
 type Props = {
-    posts: Post[];
-    params: string;
+  posts: Post[];
+  params: string;
 };
 
 export function MoreStories({ posts, params }: Props) {
-    return (
-        <section>
-            <div className="pt-12 pb-4 text-3xl sm:text-4xl font-semibold capitalize">
-                {params}
-                <span className="text-2xl sm:text-3xl">({posts.length})</span>
-            </div>
-            <div className="py-2 grid grid-cols-1 md:grid-cols-2 md:gap-x-8 lg:gap-x-16 gap-y-10 md:gap-y-16 pb-16">
-                {posts.map((post) => (
-                    <PostPreview
-                        key={post.slug}
-                        title={post.title}
-                        thumbnail={post.thumbnail}
-                        date={post.date}
-                        category={post.category}
-                        slug={post.slug}
-                        desc={post.desc}
-                    />
-                ))}
-            </div>
-        </section>
-    );
+  return (
+    <section>
+      <div className="pt-12 pb-4 text-2xl font-semibold capitalize">
+        <span>블로그 글</span>
+        <span className="text-xl px-1">
+          ({posts.filter((r) => r.publish).length})
+        </span>
+      </div>
+      <div className="py-2 space-y-8">
+        {posts.map(
+          (post) =>
+            post.publish && (
+              <PostPreview
+                key={post.slug}
+                title={post.title}
+                thumbnail={post.thumbnail}
+                date={post.date}
+                category={post.category}
+                slug={post.slug}
+                desc={post.desc}
+              />
+            )
+        )}
+      </div>
+    </section>
+  );
 }

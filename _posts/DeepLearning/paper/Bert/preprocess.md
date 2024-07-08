@@ -1,4 +1,5 @@
 ---
+publish: false
 title: "Bert 전처리 수행 절차 소개"
 desc: "참고자료 입니다."
 category: ["deep learning"]
@@ -399,6 +400,7 @@ a.vocab(['here','is','the','example'])
 
 
 ```
+
     vocab 생성
 
     100%|██████████| 491161/491161 [00:05<00:00, 93639.04it/s]

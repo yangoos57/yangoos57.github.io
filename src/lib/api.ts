@@ -13,8 +13,8 @@ import { join } from "path";
 const postsDirectory = join(process.cwd(), "_posts");
 
 
-function getPostDir(directory:string) {
-  let mdFiles:string[] = [];
+function getPostDir(directory: string) {
+  let mdFiles: string[] = [];
 
   const files = fs.readdirSync(directory);
 
@@ -36,7 +36,7 @@ function getPostDir(directory:string) {
 
 export function getPostSlugs() {
   const fileDir = getPostDir(postsDirectory);
-  return fileDir.map((f)=>(f.replace(postsDirectory,"").slice(1).replace(/\.md$/, "")))
+  return fileDir.map((f) => (f.replace(postsDirectory, "").slice(1).replace(/\.md$/, "")))
 }
 
 
@@ -50,8 +50,6 @@ export function getPostBySlug(slug: string) {
 
 export function getAllPosts(): Post[] {
   const slugs = getPostSlugs()
-
-  
   const posts = slugs
     .map((slug) => getPostBySlug(slug))
     // sort posts by date in descending order

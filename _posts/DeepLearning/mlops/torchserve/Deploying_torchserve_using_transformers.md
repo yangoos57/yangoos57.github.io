@@ -1,4 +1,5 @@
 ---
+publish: true
 title: "🤗 Transformers를 활용해 Torchserve 배포하기"
 category: ["ML ops","pytorch","torch serve"]
 date: "2023-01-18"

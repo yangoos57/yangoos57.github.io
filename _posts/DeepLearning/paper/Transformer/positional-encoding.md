@@ -1,4 +1,5 @@
 ---
+publish: true
 title: "Transformer Positional Encoding 이해하기"
 category: ["deep learning","NLP"]
 date: "2023-03-30"

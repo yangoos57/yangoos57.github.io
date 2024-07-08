@@ -1,9 +1,9 @@
 .markdown {
-  @apply leading-relaxed;
+  @apply leading-relaxed text-lg;
 }
 
 .markdown p {
-  @apply pb-6 text-justify
+  @apply py-5 text-justify
 }
 .markdown p code {
   @apply bg-main p-1 text-blue-800
@@ -19,7 +19,7 @@
 .markdown h2,
 .markdown h3,
 .markdown h4{
-  @apply mt-10 mb-4 leading-snug text-nav/95 font-bold;
+  @apply mt-10 leading-snug text-nav/95 font-bold;
 }
 .markdown h2 {
   @apply text-3xl
@@ -51,12 +51,15 @@
 .markdown ul > li {
   @apply  list-disc
 }
+.markdown ul > li > p {
+  @apply  py-1
+}
 
 .markdown pre {
   @apply bg-main rounded p-4 mb-8
 }
 .markdown code {
-  @apply text-xs
+  @apply text-sm
 }
 
 .markdown figure[data-rehype-pretty-code-figure] {
@@ -71,7 +74,7 @@
 }
 
 .markdown span[data-line] {
-  @apply text-xs pb-1
+  @apply text-xs md:text-sm pb-1
 }
 
 .markdown tbody{
