@@ -13,7 +13,7 @@ type Props = {
 
 function Info({ category, date }: { category: string[]; date: string }) {
   return (
-    <div className="text-sm md:text-lg flex gap-x-2 text-gray-500  pb-2">
+    <div className="text-sm md:text-base flex gap-x-2 text-gray-500  pb-2">
       <div className="text-nav font-medium">
         {category.map((c) => (
           <span className="capitalize me-2" key={c}>

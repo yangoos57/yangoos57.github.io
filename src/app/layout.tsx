@@ -81,7 +81,7 @@ export default function RootLayout({
       </head>
       <body className={font.className}>
         <Header />
-        <div className="pt-[55px] min-h-screen flex flex-col px-4">
+        <div className="pt-[55px] min-h-screen flex flex-col px-4 max-w-2xl mx-auto">
           {children}
         </div>
         <Footer />
