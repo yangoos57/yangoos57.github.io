@@ -1,17 +1,14 @@
 import { Post } from "@/interfaces/post";
 import fs from "fs";
-import path from 'path';
+import path from "path";
 import matter from "gray-matter";
 import { join } from "path";
-
-
 
 // export function getPostSlugs() {
 //   return fs.readdirSync(postsDirectory);
 // }
 
 const postsDirectory = join(process.cwd(), "_posts");
-
 
 function getPostDir(directory: string) {
   let mdFiles: string[] = [];
@@ -24,7 +21,7 @@ function getPostDir(directory: string) {
     if (fs.statSync(filePath).isDirectory()) {
       mdFiles = mdFiles.concat(getPostDir(filePath));
     } else {
-      if (path.extname(filePath) === '.md') {
+      if (path.extname(filePath) === ".md") {
         mdFiles.push(filePath);
       }
     }
@@ -33,12 +30,12 @@ function getPostDir(directory: string) {
   return mdFiles;
 }
 
-
 export function getPostSlugs() {
   const fileDir = getPostDir(postsDirectory);
-  return fileDir.map((f) => (f.replace(postsDirectory, "").slice(1).replace(/\.md$/, "")))
+  return fileDir.map((f) =>
+    f.replace(postsDirectory, "").slice(1).replace(/\.md$/, "")
+  );
 }
-
 
 export function getPostBySlug(slug: string) {
   const fullPath = join(postsDirectory, `${slug}.md`);
@@ -49,9 +46,10 @@ export function getPostBySlug(slug: string) {
 }
 
 export function getAllPosts(): Post[] {
-  const slugs = getPostSlugs()
+  const slugs = getPostSlugs();
   const posts = slugs
     .map((slug) => getPostBySlug(slug))
+    .filter((s) => s.publish)
     // sort posts by date in descending order
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
   return posts;

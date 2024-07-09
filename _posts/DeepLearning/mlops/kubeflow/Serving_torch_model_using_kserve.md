@@ -1,5 +1,5 @@
 ---
-publish: true
+publish: false
 title: "[Kubeflow] Kserve로 pytorch 모델 서빙하기"
 date: "2023-01-24"
 category: ["ML ops", "kubeflow"]

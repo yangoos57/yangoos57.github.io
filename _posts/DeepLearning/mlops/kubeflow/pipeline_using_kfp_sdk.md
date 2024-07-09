@@ -1,5 +1,5 @@
 ---
-publish: true
+publish: false
 title: "[Kubeflow] 모델 학습부터 서빙까지 파이프라인 구축하기"
 date: "2023-01-26"
 category: ["ML ops", "kubeflow"]
@@ -47,7 +47,7 @@ KFP SDK 설명에 앞서 KFP SDK를 사용하지 않고 kubeflow의 파이프라
 
 #### ❖ 파이썬 코드를 컴포넌트로
 
-KFP SDK를 접하면 가장 먼저 배우는 매서드는 `func_to_container_op`, `create_component_from_func` 일 것입니다. `func_to_container_op`와 `create_component_from_func`은 앞서 설명에서 파이썬 코드를 도커 컨테이너로 빌드하는 단계에 대응되는 과정입니다. 이 매서드를 사용하면 py 파일을 만든 다음 일일이 이미지로 만들었던 작업을 생략할 수 있습니다. KFP SDK로 파이프라인을 compile한 yaml 파일을 보신분들은 아시겠지만, 컴포넌트로 감싸여진 파이썬 코드는 컨테이너 내부에서 python 명령어에 arguments를 붙여넣는 방식으로 구동됩니다.
+KFP SDK를 접하면 가장 먼저 배우는 매서드는 `func_to_container_op`와 `create_component_from_func` 일 것입니다. `func_to_container_op`와 `create_component_from_func`은 앞서 설명에서 파이썬 코드를 도커 컨테이너로 빌드하는 단계에 대응되는 과정입니다. 이 매서드를 사용하면 py 파일을 만든 다음 일일이 이미지로 만들었던 작업을 생략할 수 있습니다. KFP SDK로 파이프라인을 compile한 yaml 파일을 보신분들은 아시겠지만, 컴포넌트로 감싸여진 파이썬 코드는 컨테이너 내부에서 python 명령어에 arguments를 붙여넣는 방식으로 구동됩니다.
 
 이 방식은 컨테이너 이미지를 생성하는 단계를 생략한다는 장점이 있지만 약간의 단점(?)도 존재합니다. resource requests,resource limits, volume mount와 같이 컨테이너 실행 시 설정하는 값을 `create_component_from_func`와 `func_to_container_op`로는 설정할 수 없다는 점입니다. 예로들어 `create_component_from_func` 매서드는 packages_to_install, base_image, annotations 만을 지원하고 있기 때문에 이러한 매서드를 사용할 때 resource requests,resource limits, volume mount는 같은 세부적인 옵션은 설정할 수 없습니다.
 

@@ -1,45 +1,44 @@
-import Container from "@/app/_components/container";
-import { MoreStories } from "@/app/_components/more-stories";
-import { getAllPosts } from "../../../lib/api";
-import PostFilter from "../../_components/post-filter";
+import PostCardGroup from "@/components/post-card/post-card-group";
+import { getAllPosts } from "@/lib/api";
+import PostFilter from "@/components/post-card/post-card-filter";
 
 export default async function Index({ params }: { params: { slug: string } }) {
-    const allPosts = getAllPosts();
-    const { slug } = params;
-    const param = slug.replace("-", " ");
-    const categories = allPosts.reduce((acc, post) => {
-        post.category.forEach((category) => acc.add(category));
-        return acc;
-    }, new Set<string>());
+  const allPosts = getAllPosts();
+  const { slug } = params;
+  const param = slug.replace("-", " ");
+  const categories = allPosts.reduce((acc, post) => {
+    post.category.forEach((category) => acc.add(category));
+    return acc;
+  }, new Set<string>());
 
-    const filterName = categories.has(param as string) ? param : "all";
-    const categoryArray = Array.from(categories);
+  const filterName = categories.has(param as string) ? param : "all";
+  const categoryArray = Array.from(categories);
 
-    const filteredPosts =
-        filterName === "all" ? allPosts : allPosts.filter((v) => v.category.includes(filterName as string));
+  const filteredPosts =
+    filterName === "all"
+      ? allPosts
+      : allPosts.filter((v) => v.category.includes(filterName as string));
 
-    return (
-        <main className="relative bg-main grow">
-            <Container>
-                <PostFilter params={filterName as string} categories={categoryArray} />
-                <MoreStories params={filterName as string} posts={filteredPosts} />
-            </Container>
-        </main>
-    );
+  return (
+    <main>
+      <PostFilter params={filterName as string} categories={categoryArray} />
+      <PostCardGroup params={filterName as string} posts={filteredPosts} />
+    </main>
+  );
 }
 
 export async function generateStaticParams() {
-    const allPosts = getAllPosts();
-    const categories = allPosts.reduce((acc, post) => {
-        post.category.forEach((category) => acc.add(category));
-        return acc;
-    }, new Set<string>());
+  const allPosts = getAllPosts();
+  const categories = allPosts.reduce((acc, post) => {
+    post.category.forEach((category) => acc.add(category));
+    return acc;
+  }, new Set<string>());
 
-    const cat = Array.from(categories);
+  const cat = Array.from(categories);
 
-    const categoryArray = ["all", ...cat];
+  const categoryArray = ["all", ...cat];
 
-    return categoryArray.map((s) => ({
-        slug: s.replace(" ", "-"),
-    }));
+  return categoryArray.map((s) => ({
+    slug: s.replace(" ", "-"),
+  }));
 }

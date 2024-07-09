@@ -1,11 +1,11 @@
-import Footer from "@/app/_components/footer";
-import { PAGE } from "@/lib/constants";
 import type { Metadata } from "next";
-import { IBM_Plex_Sans_KR } from "next/font/google";
 import Script from "next/script";
+import { IBM_Plex_Sans_KR } from "next/font/google";
 import "./globals.css";
-import Header from "./_components/header";
-import GoogleAnalytics from "./_components/ga4/google-analytics-4";
+
+import Footer from "@/components/common/footer";
+import Nav from "@/components/common/nav";
+import GoogleAnalytics from "@/components/ga4/google-analytics-4";
 
 const font = IBM_Plex_Sans_KR({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -13,16 +13,16 @@ const font = IBM_Plex_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(PAGE),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
   title: `Yangoos Github Blog`,
   description: `데이터를 종합해 정보를 만듭니다.`,
   openGraph: {
     images: "/og/og-default.png",
   },
   verification: {
-    google: "cGIJ_4UB82a6wkT0s71AkXfCqej5-Svsic6s2N0YrLk",
+    google: process.env.GOOGLE_VERIFICATION!,
     other: {
-      "naver-site-verification": "c3fffb88d53634045cbfe175cb5ecc04afea1ea",
+      "naver-site-verification": process.env.NAVER_VERIFICATION!,
     },
   },
 };
@@ -33,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="kr">
       <GoogleAnalytics GA_TRACKING_ID={process.env.GA_TRACKING_ID!} />
       <head>
         <Script
@@ -48,29 +48,11 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/favicon/apple-touch-icon.png"
-        />
-        <link
           rel="icon"
           type="image/png"
           sizes="32x32"
           href="/favicon/favicon-32x32.png"
         />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/favicon/favicon-16x16.png"
-        />
-        <link rel="manifest" href="/favicon/site.webmanifest" />
-        <link
-          rel="mask-icon"
-          href="/favicon/safari-pinned-tab.svg"
-          color="#000000"
-        />
-        <link rel="shortcut icon" href="/favicon/favicon.ico" />
         <meta name="msapplication-TileColor" content="#000000" />
         <meta
           name="msapplication-config"
@@ -80,8 +62,8 @@ export default function RootLayout({
         <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       </head>
       <body className={font.className}>
-        <Header />
-        <div className="pt-[55px] min-h-screen flex flex-col px-4 max-w-2xl mx-auto">
+        <Nav />
+        <div className="pt-[55px] min-h-screen flex flex-col px-4 max-w-2xl 2xl:max-w-3xl mx-auto text-black/95">
           {children}
         </div>
         <Footer />

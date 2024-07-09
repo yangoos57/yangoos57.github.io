@@ -1,5 +1,5 @@
 ---
-publish: true
+publish: false
 title: "🤗 Transformers를 활용해 Torchserve 배포하기"
 category: ["ML ops","pytorch","torch serve"]
 date: "2023-01-18"
@@ -141,7 +141,7 @@ data
 
 🤗 Transformers의 장점은 수행해야 하는 Task에 적합한 구조를 쉽게 불러올 수 있는 것에 있습니다. 🤗 Transformers에서 불러올 수 있는 구조는 앞으로 예제에서 활용할 Distil-Bert의 경우 `MaskedLM`, `SequenceClassification`, `MultipleChoice`, `TokenClassification`, `QuestionAnswering` 이 있습니다. 이러한 구조들은 `BaseModel`을 기반으로 하되 출력 상단(output-Layer) 구조를 변경하는 방법으로 구성되어 있습니다. 기존에 만들어진 Layer를 사용하지 않고 직접 Layer를 구성해야한다면 BaseModel을 직접 불러와 사용할 수 있습니다.
 
-<img src='img/img2.png' alt='img2'>
+<img src='/assets/blog/mlops/torchserve/img2.png' alt='img2'>
 
 <br/>
 <br/>
@@ -156,7 +156,7 @@ SequenceClassification 구조는 다양한 유형의 모델을 생성할 수 있
 
 다음으로 num_label은 output 유형을 결정합니다. num_label = 1로 설정하면 모델은 0~1사이 범위의 Output을 제공합니다. num_label을 2 이상으로 설정하면 Softmax를 활용해 Label의 총합이 1이 되도록 Output을 제공합니다. yelp_review 데이터셋을 예로들면 label이 5개이므로 Output은 `1 : 0.2, 2: 0.01, 3 : 0.5, 4: 0.19, 5: 0.1` 과 같이 제공되며 확률값을 통해 Input Data에 대한 예측값이 3이라 판단하게 됩니다.
 
-<img src='img/img1.png' alt='img1'>
+<img src='/assets/blog/mlops/torchserve/img1.png' alt='img1'>
 
 <br/>
 <br/>
@@ -250,7 +250,7 @@ tokenizer.save_pretrained('torch_model')
 
 저장 결과로 `handler.py`를 제외한 6개의 파일이 생성된것을 확인할 수 있습니다.
 
-<img src='img/img3.png' alt='img3'>
+<img src='/assets/blog/mlops/torchserve/img3.png' alt='img3'>
 
 ### Handler가 필요한 이유
 
@@ -394,7 +394,7 @@ command를 실행하면 `torch_model` 폴더에 bert-model.mar 파일이 새로 
 
 MAR File의 내부구조는 args에 포함한 파일 + MAR_INF 폴더 내부에 있는 json 파일로 구성되어 있습니다.
 
-<img src='img/img4.png' alt='img4'>
+<img src='/assets/blog/mlops/torchserve/img4.png' alt='img4'>
 
 ```json
 # MAR_INF 내부 Json 정보
@@ -415,7 +415,7 @@ MAR File의 내부구조는 args에 포함한 파일 + MAR_INF 폴더 내부에 
 
 이제 모델을 배포할 일만 남았습니다. 실행에 앞서 `torch_model`폴더에 model_store 폴더를 만든 뒤 bert-model.mar 파일을 내부로 이동해주세요.
 
-<img src='img/img5.png' alt='img5'>
+<img src='/assets/blog/mlops/torchserve/img5.png' alt='img5'>
 
 <br/>
 <br/>
@@ -429,7 +429,7 @@ torchserve --start --model-store model_store --models bert=bert-model.mar
 <br/>
 
 > 모델 실행 중 중 snapshot is empty로 뜨고 종료되는 경우 `--no-config-snapshots`을 추가로 포함해서 실행해주세요.
-> <img src='img/img6.png' alt='img6' >
+> <img src='/assets/blog/mlops/torchserve/img6.png' alt='img6' >
 
 <br/>
 
@@ -443,7 +443,7 @@ curl -X POST -H "Content-Type: text/plain"  http://127.0.0.1:8080/predictions/be
 
 Torchserve가 켜진 환경을 보면 이와 같이 Input data가 정확히 들어왔음을 확인할 수 있습니다.
 
-<img src='img/img7.png' alt='img7' >
+<img src='/assets/blog/mlops/torchserve/img7.png' alt='img7' >
 
 ### Debugging을 위한 Shell script 생성
 

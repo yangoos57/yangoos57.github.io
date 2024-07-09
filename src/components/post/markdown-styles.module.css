@@ -3,10 +3,10 @@
 }
 
 .markdown p {
-  @apply py-5 text-justify
+  @apply py-5 text-justify break-all
 }
 .markdown p code {
-  @apply bg-main p-1 text-blue-800
+  @apply bg-main px-1 py-1 mx-1 text-blue-800 
 }
 
 .markdown ul,
@@ -19,7 +19,7 @@
 .markdown h2,
 .markdown h3,
 .markdown h4{
-  @apply mt-10 leading-snug text-nav/95 font-bold;
+  @apply mt-10 leading-snug text-nav/95 font-medium;
 }
 .markdown h2 {
   @apply text-3xl
@@ -34,7 +34,7 @@
 
 
 .markdown strong {
-  @apply text-nav
+  @apply text-nav font-medium
 }
 
 .markdown pre {
@@ -109,7 +109,7 @@
 }
 
 .markdown table th {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .markdown table th,

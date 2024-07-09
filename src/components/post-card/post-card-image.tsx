@@ -1,5 +1,4 @@
 import cn from "classnames";
-import Link from "next/link";
 import Image from "next/image";
 
 type Props = {
@@ -8,7 +7,7 @@ type Props = {
   slug?: string;
 };
 
-const CoverImage = ({ title, src, slug }: Props) => {
+export const CoverImage = ({ title, src, slug }: Props) => {
   return (
     <div className="sm:mx-0">
       <Image
@@ -23,5 +22,3 @@ const CoverImage = ({ title, src, slug }: Props) => {
     </div>
   );
 };
-
-export default CoverImage;
