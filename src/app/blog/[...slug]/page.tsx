@@ -5,6 +5,7 @@ import markdownToHtml from "@/lib/markdownToHtml";
 import { PostBody } from "@/components/post/post-main";
 import { PostHeader } from "@/components/post/post-header";
 import { join } from "path";
+import { JsonLDComponent } from "@/components/post/metadata";
 
 export default async function Post({ params }: { params: { slug: string[] } }) {
   const post = getPostBySlug(join(...params.slug));
@@ -16,7 +17,8 @@ export default async function Post({ params }: { params: { slug: string[] } }) {
   const content = await markdownToHtml(post.content || "");
 
   return (
-    <main className="mx-auto w-full whitespace-wrap">
+    <>
+      <JsonLDComponent post={post} />
       <article className="mb-32">
         <PostHeader
           title={post.title}
@@ -25,7 +27,7 @@ export default async function Post({ params }: { params: { slug: string[] } }) {
         />
         <PostBody content={content} />
       </article>
-    </main>
+    </>
   );
 }
 
