@@ -23,13 +23,14 @@ export function PostBody({ content }: Props) {
         className={markdownStyles["markdown"]}
         dangerouslySetInnerHTML={{ __html: content }}
       />
+
       <Giscus
         id="comments"
         repo="yangoos57/yangoos57.github.io"
-        repoId="MDEwOlJlcG9zaXRvcnkzOTEzMTMwMjA="
-        category="Announcements"
-        categoryId="DIC_kwDOF1L2fM4B-hVS"
-        mapping="specific"
+        repoId="R_kgDOIDaSkA"
+        category="comments"
+        categoryId="DIC_kwDOIDaSkM4CgqOT"
+        mapping="pathname"
         term="Welcome to @giscus/react component!"
         reactionsEnabled="1"
         emitMetadata="0"
