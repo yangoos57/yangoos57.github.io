@@ -8,7 +8,7 @@ type Props = {
 
 function SectionTitle({ cardCount }: { cardCount: number }) {
   return (
-    <div className="pt-12 pb-4 text-2xl font-semibold capitalize">
+    <div className="pt-12 pb-4 text-xl font-semibold capitalize">
       <span>블로그 글</span>
       <span className="text-xl px-1">({cardCount})</span>
     </div>
