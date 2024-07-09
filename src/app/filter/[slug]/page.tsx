@@ -1,6 +1,5 @@
-import PostCardGroup from "@/components/post-card/post-card-group";
+import { PostCardGroup, PostFilter } from "@/components/post-card";
 import { getAllPosts } from "@/lib/api";
-import PostFilter from "@/components/post-card/post-card-filter";
 
 export default async function Index({ params }: { params: { slug: string } }) {
   const allPosts = getAllPosts();
