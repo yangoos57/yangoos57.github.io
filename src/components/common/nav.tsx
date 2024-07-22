@@ -7,7 +7,7 @@ const Nav = () => {
           데이터를 종합해 정보를 만듭니다.
         </Link>
         <div className="text-sm md:text-base text-right space-x-4 md:space-x-8 font-medium  whitespace-nowrap">
-          <Link href={"/intro"}>소개</Link>
+          {/* <Link href={"/intro"}>소개</Link> */}
           <Link
             href={"https://github.com/yangoos57"}
             target="_blank"

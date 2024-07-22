@@ -1,5 +1,5 @@
 ---
-publish: true
+publish: false
 title: "[Kubeflow] SSL 인증 문제 해결하기"
 date: "2023-01-23"
 category: ["ML ops", "kubeflow"]

@@ -1,5 +1,5 @@
 ---
-publish: true
+publish: false
 title: "[Kubeflow] Apple silicon 환경에서 Kubeflow 설치하기"
 date: "2023-01-12"
 category: ["ML ops", "kubeflow"]
