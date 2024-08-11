@@ -1,7 +1,7 @@
 import Image from "next/image";
 import EmblaCarousel, { CarouselImage } from "@/components/carousel/carousel";
 
-function MockCard({ image }: { image: string }) {
+export function MockCard({ image }: { image: string }) {
   return (
     <div className="flex flex-col min-w-full sm:min-w-[300px] w-full aspect-[3/4]">
       <CarouselImage
