@@ -7,7 +7,7 @@ export async function generateMetadata() {
   const openGraph = {
     title,
     description,
-    url: "/spotlite",
+    url: "/spotlite/profile",
     siteName: "spotlite.global",
     images: [
       {
