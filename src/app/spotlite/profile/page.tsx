@@ -11,12 +11,7 @@ export async function generateMetadata() {
     siteName: "spotlite.global",
     images: [
       {
-        url: "spotlite/img1_meta_portrait.jpg",
-        width: "300",
-        height: "400",
-      },
-      {
-        url: "spotlite/img1_meta.png",
+        url: "spotlite/img1_meta.jpg",
         width: "1000",
         height: "500",
       },
