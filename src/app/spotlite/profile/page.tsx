@@ -29,7 +29,7 @@ export default async function Page() {
       <div className="w-full">
         <div className="relative max-w-[400px] aspect-[3/4] mx-auto">
           <Image
-            src="img1.webp"
+            src="/spotlite/img1.webp"
             alt="image"
             className="object-cover rounded-xl"
             fill

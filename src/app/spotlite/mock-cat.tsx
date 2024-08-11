@@ -1,6 +1,6 @@
 function CatButton({ name }: { name: string }) {
   return (
-    <button className="rounded-full py-2 px-6 my-1 bg-black/90 text-white text-xs text-nowrap">
+    <button className="rounded-full py-2 px-6 my-1 bg-black/90 text-white text-xs whitespace-nowrap">
       {name}
     </button>
   );
