@@ -1,9 +1,12 @@
-import Image from "next/image";
+import Link from "next/link";
 import EmblaCarousel, { CarouselImage } from "@/components/carousel/carousel";
 
 export function MockCard({ image }: { image: string }) {
   return (
-    <div className="flex flex-col min-w-full sm:min-w-[300px] w-full aspect-[3/4]">
+    <Link
+      href="spotlite/profile"
+      className="flex flex-col min-w-full sm:min-w-[300px] w-full aspect-[3/4]"
+    >
       <CarouselImage
         alt="photo"
         src={`spotlite/${image}`}
@@ -12,7 +15,7 @@ export function MockCard({ image }: { image: string }) {
         unoptimized
       />
       <div className="mx-auto pb-2">Model</div>
-    </div>
+    </Link>
   );
 }
 

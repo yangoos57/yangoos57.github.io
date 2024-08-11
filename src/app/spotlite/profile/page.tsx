@@ -1,4 +1,5 @@
 import Image from "next/image";
+import NavMock from "../nav-mock";
 
 export async function generateMetadata() {
   const title = "박준우(Park Jun Woo) 한국|Korea";
@@ -23,10 +24,13 @@ export async function generateMetadata() {
 
 export default async function Page() {
   return (
-    <div className="w-full">
-      <div className="relative w-[400px] aspect-[3/4] mx-auto">
-        <Image src="img1.webp" alt="image" className="object-cover" fill />
+    <>
+      <NavMock />
+      <div className="w-full">
+        <div className="relative max-w-[400px] aspect-[3/4] mx-auto">
+          <Image src="img1.webp" alt="image" className="object-cover" fill />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

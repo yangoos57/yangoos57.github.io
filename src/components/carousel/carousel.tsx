@@ -6,6 +6,7 @@ import styles from "./styles.module.css";
 import Autoplay from "embla-carousel-autoplay";
 import Fade from "embla-carousel-fade";
 import useMobile from "../hooks/user-view-size";
+import { EmblaOptionsType } from "embla-carousel";
 
 const handleImageError = (
   errorNode: React.SyntheticEvent<HTMLImageElement>
@@ -39,13 +40,16 @@ function EmblaCarousel({
   type: "single" | "multi";
 }) {
   const isMobile = useMobile();
-  const options: object = {
+  const options: EmblaOptionsType = {
     dragFree: true,
     containScroll: "trimSnaps",
   };
 
   const defaultOptions: any[] = [Autoplay({ playOnInit: true, delay: 2000 })];
-  isMobile === "mobile" && defaultOptions.push(Fade());
+  if (isMobile === "mobile") {
+    defaultOptions.push(Fade());
+    options.containScroll = false;
+  }
 
   const [emblaRef] = useEmblaCarousel(options, defaultOptions);
 

@@ -2,9 +2,16 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { IBM_Plex_Sans_KR } from "next/font/google";
 import "./globals.css";
+import { Viewport } from "next";
 
 import Footer from "@/components/common/footer";
 import GoogleAnalytics from "@/components/ga4/google-analytics-4";
+
+export const viewport: Viewport = {
+  maximumScale: 1,
+  initialScale: 1,
+  width: "device-width",
+};
 
 const font = IBM_Plex_Sans_KR({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -60,7 +67,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#000" />
         <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       </head>
-      <body className={`${font.className} h-lvh flex flex-col `}>
+      <body className={`${font.className} h-lvh flex flex-col w-full`}>
         <div className="pt-[55px] px-2 mx-auto w-full text-black/95  grow">
           {children}
         </div>
