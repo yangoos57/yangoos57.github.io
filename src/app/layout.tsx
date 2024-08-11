@@ -4,7 +4,6 @@ import { IBM_Plex_Sans_KR } from "next/font/google";
 import "./globals.css";
 
 import Footer from "@/components/common/footer";
-import Nav from "@/components/common/nav";
 import GoogleAnalytics from "@/components/ga4/google-analytics-4";
 
 const font = IBM_Plex_Sans_KR({
@@ -61,9 +60,8 @@ export default function RootLayout({
         <meta name="theme-color" content="#000" />
         <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       </head>
-      <body className={font.className}>
-        <Nav />
-        <div className="pt-[55px] min-h-screen flex flex-col px-4 max-w-2xl 2xl:max-w-3xl mx-auto text-black/95">
+      <body className={`${font.className} h-lvh flex flex-col `}>
+        <div className="pt-[55px] px-2 mx-auto w-full text-black/95  grow">
           {children}
         </div>
         <Footer />

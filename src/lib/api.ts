@@ -8,7 +8,7 @@ import { join } from "path";
 //   return fs.readdirSync(postsDirectory);
 // }
 
-const postsDirectory = join(process.cwd(), "_posts");
+const POST_DIRECTORY = join(process.cwd(), "_posts");
 
 function getPostDir(directory: string) {
   let mdFiles: string[] = [];
@@ -31,14 +31,14 @@ function getPostDir(directory: string) {
 }
 
 export function getPostSlugs() {
-  const fileDir = getPostDir(postsDirectory);
-  return fileDir.map((f) =>
-    f.replace(postsDirectory, "").slice(1).replace(/\.md$/, "")
+  const mdFiles = getPostDir(POST_DIRECTORY);
+  return mdFiles.map((f) =>
+    f.replace(POST_DIRECTORY, "").slice(1).replace(/\.md$/, "")
   );
 }
 
 export function getPostBySlug(slug: string) {
-  const fullPath = join(postsDirectory, `${slug}.md`);
+  const fullPath = join(POST_DIRECTORY, `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
 

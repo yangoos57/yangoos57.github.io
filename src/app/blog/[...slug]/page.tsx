@@ -6,6 +6,7 @@ import { PostBody } from "@/components/post/post-main";
 import { PostHeader } from "@/components/post/post-header";
 import { join } from "path";
 import { JsonLDComponent } from "@/components/post/metadata";
+import Nav from "@/components/common/nav";
 
 export default async function Post({ params }: { params: { slug: string[] } }) {
   const post = getPostBySlug(join(...params.slug));
@@ -17,7 +18,8 @@ export default async function Post({ params }: { params: { slug: string[] } }) {
   const content = await markdownToHtml(post.content || "");
 
   return (
-    <>
+    <div className="max-w-2xl 2xl:max-w-3xl mx-auto">
+      <Nav />
       <JsonLDComponent post={post} />
       <article className="mb-32">
         <PostHeader
@@ -27,7 +29,7 @@ export default async function Post({ params }: { params: { slug: string[] } }) {
         />
         <PostBody content={content} />
       </article>
-    </>
+    </div>
   );
 }
 
