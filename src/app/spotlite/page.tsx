@@ -11,7 +11,18 @@ export async function generateMetadata() {
     description,
     url: "/spotlite",
     siteName: "spotlite.global",
-    images: "spotlite/img1_meta.jpeg",
+    images: [
+      {
+        url: "spotlite/img1_meta_portrait.jpg",
+        width: "300",
+        height: "400",
+      },
+      {
+        url: "spotlite/img1_meta.png",
+        width: "1000",
+        height: "500",
+      },
+    ],
     type: "website",
   };
   return { metadataBase, title, description, openGraph };
