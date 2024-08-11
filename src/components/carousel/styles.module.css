@@ -19,14 +19,19 @@
 }
 
 .embla__viewport {
-    overflow: scroll;
+    overflow: hidden;
+}
+@media (min-width: 768px) {
+    .embla__viewport {
+        overflow: scroll;
+    }
 }
 
 .embla__container {
     backface-visibility: hidden;
     display: flex;
     touch-action: pan-y;
-    margin-left: calc(var(--slide-spacing) * -1);
+    
 }
 
 .embla__slide {

@@ -21,7 +21,7 @@ interface CarouselImageProps extends React.ComponentProps<typeof Image> {}
 export function CarouselImage(props: CarouselImageProps) {
   const { className } = props;
   return (
-    <div className={styles.embla__slide}>
+    <div className={`${styles.embla__slide}`}>
       <Image
         unoptimized
         className={`${styles.embla__slide__img} bg-gray-100 ${className}`}
@@ -45,13 +45,13 @@ function EmblaCarousel({
     containScroll: "trimSnaps",
   };
 
-  const defaultOptions: any[] = [Autoplay({ playOnInit: true, delay: 2000 })];
+  const playOptions: any[] = [Autoplay({ playOnInit: true, delay: 3000 })];
   if (isMobile === "mobile") {
-    defaultOptions.push(Fade());
+    playOptions.push(Fade());
     options.containScroll = false;
   }
 
-  const [emblaRef] = useEmblaCarousel(options, defaultOptions);
+  const [emblaRef] = useEmblaCarousel(options, playOptions);
 
   const carouselType = {
     single: styles.embla,
@@ -62,7 +62,9 @@ function EmblaCarousel({
     <div className="flex flex-col">
       <div className={carouselType[type]}>
         <div className={styles.embla__viewport} ref={emblaRef}>
-          <div className={styles.embla__container}>{children}</div>
+          <div className={`${styles.embla__container} space-x-3`}>
+            {children}
+          </div>
         </div>
       </div>
     </div>

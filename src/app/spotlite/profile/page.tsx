@@ -28,7 +28,12 @@ export default async function Page() {
       <NavMock />
       <div className="w-full">
         <div className="relative max-w-[400px] aspect-[3/4] mx-auto">
-          <Image src="img1.webp" alt="image" className="object-cover" fill />
+          <Image
+            src="img1.webp"
+            alt="image"
+            className="object-cover rounded-xl"
+            fill
+          />
         </div>
       </div>
     </>

@@ -5,16 +5,16 @@ export function MockCard({ image }: { image: string }) {
   return (
     <Link
       href="spotlite/profile"
-      className="flex flex-col min-w-full sm:min-w-[300px] w-full aspect-[3/4]"
+      className="flex flex-col min-w-full sm:min-w-[300px] w-full aspect-square sm:aspect-[3/4]"
     >
       <CarouselImage
         alt="photo"
         src={`spotlite/${image}`}
-        className="object-fill pe-2"
+        className="object-cover rounded-xl"
         fill
         unoptimized
       />
-      <div className="mx-auto pb-2">Model</div>
+      <div className="mx-auto py-2 text-xl sm:text-sm font-medium">Model</div>
     </Link>
   );
 }
