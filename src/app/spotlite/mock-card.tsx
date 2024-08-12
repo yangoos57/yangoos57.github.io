@@ -15,8 +15,6 @@ export function MockCard({ image }: { image: string }) {
         unoptimized
       />
       <div className="mx-auto py-2 text-xl sm:text-sm font-medium">Model</div>
-      <div className="mx-auto py-2 text-xl sm:text-sm font-medium">Model</div>
-      <div className="mx-auto py-2 text-xl sm:text-sm font-medium">Model</div>
     </Link>
   );
 }
